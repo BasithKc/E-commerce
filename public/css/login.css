@@ -61,7 +61,10 @@ body {
 
 [tabindex="-1"]:focus {
   outline: 0 !important; }
-
+.logo img{
+  margin-top: 10px;
+  margin-left: 10px;
+}
 hr {
   -webkit-box-sizing: content-box;
   box-sizing: content-box;

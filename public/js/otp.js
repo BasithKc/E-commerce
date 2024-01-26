@@ -1,12 +1,10 @@
 const inputs = document.querySelectorAll("input"),
-button = document.querySelector("button");
+verifyButton = document.getElementById("verify-button");
 
 // iterate over all inputs
 inputs.forEach((input, index1) => {
 input.addEventListener("keyup", (e) => {
-  // This code gets the current input element and stores it in the currentInput variable
-  // This code gets the next sibling element of the current input element and stores it in the nextInput variable
-  // This code gets the previous sibling element of the current input element and stores it in the prevInput variable
+
   const currentInput = input,
     nextInput = input.nextElementSibling,
     prevInput = input.previousElementSibling;
@@ -16,7 +14,7 @@ input.addEventListener("keyup", (e) => {
     currentInput.value = "";
     return;
   }
-  // if the next input is disabled and the current value is not empty
+  // if the next input is disabled and the current value is not empty 
   //  enable the next input and focus on it
   if (nextInput && nextInput.hasAttribute("disabled") && currentInput.value !== "") {
     nextInput.removeAttribute("disabled");
@@ -38,13 +36,39 @@ input.addEventListener("keyup", (e) => {
   }
   //if the fourth input( which index number is 3) is not empty and has not disable attribute then
   //add active class if not then remove the active class.
-  if (!inputs[3].disabled && inputs[3].value !== "") {
-    button.classList.add("active");
+  if (!inputs[5].disabled && inputs[5].value !== "") {
+    verifyButton.classList.add("active");
     return;
   }
-  button.classList.remove("active");
+  verifyButton.classList.remove('active')
 });
 });
 
 //focus the first input which index is 0 on window load
 window.addEventListener("load", () => inputs[0].focus());
+
+function verifyOTP() {
+
+  const digit1 = document.getElementById('digit1').value;
+  const digit2 = document.getElementById('digit2').value;
+  const digit3 = document.getElementById('digit3').value;
+  const digit4 = document.getElementById('digit4').value;
+  const digit5 = document.getElementById('digit5').value;
+  const digit6 = document.getElementById('digit6').value;
+
+
+  const otp = `${digit1}${digit2}${digit3}${digit4}${digit5}${digit6}`;
+
+  fetch('/verify-otp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({otp}),
+  })
+ 
+}
+
+function ResendOtp() {
+  window.location.href = '/resend-otp'
+}

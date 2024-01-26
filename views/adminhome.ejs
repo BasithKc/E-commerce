@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Example</title>
+    <link rel="stylesheet" href="/css/adminhome.css">
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header class="header" data-header>
+        <div class="container">
+    
+         
+    
+          <a href="#" class="logo">
+            <img src="/assets/images/logo.svg" width="160" height="50" alt="Footcap logo">
+          </a>
+    
+          <nav class="navbar" data-navbar>
+    
+            <ul class="navbar-list">
+    
+              <li class="navbar-item">
+                <a href="#" class="navbar-link">Home</a>
+              </li>
+
+              <li class="navbar-item">
+                <a href="#" class="navbar-link">Products</a>
+              </li>
+    
+              <li class="navbar-item">
+                <a href="#" class="navbar-link">Users</a>
+              </li>
+    
+              <li class="navbar-item">
+                <a href="#" class="navbar-link">orders</a>
+              </li>
+    
+            </ul>
+    
+    
+          </nav>
+    
+        </div>
+      </header>
+    
+
+    <!-- Your graph will be rendered inside this canvas element -->
+    <div class="main-body">
+      <section>
+        <div class="sidebar-nav">
+           <a href="/adminhome"><p><i class='bx bxs-home'></i>Home</p></a> 
+        </div>
+        <div class="sidebar-nav">
+           <a href="/products"><p><i class='bx bxs-cart'></i>Products</p></a> 
+        </div>
+        <div class="sidebar-nav">
+           <a href="/orders"><p><i class='bx bxs-briefcase-alt-2'></i>Orders</p></a>  
+        </div>
+        <div class="sidebar-nav">
+           <a href="/users"><p><i class='bx bxs-user-circle'></i>Users</p></a>  
+        </div>
+        <div class="sidebar-nav bottom">
+           <a href="/shop"><p><i class='bx bxs-user-rectangle'></i>Account</p></a>  
+        </div>
+    </section>
+
+    <canvas id="myChart" class="myChart"></canvas>
+    </div>
+
+    
+
+    <!-- Your JavaScript code will go here -->
+
+    <script>
+        // Sample data
+        const data = {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [{
+                label: 'Sample Data',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                data: [65, 59, 80, 81, 56],
+            }]
+        };
+    
+        // Chart configuration
+        const config = {
+            type: 'line', // Change this to 'line' for a line chart, 'pie' for a pie chart, etc.
+            data: data,
+            options: {}
+        };
+    
+        // Get the canvas element
+        const ctx = document.getElementById('myChart').getContext('2d');
+    
+        // Create the chart
+        const myChart = new Chart(ctx, config);
+    </script>
+    
+</body>
+</html>

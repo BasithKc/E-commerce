@@ -1,0 +1,66 @@
+
+
+li { list-style: none; }
+
+a { text-decoration: none; }
+
+header{
+  padding: 10px;
+}
+.container{
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar-list{
+  display: flex;
+  gap: 30px;
+}
+li a{
+  color: black;
+  
+}
+
+.main-body{
+  display: flex;
+  font-family: sans-serif;
+}
+
+
+section{
+  width: 250px;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100vh;
+  border-radius: 0 5px 5px 0;
+  position: relative;
+}
+section p {
+  text-align: center;
+  cursor: pointer;
+}
+.sidebar-nav{
+  transition: 0.2s;
+}
+.sidebar-nav p{
+ color: white;
+}
+.sidebar-nav:hover {
+  background-color: rgb(161, 161, 9);
+  border-radius: 5px;
+}
+.sidebar-nav .bx{
+  margin-right: 10px;
+}
+
+.bottom{
+  margin-top: 200px;
+}
+canvas{
+  width: 80%; 
+  max-width: 600px;
+  margin: 0 auto; /* Center the chart */
+  border: 1px solid #ddd; 
+}

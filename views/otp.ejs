@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <title>OTP Verification Form</title>
-    <link rel="stylesheet" href="/css/otp.css" />
+    <link rel="stylesheet" href="/css/otp.css">
     <!-- Boxicons CSS -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
    <script src="/js/otp.js" defer></script>
   </head>
   <body>
@@ -17,14 +18,21 @@
         <i class="bx bxs-check-shield"></i>
       </header>
       <h4>Enter OTP Code</h4>
-      <form action="#">
+      <form id="otpForm">
         <div class="input-field">
-          <input type="number" />
-          <input type="number" disabled />
-          <input type="number" disabled />
-          <input type="number" disabled />
+          <input type="number" id="digit1" />
+          <input type="number" id="digit2" disabled />
+          <input type="number" id="digit3" disabled />
+          <input type="number" id="digit4" disabled />
+          <input type="number" id="digit5" disabled />
+          <input type="number" id="digit6" disabled />
         </div>
-        <button>Verify OTP</button>
+        <% if(errorMessage) { %>
+           <p><%= errorMessage %></p>
+       <% } %>
+        <button id="verify-button" type="button" onclick="verifyOTP()">Verify OTP</button>
+        <p>Not recieved yet??</p>
+        <button class="resend-button" type="button" onclick="ResendOtp()">Resend OTP</button>
       </form>
     </div>
   </body>

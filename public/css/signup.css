@@ -8,8 +8,16 @@
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: #0e0d0d;
     font-size: 13px;
-    margin: 0; }
-  
+    margin: 0; 
+  }
+
+ 
+  .inner p{
+    text-align: center;
+    color: red;
+    font-size: 1.4rem;
+  }
+
   input, textarea, select, button {
     color: #333;
     font-size: 13px; }
@@ -36,6 +44,28 @@
     background-repeat: no-repeat;
     display: flex;
     align-items: center;
+  }
+  .flex{
+    display: flex;
+    gap: 10px;
+  }
+
+  .form-wrapper select {
+    width: 35px;
+  }
+  select{
+    border-radius: 5px;
+    font-size: 0.7rem;
+    padding: 0;
+
+  }
+
+
+  
+  select option{
+    color: #ae3c33;
+    text-align: center;
+    padding: 0;
   }
   
   .inner {
@@ -87,12 +117,13 @@
       border: 1px solid #ae3c33; }
   
   select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
+ 
     cursor: pointer;
-    padding-left: 20px; }
+    padding-left: 20px;
+   }
     select option[value=""][disabled] {
-      display: none; }
+      display: none;
+     }
   
   button {
     border: none;
@@ -194,5 +225,4 @@
       padding-right: 15px;
       padding-left: 15px; } }
   
-  /*# sourceMappingURL=style.css.map */
-  
+ 
