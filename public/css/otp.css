@@ -59,7 +59,8 @@ form .input-field {
 .input-field input::-webkit-outer-spin-button {
   display: none;
 }
-form button {
+form button ,
+a button{
   margin-top: 25px;
   width: 100%;
   color: #fff;
@@ -78,6 +79,9 @@ form button {
 #verify-button{
   background: #6e93f7;
 }
+a{
+  width: 100%;
+}
 .resend-button{
   background: #4070f4;
 }
@@ -86,5 +90,24 @@ form button {
 }
 .resend-button:hover{
   background: #0e4bf1;
+  cursor: pointer;
 
+}
+.container2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  display: none;
+}
+.container2 img{
+  width: 200px;
+  border-radius: 50%;
+  
+}
+.container2 .text-body{
+ color: white;
+ text-align: center;
+ 
 }

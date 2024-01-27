@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getLogin,getSignup,getOtp, postLogin,postOtp, otpPage, ResendOtp} = require("../Controller/indexController")
+const {getLogin,getSignup,getOtp, postLogin,postOtp, otpPage, ResendOtp,success} = require("../Controller/indexController")
 const userHomeController = require('../Controller/userhomeController')
 const adminHomeController = require('../Controller/adminhomeController')
 

@@ -1,3 +1,4 @@
+
 const inputs = document.querySelectorAll("input"),
 verifyButton = document.getElementById("verify-button");
 
@@ -47,7 +48,11 @@ input.addEventListener("keyup", (e) => {
 //focus the first input which index is 0 on window load
 window.addEventListener("load", () => inputs[0].focus());
 
-function verifyOTP() {
+const container = document.querySelector('.container')
+const container2= document.querySelector('.container2')
+
+async function verifyOTP(event) {
+  event.preventDefault();
 
   const digit1 = document.getElementById('digit1').value;
   const digit2 = document.getElementById('digit2').value;
@@ -59,16 +64,32 @@ function verifyOTP() {
 
   const otp = `${digit1}${digit2}${digit3}${digit4}${digit5}${digit6}`;
 
-  fetch('/verify-otp', {
+ const response =  await fetch('/verify-otp', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({otp}),
-  })
+   })
+
+   const json =await response.json()
+   if(json.success) {
+    console.log('hello');
+    container.style.display='none';
+    container2.style.display='block'
+
+    setTimeout(() => {
+      window.location.href = '/'
+    },3000)
+
+   } else {
+    alert('Invalid OTP');
+    document.getElementById('error').innerHTML = 'Invalid OTP'
+   }
+   
+   
  
 }
 
-function ResendOtp() {
-  window.location.href = '/resend-otp'
-}
+
+document.getElementById('otpForm').addEventListener('submit',(event) => verifyOTP(event))

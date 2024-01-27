@@ -125,6 +125,12 @@
       display: none;
      }
   
+     #show-error,
+     #show-confirm{
+      font-size: 0.7rem;
+      text-align: left;
+      margin-bottom: 10px;
+     }
   button {
     border: none;
     width: 152px;
@@ -226,3 +232,201 @@
       padding-left: 15px; } }
   
  
+.color-section{
+  z-index: -1;
+}
+
+
+      :root{
+        --primary-color: #f29100;
+        --primary-lighter-color: #fbdeb3;
+        --primary-darker-color: #ec7400;
+        --text-primary-color: rgba(0, 0, 0, .87);
+        --text-primary-lighter-color: rgba(0, 0, 0, .87);
+        --text-primary-darker-color: rgba(0, 0, 0, .87);
+        --accent-color: #068a9b;
+        --accent-lighter-color: #b4dce1;
+        --accent-darker-color: #036d7f;
+        --text-accent-color: #ffffff;
+        --text-accent-lighter-color: rgba(0, 0, 0, .87);
+        --text-accent-darker-color: #ffffff;
+        --warn-color: #ff0000;
+        --warn-lighter-color: #ffb3b3;
+        --warn-darker-color: #ff0000;
+        --text-warn-color: #ffffff;
+        --text-warn-lighter-color: rgba(0, 0, 0, .87);
+        --text-warn-darker-color: #ffffff;
+    }
+    .color1{
+        width:50px ;
+        height: 50px;
+        color: rgb(151, 214, 151);
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 100px 90px currentColor ;
+        position: absolute;
+        left: 250px;
+        top: -50px;
+        animation: color1 5s linear infinite alternate;
+    }
+    @keyframes color1 {
+        0%{
+            transform: translate(0);
+        }
+        50%{
+            transform: translate(-40px,50px);
+        }
+        100%{
+            transform: translate(-50px,100px);
+        }
+    }
+    .color2{
+        width:50px ;
+        height: 50px;
+        color: rgb(236, 182, 182);
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 100px 120px currentColor ;
+        position: absolute;
+        left: 750px;
+        top: -150px;
+        animation: color2 5s linear infinite alternate;
+    }
+    @keyframes color2 {
+        0%{
+            transform: translate(0);
+        }
+        50%{
+            transform: translate(25px,50px);
+        }
+        100%{
+            transform: translate(50px,100px);
+        }
+    }
+    .color3{
+        width:50px ;
+        height: 50px;
+        color: purple;
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 150px 60px currentColor ;
+        position: absolute;
+        left: 900px;
+        top: -30px;
+        animation: color3 5s linear infinite alternate;
+    }
+    @keyframes color3 {
+        0%{
+            transform: translate(0);
+        }
+        50%{
+            transform: translate(10px,50px);
+        }
+        100%{
+            transform: translate(20px,100px);
+        }
+    }
+    .color4{
+        width:50px ;
+        height: 50px;
+        color: var(--primary-darker-color);
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 150px 60px currentColor ;
+        position: absolute;
+        left: 100px;
+        top: -30px;
+        animation: color4 5s linear infinite alternate;
+    }
+    @keyframes color4 {
+        0%{
+            transform: translate(0);
+        }
+        50%{
+            transform: translate(-40px,50px);
+        }
+        100%{
+            transform: translate(-50px,100px);
+        }
+    }
+    .color5{
+        width:50px ;
+        height: 50px;
+        color: var(--accent-color);
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 150px 60px currentColor ;
+        position: absolute;
+        left: 500px;
+        top: 300px;
+        animation: color5 10s linear infinite alternate;
+    }
+    @keyframes color5 {
+        0%{
+            transform: translate(0);
+        }
+        50%{
+            transform: translate(-300px,-50px);
+        }
+        100%{
+            transform: translate(-50px,-100px);
+        }
+    }
+    .color6{
+        width:50px ;
+        height: 50px;
+        color: var(--primary-lighter-color);
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 150px 60px currentColor ;
+        position: absolute;
+        left: 800px;
+        top: 300px;
+        animation: color6 5s alternate linear infinite;
+    }
+    @keyframes color6 {
+        0%{
+            transform: translate(0);
+        }
+        50%{
+            transform: translate(40px,50px);
+        }
+        100%{
+            transform: translate(-50px,100px);
+        }
+    }
+    .color7{
+        width:50px ;
+        height: 50px;
+        color: var(--warn-color);
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 180px 60px currentColor ;
+        position: absolute;
+        left: 350px;
+        top: 100px;
+        animation: color7 3s linear infinite;
+    }
+    .color8{
+        width:50px ;
+        height: 50px;
+        color: yellow;
+        background: transparent;
+        border-radius: 50%;
+        box-shadow: 150px 240px 150px 60px currentColor ;
+        position: absolute;
+        left: 550px;
+        top: 100px;
+        animation: color8 5s alternate linear infinite;
+    }
+    @keyframes color8 {
+        0%{
+            transform: translate(0);
+        }
+        50%{
+            transform: translate(100px,10px);
+        }
+        100%{
+            transform: translate(250px,0px);
+        }
+    }

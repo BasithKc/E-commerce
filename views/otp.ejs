@@ -13,7 +13,7 @@
    <script src="/js/otp.js" defer></script>
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="container">
       <header>
         <i class="bx bxs-check-shield"></i>
       </header>
@@ -27,13 +27,22 @@
           <input type="number" id="digit5" disabled />
           <input type="number" id="digit6" disabled />
         </div>
-        <% if(errorMessage) { %>
-           <p><%= errorMessage %></p>
-       <% } %>
-        <button id="verify-button" type="button" onclick="verifyOTP()">Verify OTP</button>
-        <p>Not recieved yet??</p>
-        <button class="resend-button" type="button" onclick="ResendOtp()">Resend OTP</button>
+      <p id="error"></p>
+        <button id="verify-button" type="submit" >Verify OTP</button>
       </form>
+      <p>Not recieved yet??</p>
+      <a href="/resend-otp"><button class="resend-button" type="button" >Resend OTP</button></a>
+    </div>
+
+    <div class="container2">
+      <div class="img">
+          <img src="/assets/green_double_circle_check_mark.png" alt="">
+      </div>
+      
+      <div class="text-body">
+          <h2>Verification Success</h2>
+          <p>You will be redirected to login page</p>
+      </div>
     </div>
   </body>
 </html>

@@ -16,10 +16,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Please provide your Email"],
     },
     number:{
-        type:Number,
-        minlength:10,
-        unique: true,
-        maxlength: 9999999999
+        type:String
     },
     password: {
         type: String,

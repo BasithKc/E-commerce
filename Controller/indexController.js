@@ -1,6 +1,7 @@
 const Users = require('../model/users')
 const twilio = require('twilio');
 require('dotenv').config()
+const bcrypt = require('bcrypt')
 
 
 const authToken = process.env.TWILIO_AUTH_TOKEN
@@ -15,11 +16,14 @@ module.exports = {
         res.render('login',{errorMessage});
     },
     postLogin:async (req, res) => {
-        const {number, password} = req.body
+        const {email, password} = req.body
         try{
-            const user = await Users.findOne({number})
+            const user = await Users.findOne({email})
+
+            const correctPassword = await bcrypt.compare(password, user.password)
+
             console.log(user);
-            if(!user){
+            if(!user || !correctPassword){
                 req.flash('error','Invalid username or password')
                 return res.redirect('/')
             }else {
@@ -86,12 +90,9 @@ module.exports = {
     },
     ResendOtp: async (req, res) => {
         try{
-    
-            const otpData = req.session.otpData
+            console.log(req.session.otpData);
+            const {to,serviceSid,channel} = req.session.otpData
 
-            const {to,channel, serviceSid} = otpData
-                    
- 
                const verification = await  client.verify.v2.services(serviceSid)
                  .verifications.create({
                      to:to,
@@ -115,15 +116,20 @@ module.exports = {
 
         const {otp}  = req.body
         
-        const otpData = req.session.otpData
+        const {to,serviceSid} = req.session.otpData
 
-        const {to, serviceSid} = otpData
 
-       const verification = await client.verify.v2
-            .services(serviceSid)
-            .verificationChecks.create({to:to, code:otp})
-            if(verification.status == "approved"){
+       
+       
+            
                 try{
+
+                    const verification = await client.verify.v2
+                    .services(serviceSid)
+                    .verificationChecks.create({to:to, code:otp})
+
+                    if(verification.status == "approved"){
+
                     const newUser =  new Users({
                         firstName:fname,
                         lastName:lname,
@@ -132,20 +138,19 @@ module.exports = {
                         password
                     })
                     await newUser.save()
+                    res.json({ success: true });
+
+                } else {
+                    res.json({ success: false, message: "Invalid OTP" });
+                }
               
-                    res.render('verifysuccessfull')
                 } catch(err){
                     console.log(err);
                 }     
            
-            } else {
-                req.flash('error', 'Invalid otp')
-                res.redirect('/send-otp')
-            }
-    
             
-        res.redirect('/')
-        
+    
+                    
     }
 
 }

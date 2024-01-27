@@ -26,13 +26,13 @@
 	</head>
 
 	<body>
-
+		
 		<div class="wrapper" style="background-image: url('/assets/bg-registration-form-2.jpg');">
 			<div class="inner">
 				<% if(errMessage) { %>
 					<p><%= errMessage %></p>
 				<%} %>
-				<form >
+				<form id="send-code" >
 					<h3>Registration Form</h3>
 					<div class="form-group">
 						<div class="form-wrapper">
@@ -47,7 +47,7 @@
 					<div class="form-wrapper">
 						<label for="email">Email</label>
 						<input name="email"
-						type="text" id="email" class="form-control" required>
+						type="text"  id="email" class="form-control" required>
 					</div>
 					
                     <div class="form-wrapper ">
@@ -59,25 +59,26 @@
                    
 					<div class="form-wrapper">
 						<label for="password">Password</label>
-						<input name="password" type="password" id="password"class="form-control" required>
+						<input  name="password" type="password" id="password"class="form-control" required>
 					</div>
+					<p id="show-error"></p>
 					<div class="form-wrapper">
 						<label for="confirmPassword">Confirm Password</label>
 						<input name="confirmPassword" type="password" id="confirmPassword"class="form-control" required>
 					</div>
+					<p id="show-confirm"></p>
 					<div class="checkbox">
 						<label>
 							<input type="checkbox" required> I caccept the Terms of Use & Privacy Policy.
 							<span class="checkmark"></span>
 						</label>
 					</div>
-					<button id="send-code" type="submit">Send OTP</button>
+					<button  type="submit">Send OTP</button>
 				</form>
 			</div>
 		</div>
 	
-		<script src="/js/signup.js">
-		</script>
+		<script src="/js/signup.js"></script>
 
 	</body>
 </html>
