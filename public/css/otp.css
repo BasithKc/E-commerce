@@ -82,13 +82,13 @@ a button{
 a{
   width: 100%;
 }
-.resend-button{
+#resend_otp_button {
   background: #4070f4;
 }
  #verify-button:hover {
   background: #0e4bf1;
 }
-.resend-button:hover{
+#resend_otp_button:hover{
   background: #0e4bf1;
   cursor: pointer;
 

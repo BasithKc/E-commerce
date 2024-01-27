@@ -54,12 +54,12 @@ module.exports = {
    
     getOtp: async (req,res) => {
         
-        const { to,channel} = req.body 
         console.log(req.body);
-       
+
+        const {fname, lname, email, password, to,channel} = req.body 
 
         try{
-    
+   
            const service = await client.verify.v2.services
             .create({
                 friendlyName: 'YourServiceFriendlyName',
@@ -70,7 +70,7 @@ module.exports = {
                     to:to,
                     channel:channel,
                 })
-
+                console.log(verification);
                 
                     console.log('OTP sent successfully');
                     req.session.userData = req.body
@@ -80,12 +80,19 @@ module.exports = {
                         channel: channel,
                         serviceSid: service.sid,
                     };
-                    const errorMessage = req.flash('error') || ''
-                    res.render('otp',{errorMessage})
+                    const newUser =  new Users({
+                        firstName:fname,
+                        lastName:lname,
+                        email,
+                        number:to,
+                        password
+                    })
+                    await newUser.save()
+                    res.json({ success: true });
                      
             } catch (err) {
                 console.log(err);
-                res.json({message:'Error'})
+                res.json({ success: false, message: "Invalid OTP" });
             }     
     },
     ResendOtp: async (req, res) => {
@@ -101,27 +108,21 @@ module.exports = {
                  
                      console.log('OTP sent successfully');
                      const errorMessage = req.flash('error') || ''
- 
                      res.render('otp',{errorMessage})
                       
              } catch (err) {
                  console.log(err);
 
-                 res.json({message:'Error'})
-             }     
+                 res.json({ success: false, message: "Invalid OTP" });             
+                }     
     },
     postOtp:async (req,res) => {
         
-        const {fname, lname, email, password} = req.session.userData
+       
 
         const {otp}  = req.body
         
-        const {to,serviceSid} = req.session.otpData
-
-
-       
-       
-            
+        const {to,serviceSid} = req.session.otpData            
                 try{
 
                     const verification = await client.verify.v2
@@ -130,14 +131,7 @@ module.exports = {
 
                     if(verification.status == "approved"){
 
-                    const newUser =  new Users({
-                        firstName:fname,
-                        lastName:lname,
-                        email,
-                        number:to,
-                        password
-                    })
-                    await newUser.save()
+                    
                     res.json({ success: true });
 
                 } else {

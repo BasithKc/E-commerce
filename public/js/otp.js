@@ -48,6 +48,58 @@ input.addEventListener("keyup", (e) => {
 //focus the first input which index is 0 on window load
 window.addEventListener("load", () => inputs[0].focus());
 
+document.addEventListener('DOMContentLoaded', function() {
+  // Disable the resend button initially
+  document.getElementById('resend_otp_button').disabled = true;
+
+  // Start countdown timer
+  startCountdown();
+});
+
+var timer;
+var countdown = 30; // Countdown duration in seconds
+var resendButtonEnabled = false;
+
+
+function startCountdown() {
+  timer = setInterval(updateCountdown, 1000);
+}
+
+function updateCountdown() {
+  var countdownDisplay = document.getElementById('countdown_timer');
+  
+  if (countdown > 0) {
+      countdown--;
+      var minutes = Math.floor(countdown / 60);
+      var seconds = countdown % 60;
+      countdownDisplay.innerHTML = 'Resend OTP in: ' + minutes + ':' + seconds + 's';
+  } else {
+      clearInterval(timer);
+      countdownDisplay.innerHTML = '';
+      if (!resendButtonEnabled) {
+          enableResendButton();
+      }
+  }
+}
+
+function enableResendButton() {
+  document.getElementById('resend_otp_button').disabled = false;
+  resendButtonEnabled = true;
+}
+
+function resendOTP() {
+  // Disable the resend button to prevent multiple clicks
+  document.getElementById('resend_otp_button').disabled = true;
+
+  // Start the countdown timer again
+  countdown = 30;
+  startCountdown();
+  resendButtonEnabled = false;
+  // Perform logic to resend OTP here
+}
+
+
+
 const container = document.querySelector('.container')
 const container2= document.querySelector('.container2')
 

@@ -39,16 +39,20 @@ const phoneInputField = document.getElementById('numb')
             
 
 
-                  fetch('/send-otp', {
+                 const response = await fetch('/send-otp', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
                         body: data,
-                    }).then((response) => {
-                        window.location.href = '/send-otp'
                     })
-            
+                    const json =await response.json()
+                    if(json.success){
+                        window.location.href='/send-otp'
+                    }else {
+                        console.log('error');
+                        window.location.href='/signup'
+                    }
 				
 			} 
 
@@ -61,19 +65,22 @@ const phoneInputField = document.getElementById('numb')
 
             const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[a-zA-Z\d!@#$%^&*()_+]{8,}$/
 
-            password.addEventListener('keydown', (event) => {
-                if(!passRegex.test(password.value)){
+            password.addEventListener('input', (event) => {
+                if(!passRegex.test(event.target.value)){
                     showMessage.innerHTML = 'Password should contain atleast one lowercase one uppercase, one special charecter and length of 8 '
                 }else {
                     showMessage.innerHTML = ''
                 }
             })
 
-            confirmPassword.addEventListener('keyup', (event) => {
-                if(password.value != confirmPassword.value){
+            confirmPassword.addEventListener('input', (event) => {
+                if(password.value != event.target.value){
                     showError.innerHTML = 'Password do not match'
-                }else {
+                    document.getElementById('send_otp_button').disabled = true;
+                }
+                else if(password.value === event.target.value){
                     showError.innerHTML = ''
+                    document.getElementById('send_otp_button').disabled = false;
                 }
             })
 
