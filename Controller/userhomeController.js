@@ -1,5 +1,5 @@
 module.exports = {
     getUserHome: (req, res) => {
-        res.render('userhome')
+        res.render('user/html/index')
     }
 }

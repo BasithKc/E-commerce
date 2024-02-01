@@ -59,8 +59,8 @@ form .input-field {
 .input-field input::-webkit-outer-spin-button {
   display: none;
 }
-form button ,
-a button{
+#verify-button,
+#resend_otp_button {
   margin-top: 25px;
   width: 100%;
   color: #fff;
@@ -69,29 +69,28 @@ a button{
   padding: 9px 0;
   cursor: pointer;
   border-radius: 6px;
-  pointer-events: none;
   transition: all 0.2s ease;
+  text-decoration: none;
+  text-align: center;
 }
- .active {
+
+#verify-button.active {
   background: #4070f4;
   pointer-events: auto;
 }
-#verify-button{
-  background: #6e93f7;
-}
+
 a{
   width: 100%;
 }
 #resend_otp_button {
-  background: #4070f4;
+  background: #3969ee;
 }
- #verify-button:hover {
-  background: #0e4bf1;
+ #verify-button {
+  background: #809ceb;
+  pointer-events: none;
 }
 #resend_otp_button:hover{
   background: #0e4bf1;
-  cursor: pointer;
-
 }
 .container2{
   display: flex;
@@ -106,8 +105,13 @@ a{
   border-radius: 50%;
   
 }
-.container2 .text-body{
+.container2 .text-body h2{
  color: white;
  text-align: center;
  
 }
+.container2 .text-body p{
+  color: white;
+  text-align: center;
+  margin-top: 20px;
+ }

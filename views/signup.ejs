@@ -29,9 +29,7 @@
 		
 		<div class="wrapper" style="background-image: url('/assets/bg-registration-form-2.jpg');">
 			<div class="inner">
-				<% if(errMessage) { %>
-					<p><%= errMessage %></p>
-				<%} %>
+				
 				<form id="send-code" >
 					<h3>Registration Form</h3>
 					<div class="form-group">
@@ -44,16 +42,57 @@
 							<input name="lname" type="text" id ="lname" class="form-control"required>
 						</div>
 					</div>
-					<div class="form-wrapper">
-						<label for="email">Email</label>
-						<input name="email"
-						type="text"  id="email" class="form-control" required>
+					<p>Select your channel:</p>
+					<div>
+						<input
+							type="radio"
+							name="channel"
+							id="channel-sms"
+							value="sms"
+							checked
+						/>
+						<label for="channel-sms">SMS</label>
 					</div>
 					
-                    <div class="form-wrapper ">
+					<div>
+					<input
+						type="radio"
+						name="channel"
+						id="channel-email"
+						value="email"
+					/>
+					<label for="channel-email">Email</label>
+					</div>
 
+					<div>
+						<input
+						  type="radio"
+						  name="channel"
+						  id="channel-whatsapp"
+						  value="whatsapp"
+						/>
+						<label for="channel-whatsapp">WhatsApp</label>
+					  </div>
+
+					<div>
+						<input
+							type="radio"
+							name="channel"
+							id="channel-call"
+							value="call"
+						/>
+						<label for="channel-call">Call</label>
+					</div>
+
+					<div class="form-wrapper email-input" >
+						<label for="email">Email</label>
+						<input name="email"
+						type="text"  id="email" class="form-control" >
+					</div>
+					
+                    <div class="form-wrapper phone-input">
 						<label for="numb">Mobile</label>
-						<input name="number" type="tel" id="numb" class="form-control" required>
+						<input name="number" type="tel" id="numb" class="form-control" >
 					</div> 
 					
                    
@@ -73,8 +112,12 @@
 							<span class="checkmark"></span>
 						</label>
 					</div>
+					<% if(errorMessage) { %>
+						<p class="error-input"><%= errorMessage %></p>
+					<%} %>
 					<button id="send_otp_button"  type="submit">Send OTP</button>
 				</form>
+				
 			</div>
 		</div>
 	

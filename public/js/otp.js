@@ -51,7 +51,8 @@ window.addEventListener("load", () => inputs[0].focus());
 document.addEventListener('DOMContentLoaded', function() {
   // Disable the resend button initially
   document.getElementById('resend_otp_button').disabled = true;
-
+  
+  document.getElementById('resend_otp_button').style.pointerEvents = 'none'
   // Start countdown timer
   startCountdown();
 });
@@ -75,7 +76,8 @@ function updateCountdown() {
       countdownDisplay.innerHTML = 'Resend OTP in: ' + minutes + ':' + seconds + 's';
   } else {
       clearInterval(timer);
-      countdownDisplay.innerHTML = '';
+      countdownDisplay.innerHTML = '';        
+      document.getElementById('resend_otp_button').style.pointerEvents = 'auto'
       if (!resendButtonEnabled) {
           enableResendButton();
       }
@@ -88,14 +90,12 @@ function enableResendButton() {
 }
 
 function resendOTP() {
-  // Disable the resend button to prevent multiple clicks
   document.getElementById('resend_otp_button').disabled = true;
 
   // Start the countdown timer again
   countdown = 30;
   startCountdown();
   resendButtonEnabled = false;
-  // Perform logic to resend OTP here
 }
 
 
@@ -121,7 +121,7 @@ async function verifyOTP(event) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({otp}),
+    body: JSON.stringify({otp})
    })
 
    const json =await response.json()
@@ -132,10 +132,9 @@ async function verifyOTP(event) {
 
     setTimeout(() => {
       window.location.href = '/'
-    },3000)
+    },5000)
 
    } else {
-    alert('Invalid OTP');
     document.getElementById('error').innerHTML = 'Invalid OTP'
    }
    

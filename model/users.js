@@ -10,11 +10,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide your Last Name']
     },
-    email: {
-        type: String,    
-        lowercase: true,
-        required: [true, "Please provide your Email"],
-    },
+    email:String,
+   
     number:{
         type:String
     },
@@ -30,7 +27,12 @@ const userSchema = new mongoose.Schema({
     role:{
         type:String,
         default:'user'
-    }
+    },
+    otp:{
+        type:Boolean,
+        default:false
+    },
+    channel:String
 
 })
 // Custom method to compare and validate passwords

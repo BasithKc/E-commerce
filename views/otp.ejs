@@ -14,10 +14,14 @@
   </head>
   <body>
     <div class="container" id="container">
+    
       <header>
         <i class="bx bxs-check-shield"></i>
       </header>
       <h4>Enter OTP Code</h4>
+      <% if(message) { %>
+        <p style="text-align: center; color: rgb(31, 93, 218);"><%= message %></p>
+      <%} %>
       <form id="otpForm">
         <div class="input-field">
           <input type="number" id="digit1" />
@@ -32,7 +36,7 @@
       </form>
       <p>Not recieved yet??</p>
       <div id="countdown_timer"></div>
-      <a id="resend_otp_button" onclick="resendOTP()" href="/resend-otp"><button class="resend-button" type="button" >Resend OTP</button></a>
+      <a id="resend_otp_button" onclick="resendOTP()" href="/resend-otp">Resend OTP</a>
     </div>
 
     <div class="container2">

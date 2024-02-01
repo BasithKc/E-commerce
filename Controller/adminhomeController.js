@@ -1,5 +1,5 @@
 module.exports = {
     getAdminHome: (req, res) => {
-        res.render('adminhome')
+        res.render('admin/adminhome')
     }
 }

@@ -8,7 +8,7 @@ const flash = require('connect-flash')
 const dbUrl = 'mongodb://localhost:27017/E-commerce'
 const app = express()
 
-mongoose.connect(dbUrl,{ useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dbUrl)
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error:'));
@@ -25,6 +25,7 @@ app.use(flash())
 const PORT = process.env.PORT || 3001
 
 const indexRouter = require('./routes/index')
+const adminRouter = require('./routes/admin')
 
 app.set('views',path.join(__dirname,'views'))
 app.set('view engine', 'ejs')
@@ -36,6 +37,7 @@ app.use(session({
 }));
 
 app.use(indexRouter)
+app.use(adminRouter)
 
 
 app.listen(PORT, () => {
