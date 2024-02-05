@@ -1,0 +1,75 @@
+<%- include('partials/header.ejs') %>
+    <div class="container tm-mt-big tm-mb-big">
+        <div class="row">
+            <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+                <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Edit Category</h2>
+                        </div>
+                    </div>
+                    <div class="row tm-edit-category-row">
+                        <div class="col-xl-12 col-lg-6 col-md-12">
+                            <form action="/admin/product/edit-category/<%= category._id%>" method="POST"
+                                class="tm-edit-category-form">
+                                <div class="form-group mb-3">
+                                    <label for="name">
+                                        Name
+                                    </label>
+                                    <input id="name" type="text" name="name" value="<%= category.name%>"
+                                        class="form-control validate" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="category">Sub Category</label>
+                                    <select name="sub_category" class=" custom-select tm-select-accounts" id="category">
+                                        <option>Select sub-category</option>
+                                        <option value="<%= category.sub_category %>" selected>
+                                            <%= category.sub_category %>
+                                        </option>
+                                        <% if(category.sub_category=='Hoodie' ){ %>
+                                            <option value="T-Shirt">T-Shirt</option>
+                                            <option value="Shirt">Shirt</option>
+                                            <%} else {%>
+                                                <option value="Hoodie">Hoodie</option>
+                                                <option value="Shirt">Shirt</option>
+                                                <% }%>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="description">Description</label>
+                                    <textarea name="description" class=" form-control validate tm-small" rows="5"
+                                        required>
+                                        <%= category.description%>
+                                    </textarea>
+                                </div>
+
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block text-uppercase">Update Now</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="tm-footer row tm-mt-small">
+        <div class="col-12 font-weight-light">
+            <p class="text-center text-white mb-0 px-4 small">
+                Copyright &copy; <b>2018</b> All rights reserved.
+
+                Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/admin/jquery-3.3.1.min.js"></script>
+    <!-- https://jquery.com/download/ -->
+    <script src="/jquery-ui-datepicker/jquery-ui.min.js"></script>
+    <!-- https://jqueryui.com/download/ -->
+    <script src="/js/admin/.min.js"></script>
+    <!-- https://getbootstrap.com/ -->
+
+    </body>
+
+    </html>

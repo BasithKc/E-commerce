@@ -480,7 +480,16 @@ pre {
  img{
   width: 300px;
 }
-
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in-out;
+}
 .container-fluid {
   width: 100%;
   padding-right: 15px;

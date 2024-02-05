@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/css/admin/fontawesome.min.css">
     <!-- https://fontawesome.com/ -->
     <link rel="stylesheet" href="/css/admin/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/290ae120bc.js" crossorigin="anonymous"></script>
     <!-- https://getbootstrap.com/ -->
     <link rel="stylesheet" href="/css/admin/templatemo-style.css">
 
@@ -29,8 +30,9 @@
                 <a class="navbar-brand" href="/admin">
                     <h1 class="tm-site-title mb-0">Product Admin</h1>
                 </a>
-                <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
                     <i class="fas fa-bars tm-nav-icon"></i>
                 </button>
 
@@ -43,23 +45,16 @@
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
-                        <li class="nav-item dropdown">
-
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                <i class="far fa-file-alt"></i>
+                        <li class="nav-item ">
+                            <a class="nav-link <%= URL === 'users'? 'active': '' %> " href="/admin/users" role="button">
+                                <i class="fa-solid fa-users"></i>
                                 <span>
-                                    Reports <i class="fas fa-angle-down"></i>
+                                    Users
                                 </span>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Daily Report</a>
-                                <a class="dropdown-item" href="#">Weekly Report</a>
-                                <a class="dropdown-item" href="#">Yearly Report</a>
-                            </div>
                         </li>
                         <li class="nav-item">
-                            <a  class="<%= URL === 'products' ?  'active' : '' %> nav-link" href="/admin/products">
+                            <a class="<%= URL === 'products' ?  'active' : '' %> nav-link" href="/admin/products">
                                 <i class="fas fa-shopping-cart"></i>
                                 Products
                             </a>
@@ -68,22 +63,15 @@
                         <li class="nav-item">
                             <a class="<%= URL === 'accounts'?  'active' : '' %> nav-link" href="/admin/accounts">
                                 <i class="far fa-user"></i>
-                                Accounts
+                                Account
                             </a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-cog"></i>
+                        <li class="nav-item ">
+                            <a class="nav-link " href="#">
+                                <i class=" fa-brands fa-slideshare"></i>
                                 <span>
-                                    Settings <i class="fas fa-angle-down"></i>
-                                </span>
+                                    Banners</span>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Profile</a>
-                                <a class="dropdown-item" href="#">Billing</a>
-                                <a class="dropdown-item" href="#">Customize</a>
-                            </div>
                         </li>
                     </ul>
                     <ul class="navbar-nav">

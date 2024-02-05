@@ -1,79 +1,102 @@
 <!doctype html>
 <html lang="en">
-  <head>
-  	<title>Login 10</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<head>
+	<title>Login 10</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="css/login.css">
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	
-	
 
-	</head>
-	<body class="img js-fullheight" >
 
-		<div class="color-section">
-			<div class="color1"></div>
-			<div class="color2"></div>
-			<div class="color3"></div>
-			<div class="color5"></div>
-			<div class="color6"></div>
-			<div class="color7"></div>
-			<div class="color8"></div>
-			<div class="color9"></div>
-		</div>
-		<div class="logo-section">
-			<img src="/assets/images/logo/logo.svg" alt="">
-		</div>
-		<section class="ftco-section">
-			<div class="container">
-				
-	
-				<div class="row justify-content-center">
-					<div class="col-md-6 col-lg-4">
-						<div class="login-wrap p-0">
-		      				<h3 class="mb-4 text-center">Have an account?</h3>
-		      				<form action="/" method="post" class="signin-form">
-		      					<div class="form-group">
-		      						<input type="tel" class="form-control" placeholder="Email" name="email" required>
-		      					</div>
-	            				<div class="form-group">
-	              					<input id="password-field" type="password" class="form-control" placeholder="Password" name="password" required>
-	             					<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-	            				</div>
-	            				<div class="form-group">
-	            					<button type="submit" class="form-control btn btn-primary submit px-3">Sign In</button>
-	            				</div>
-	            				<div class="form-group d-md-flex">
-	            					<div class="w-50">
-		            					<label class="checkbox-wrap checkbox-primary">Remember Me
-									  		<input type="checkbox" checked>
-									  		<span class="checkmark"></span>
-										</label>
+
+</head>
+
+<body class="img js-fullheight">
+
+	<div class="color-section">
+		<div class="color1"></div>
+		<div class="color2"></div>
+		<div class="color3"></div>
+		<div class="color5"></div>
+		<div class="color6"></div>
+		<div class="color7"></div>
+		<div class="color8"></div>
+		<div class="color9"></div>
+	</div>
+	<div class="logo-section">
+		<img src="/assets/images/logo/logo.svg" alt="">
+	</div>
+	<section class="ftco-section">
+		<div class="container">
+
+
+			<div class="row justify-content-center">
+				<div class="col-md-6 col-lg-4">
+					<div class="login-wrap p-0">
+						<%if(message[0]) { %>
+							<div style="z-index: 1000;" id="notification" class="notification hidden">
+								<i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
+								<%= message %>
+							</div>
+							<% } %>
+								<h3 class="mb-4 text-center">Have an account?</h3>
+								<form action="/" method="post" class="signin-form">
+									<div class="form-group">
+										<input type="tel" class="form-control" placeholder="Email" name="email"
+											required>
 									</div>
-									<div class="w-50 text-md-right">
-										<a href="#" style="color: #fff">Forgot Password</a>
+									<div class="form-group">
+										<input id="password-field" type="password" class="form-control"
+											placeholder="Password" name="password" required>
+										<span toggle="#password-field"
+											class="fa fa-fw fa-eye field-icon toggle-password"></span>
 									</div>
-	            				</div>
-	          				</form>
-			 			 	<% if(errorMessage) { %>
-								<p style="text-align: center; color: red"><%= errorMessage %></p>
-							<% }%>
-	          				<p class="w-100 text-center">&mdash; Don't have an account? &mdash;</p>
-	          				<div class="social d-flex text-center">
-	          					<a href="/signup" class="px-2 py-2 mr-md-1 rounded"><span class="ion-logo-facebook mr-2"></span> Sign up</a>	          	
-	          				</div>
-		      			</div>
+									<div class="form-group">
+										<button type="submit" class="form-control btn btn-primary submit px-3">Sign
+											In</button>
+									</div>
+									<div class="form-group d-md-flex">
+										<div class="w-50">
+											<label class="checkbox-wrap checkbox-primary">Remember Me
+												<input type="checkbox" checked>
+												<span class="checkmark"></span>
+											</label>
+										</div>
+										<div class="w-50 text-md-right">
+											<a href="/forgotten-password" style="color: #fff">Forgot Password?</a>
+										</div>
+									</div>
+								</form>
+								<% if(errorMessage) { %>
+									<p style="text-align: center; color: red">
+										<%= errorMessage %>
+									</p>
+									<% }%>
+										<p class="w-100 text-center">&mdash; Don't have an account? &mdash;</p>
+										<div class="social d-flex text-center">
+											<a href="/signup" class="px-2 py-2 mr-md-1 rounded"><span
+													class="ion-logo-facebook mr-2"></span> Sign up</a>
+										</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</div>
+	</section>
+	<script>
+		const notification = document.getElementById('notification')
+
+		setTimeout(() => {
+			notification.style.display = 'none'
+		}, 5000)
+	</script>
 
 
+</body>
 
-	</body>
 </html>
-

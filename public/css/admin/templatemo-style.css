@@ -439,11 +439,13 @@ input[type='checkbox']:focus {
   font-size: 0.95rem;
   font-weight: 600;
 }
-.tm-product-delete-icon {
+.tm-product-delete-icon,
+.tm-product-edit-icon {
   font-size: 1.1rem;
   color: #fff;
 }
-.tm-product-delete-link {
+.tm-product-delete-link,
+.tm-product-edit-link {
   padding: 10px;
   border-radius: 50%;
   background-color: #394e64;
@@ -452,8 +454,13 @@ input[type='checkbox']:focus {
   height: 40px;
   text-align: center;
 }
-.tm-product-delete-link:hover .tm-product-delete-icon {
+.tm-product-delete-link:hover .tm-product-delete-icon,
+.tm-product-edit-link:hover .tm-product-edit-icon {
   color: #6d8ca6;
+}
+a{
+  text-decoration: none;
+  color: white;
 }
 .custom-select {
   width: 100%;
@@ -503,6 +510,19 @@ input[type='checkbox']:focus {
   justify-content: center;
   color: #fff;
   background: #aaa;
+}
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in-out;
+}
+.tm-product-img-dummy.bg-img{
+   background-repeat: no-repeat;
 }
 .tm-product-img-edit {
   max-width: 100%;

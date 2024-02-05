@@ -18,6 +18,7 @@ input.addEventListener("keyup", (e) => {
   // if the next input is disabled and the current value is not empty 
   //  enable the next input and focus on it
   if (nextInput && nextInput.hasAttribute("disabled") && currentInput.value !== "") {
+    console.log('hello'); 
     nextInput.removeAttribute("disabled");
     nextInput.focus();
   }

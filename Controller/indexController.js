@@ -1,6 +1,6 @@
 const Users = require('../model/users')
-const twilio = require('twilio');
 require('dotenv').config()
+const bcrypt = require('bcrypt')
 const {sendOtp, checkOtp} = require('../middlewares/otp');
 
 
@@ -9,17 +9,16 @@ const {sendOtp, checkOtp} = require('../middlewares/otp');
 module.exports = {
     getLogin: (req,res) => {
         const errorMessage = req.flash('error')
-        res.render('login',{errorMessage});
+        const message = req.flash('message')
+        res.render('login',{errorMessage,message});
     },
     postLogin:async (req, res) => {
         const {email, password} = req.body
         try{
             const user = await Users.findOne({email})
-            console.log(user);
 
             const correctPassword = user.isCorrectPassword(password)
 
-            console.log(user);
             if(!user || !correctPassword ){               
                 req.flash('error','Invalid username or password')
                 return res.redirect('/')
@@ -30,10 +29,11 @@ module.exports = {
                     return res.redirect('/send-otp')
                 }
                 req.session.userId = user._id;
-                console.log(req.session.userId);
                 if(user.role === 'user'){
+                    req.session.userId = user._id
                     res.redirect('/userhome')
                 }else {
+                    req.session.adminId = user._id
                     res.redirect('/adminhome')
                 }
                 
@@ -57,6 +57,72 @@ module.exports = {
         const message = req.query.message  || req.flash('message')
         res.render('otp',{message})
     },
+    forgottenGetOtp:async (req,res) => {
+        const{to, channel} =req.body
+        console.log(req.body);
+        const numberExist = await Users.findOne({number:to})
+        if(!numberExist){
+                return  res.json({success: false, message: "Number is not registered "})
+        }
+        try{
+                const verification = await sendOtp(to,channel)
+
+                console.log(verification);
+                console.log('OTP sent successfully');
+                req.session.otpData = {
+                    to: to,
+                    channel: channel,
+                };
+                res.json({ success: true });
+  
+
+        } catch(err) {
+            console.log(err);
+        }
+    },
+    forgottenPostOtp:async (req, res) => {
+        console.log(req.body);
+        const {otp}  = req.body        
+        const {to} = req.session.otpData            
+                try{
+                   
+                     const verification = await checkOtp(to,otp)
+                    console.log(verification);
+
+                    if(verification.status == "approved"){ 
+                                      
+                        res.json({ success: true });
+
+                    } else {
+                        res.json({ success: false, message: "Invalid OTP" });
+                    }
+                
+                } catch(err){
+                    console.log(err);
+                }  
+    },
+    resetPasswordGet:(req, res) => {
+        const error = req.flash('error')
+        res.render("reset-password", {error})
+    },
+    resetPasswordPost:async (req,res) => {
+        const {password, confirmPassword} = req.body
+        const {to} = req.session.otpData    
+        if(password !== confirmPassword){
+            req.flash('error', "Password do not match")
+            return res.redirect('/reset-password')
+        }
+        const hashedPassword = await bcrypt.hash(password, 10)
+        const updation = await Users.findOneAndUpdate(
+            {number:to},
+            {password: hashedPassword},
+            { new: true }, 
+        )
+     
+        console.log(updation);
+        req.flash('message', 'Password Updated Successfully')
+        res.redirect('/')
+    },
    
     getOtp: async (req,res) => {
         
@@ -75,7 +141,6 @@ module.exports = {
                     req.session.otpData = {
                         to: to,
                         channel: channel,
-                        serviceSid: verification.serviceSid,
                     };    
                                       
                     console.log(req.session.otpData);
@@ -116,10 +181,10 @@ module.exports = {
     postOtp:async (req,res) => {       
 
         const {otp}  = req.body        
-        const {to,serviceSid} = req.session.otpData            
+        const {to} = req.session.otpData            
                 try{
                    
-                     const verification = await checkOtp(to,serviceSid,otp)
+                     const verification = await checkOtp(to,otp)
                     console.log(verification);
 
                     if(verification.status == "approved"){

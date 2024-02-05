@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getLogin,getSignup,getOtp, postLogin,postOtp, otpPage, ResendOtp,success} = require("../Controller/indexController")
+const {getLogin,getSignup,getOtp, postLogin,postOtp, otpPage, ResendOtp,forgottenGetOtp, forgottenPostOtp,resetPasswordGet, resetPasswordPost} = require("../Controller/indexController")
 const userHomeController = require('../Controller/userhomeController')
 const adminHomeController = require('../Controller/adminhomeController')
 
@@ -20,9 +20,23 @@ router.route('/verify-otp')
 
 router.route('/signup')
         .get(getSignup)
+router.route('/forgotten-password')
+        .get((req, res) => {
+                const message = req.query.message
+                const error = req.query.error
+              res.render('forgottenPassword',{message,error})  
+        })
+router.route('/forgotten-send-otp')
+        .post(forgottenGetOtp)
+router.route('/forgotten-verify-otp')
+        .post(forgottenPostOtp)
+router.route('/reset-password')
+        .get(resetPasswordGet)
+        .post(resetPasswordPost)
 
 router.get('/userhome', userHomeController.getUserHome)
 router.get('/adminhome',adminHomeController.getAdminHome)
+
 
 
 module.exports = router

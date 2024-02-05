@@ -1,125 +1,135 @@
 <%- include('partials/header.ejs') %>
-      <div class="container mt-5">
-        <div class="row tm-content-row">
-          <div class="col-12 tm-block-col">
-            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
-              <h2 class="tm-block-title">List of Accounts</h2>
-              <p class="text-white">Accounts</p>
-              <select class="custom-select">
-                <option value="0">Select account</option>
-                <option value="1">Admin</option>
-                <option value="2">Editor</option>
-                <option value="3">Merchant</option>
-                <option value="4">Customer</option>
-              </select>
-            </div>
+  <div class="container mt-5">
+
+    <!-- row -->
+    <div class="row tm-content-row">
+      <div class="tm-block-col tm-col-avatar">
+        <div class="tm-bg-primary-dark tm-block tm-block-avatar">
+          <h2 class="tm-block-title">Change Avatar</h2>
+          <div class="tm-avatar-container">
+            <img src="/assets/img/profile.png" alt="Avatar" class="tm-avatar img-fluid mb-4" />
+            <a href="#" class="tm-avatar-delete-link">
+              <i class="far fa-trash-alt tm-product-delete-icon"></i>
+            </a>
           </div>
+          <input type="file" name="" id="avatar" style="display: none;" onchange="imagePreview(event)">
+          <button onclick="document.getElementById('avatar').click()" class="btn btn-primary btn-block text-uppercase">
+            Upload New Photo
+          </button>
         </div>
-        <!-- row -->
-        <div class="row tm-content-row">
-          <div class="tm-block-col tm-col-avatar">
-            <div class="tm-bg-primary-dark tm-block tm-block-avatar">
-              <h2 class="tm-block-title">Change Avatar</h2>
-              <div class="tm-avatar-container">
-                <img
-                  src="/assets/img/avatar.png"
-                  alt="Avatar"
-                  class="tm-avatar img-fluid mb-4"
-                />
-                <a href="#" class="tm-avatar-delete-link">
-                  <i class="far fa-trash-alt tm-product-delete-icon"></i>
-                </a>
-              </div>
-              <button class="btn btn-primary btn-block text-uppercase">
-                Upload New Photo
+      </div>
+      <div class="tm-block-col tm-col-account-settings">
+        <div class="tm-bg-primary-dark tm-block tm-block-settings">
+          <h2 class="tm-block-title">Account Settings</h2>
+          <form action="" class="tm-signup-form row" id="accountSettingsForm" enctype="multipart/form-data">
+            <div class="form-group col-lg-6">
+              <label for="first-name">First Name</label>
+              <input value="<%= adminData.firstName  %>" id="firstName" name="first-name" type="text"
+                class="form-control validate " />
+            </div>
+            <div class="form-group col-lg-6">
+              <label for="last-name">Last Name</label>
+              <input value="<%= adminData.lastName %>" id="lastName" name="last-name" type="text"
+                class="form-control validate" />
+            </div>
+            <div class="form-group col-lg-6">
+              <label for="email">Account Email</label>
+              <input id="email" value="<%= adminData.email %>" name="email" type="email"
+                class="form-control validate" />
+            </div>
+
+            <div class="form-group col-lg-6">
+              <label for="phone">Phone</label>
+              <input id="phone" value="<%= adminData.number %>" name="number" type="tel"
+                class="form-control validate" />
+            </div>
+            <div class="form-group col-lg-6">
+              <label class="tm-hide-sm">&nbsp;</label>
+              <button type="submit" class="btn btn-primary btn-block text-uppercase">
+                Update Your Profile
               </button>
             </div>
-          </div>
-          <div class="tm-block-col tm-col-account-settings">
-            <div class="tm-bg-primary-dark tm-block tm-block-settings">
-              <h2 class="tm-block-title">Account Settings</h2>
-              <form action="" class="tm-signup-form row">
-                <div class="form-group col-lg-6">
-                  <label for="name">Account Name</label>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    class="form-control validate"
-                  />
-                </div>
-                <div class="form-group col-lg-6">
-                  <label for="email">Account Email</label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    class="form-control validate"
-                  />
-                </div>
-                <div class="form-group col-lg-6">
-                  <label for="password">Password</label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="form-control validate"
-                  />
-                </div>
-                <div class="form-group col-lg-6">
-                  <label for="password2">Re-enter Password</label>
-                  <input
-                    id="password2"
-                    name="password2"
-                    type="password"
-                    class="form-control validate"
-                  />
-                </div>
-                <div class="form-group col-lg-6">
-                  <label for="phone">Phone</label>
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    class="form-control validate"
-                  />
-                </div>
-                <div class="form-group col-lg-6">
-                  <label class="tm-hide-sm">&nbsp;</label>
-                  <button
-                    type="submit"
-                    class="btn btn-primary btn-block text-uppercase"
-                  >
-                    Update Your Profile
-                  </button>
-                </div>
-                <div class="col-12">
-                  <button
-                    type="submit"
-                    class="btn btn-primary btn-block text-uppercase"
-                  >
-                    Delete Your Account
-                  </button>
-                </div>
-              </form>
+            <div class="form-group col-lg-6">
+              <label class="tm-hide-sm">&nbsp;</label>
+              <a href="/admin/accounts/delete-account/<%= adminData._id %>">
+                <button class=" btn btn-primary btn-block text-uppercase">
+                  Delete Your Account
+                </button>
+              </a>
             </div>
+          </form>
+          <div class="row">
+            <div class="col-lg-12">
+              <label class="tm-hide-sm">&nbsp;</label>
+              <a href="/admin/accounts/reset-password">
+                <button class="btn btn-primary btn-block text-uppercase">
+                  Update Your Password?
+                </button>
+              </a>
+            </div>
+
           </div>
         </div>
       </div>
-      <footer class="tm-footer row tm-mt-small">
-        <div class="col-12 font-weight-light">
-          <p class="text-center text-white mb-0 px-4 small">
-            Copyright &copy; <b>2018</b> All rights reserved. 
-            
-            Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
-          </p>
-        </div>
-      </footer>
     </div>
+  </div>
+  <footer class="tm-footer row tm-mt-small">
+    <div class="col-12 font-weight-light">
+      <p class="text-center text-white mb-0 px-4 small">
+        Copyright &copy; <b>2018</b> All rights reserved.
 
-    <script src="/js/admin/jquery-3.3.1.min.js"></script>
-    <!-- https://jquery.com/download/ -->
-    <script src="/js/admin/bootstrap.min.js"></script>
-    <!-- https://getbootstrap.com/ -->
+        Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+      </p>
+    </div>
+  </footer>
+  </div>
+
+  <script src="/js/admin/jquery-3.3.1.min.js"></script>
+  <!-- https://jquery.com/download/ -->
+  <script src="/js/admin/bootstrap.min.js"></script>
+  <!-- https://getbootstrap.com/ -->
+  <script>
+    document.getElementById('accountSettingsForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      var fileInput = document.getElementById('avatar');
+      if (fileInput.files.length > 0) {
+        var file = fileInput.files[0]
+        var formData = new FormData();
+
+        formData.append('avatar', file);
+
+        var formInputs = document.querySelectorAll('.tm-signup-form input[type="text"], .tm-signup-form input[type="email"], .tm-signup-form input[type="tel"]');
+        formInputs.forEach(function (input) {
+          formData.append(input.name, input.value);
+        })
+      }
+      try {
+        const response = await ('/admin/accounts/update-profile/<%= adminData._id %>', {
+          method: 'POST',
+          body: formData
+        })
+        const json = await response.json()
+        if (json.success) {
+          window.location.href = '/admin/accounts?message=account updated Successfully'
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    function imagePreview(event) {
+      const fileInput = event.target
+      const reader = new FileReader()
+
+      if (fileInput.files && fileInput.files[0]) {
+        reader.onload = function (event) {
+
+          const imageContainer = document.querySelector('.tm-avatar')
+          imageContainer.src = event.target.result
+        }
+        reader.readAsDataURL(fileInput.files[0])
+      }
+    }
+  </script>
   </body>
-</html>
+
+  </html>

@@ -1,0 +1,77 @@
+<%- include('partials/header.ejs') %>
+    <div class="container mt-5">
+        <div class="row tm-content-row">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 tm-block-col">
+                <div class="tm-bg-primary-dark tm-block tm-block-products">
+                    <div class="tm-product-table-container">
+                        <table class="table table-hover tm-table-small tm-product-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">PROFILE</th>
+                                    <th scope="col">FIRST NAME</th>
+                                    <th scope="col">LAST NAME</th>
+                                    <th scope="col">EMAIL</th>
+                                    <th scope="col">ROLE</th>
+                                    <th scope="col">&nbsp;</th>
+                                    <th scope="col">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% users.forEach(user=> {%>
+
+                                    <tr>
+                                        <th scope="row"><img src="/assets/images/users/" style=" border-radius: 50%; width: 40px; height:
+                                                40px;" src="" alt=""></th>
+                                        <td class="tm-product-name" style="cursor: pointer;" onclick="">
+                                            <%= user.firstName%>
+                                        </td>
+                                        <td>
+                                            <%= user.lastName%>
+                                        </td>
+                                        <td>
+                                            <%= user.email%>
+                                        </td>
+                                        <td>
+                                            <%= user.role %>
+                                        </td>
+
+                                        <td>
+                                            <a href=" /admin/product/edit-product" class="tm-product-edit-link">
+                                                <i class="far fa-solid fa-pen-to-square tm-product-edit-icon"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/delete-product/" class="tm-product-delete-link">
+                                                <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <%})%>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <footer class="tm-footer row tm-mt-small">
+            <div class="col-12 font-weight-light">
+                <p class="text-center text-white mb-0 px-4 small">
+                    Copyright &copy; <b>2018</b> All rights reserved.
+
+                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template
+                        Mo</a>
+                </p>
+            </div>
+
+        </footer>
+    </div>
+    <script src="/js/admin/jquery-3.3.1.min.js"></script>
+    <!-- https://jquery.com/download/ -->
+    <script src="/js/admin/bootstrap.min.js"></script>
+    <!-- https://getbootstrap.com/ -->
+
+    </body>
+
+    </html>

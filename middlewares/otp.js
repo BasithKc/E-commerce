@@ -18,7 +18,7 @@ async function sendOtp(to, channel) {
   return verification;
 }
 
-async function checkOtp(to, serviceSid, otp) {
+async function checkOtp(to, otp) {
   const verification = await client.verify.v2
     .services(serviceSid)
     .verificationChecks.create({ to: to, code: otp });
