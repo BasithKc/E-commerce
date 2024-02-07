@@ -1,113 +1,120 @@
 <%- include('partials/header.ejs') %>
-  <div class="container tm-mt-big tm-mb-big">
+  <div class="container tm-mt-big tm-mb-big" style="height: 55vh;">
     <div class="row">
-      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="display: flex;justify-content: center;">
-
-        <table class="table table-hover" style="width: 70%;">
-          <thead>
-            <tr>
-              <th scope="col">&nbsp; </th>
-              <th scope="col">Banner Head</th>
-              <th scope="col">Expire Date</th>
-              <th scope="col">&nbsp; </th>
-              <th scope="col">&nbsp; </th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <tr>
-              <th scope="row">
-                <a href="/admin/users/edit-user/">
-                  <img src="/assets/images/users/" style=" border-radius: 50%; width: 40px; height:40px;">
-                </a>
-              </th>
-              <td>
-              </td>
-              <td></td>
-              <td class="tm-product-name" style="cursor: pointer;" onclick="">
-                <a href="/admin/users/edit-user/">
-                  <i class="far fa-solid fa-pen-to-square"></i>
-                </a>
-              </td>
-              <td class="tm-product-name" style="cursor: pointer;" onclick="">
-                <a href="/admin/users/delete-user/" class="tm-product-delete-link">
-                  <i class="far fa-trash-alt tm-product-delete-icon"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-
-        </table>
-      </div>
-      <div class="col-5">
-        <button class="btn btn-primary btn-block text-uppercase">Add Banner</button>
-      </div>
       <%if(message[0]) { %>
         <div style="z-index: 1000;" id="notification" class="notification hidden">
           <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
           <%= message %>
         </div>
         <% } %>
-          <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
-            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
-              <div class="row">
-                <div class="col-12">
-                  <h2 class="tm-block-title d-inline-block">Add Banners</h2>
-                </div>
-              </div>
-              <div class="row tm-edit-product-row">
-                <div class="col-xl-6 col-lg-6 col-md-12">
-                  <form action="/admin/banners" method="post" class="tm-edit-product-form"
-                    enctype="multipart/form-data">
-                    <div class="form-group mb-3">
-                      <label for="banner-head">Banner Head
-                      </label>
-                      <input id="banner-head" name="bannerHead" type="text" class="form-control validate" required />
-                    </div>
-                    <div class="form-group mb-3">
-                      <label for="charecterist">Banner Charecterist
-                      </label>
-                      <input id="charecterist" name="charecterist" type="text" class="form-control validate" required />
-                    </div>
+          <div class="col-2" style="margin-bottom: 30px;">
+            <button class=" btn btn-primary btn-block text-uppercase " id="addBannerButton">Add Banner <i
+                class="fa-solid fa-plus" id="add-specification"></i>
+            </button>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="display: flex;justify-content: center;">
 
-                    <div class="form-group mb-3">
-                      <label for="description">Description</label>
-                      <textarea class="form-control validate" rows="3" name="description" required></textarea>
-                    </div>
+            <table class="table table-hover" style="width: 70%;">
+              <thead>
+                <tr>
+                  <th scope="col">&nbsp; </th>
+                  <th scope="col">Banner Head</th>
+                  <th scope="col">Expire Date</th>
+                  <th scope="col">&nbsp; </th>
+                  <th scope="col">&nbsp; </th>
+                </tr>
+              </thead>
+              <tbody>
+                <% banner.forEach( ban=>{%>
+                  <tr>
+                    <th scope="row">
+                      <a href="/admin/users/edit-user/">
+                        <img src="/assets/images/banners/<%= ban.image %>" style="  width: 150px; height:100px;">
+                      </a>
+                    </th>
+                    <td>
+                      <%= ban.bannerHead%>
+                    </td>
+                    <td>
+                      <%= ban.expire_date%>
+                    </td>
+                    <td>
+                      <a href="/admin/banners/edit-banner/<%= ban._id%>" class="tm-product-edit-link">
+                        <i class="far fa-solid fa-pen-to-square"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="/admin/banners/delete-banner/<%= ban._id%>" class="tm-product-delete-link">
+                        <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
 
-                    <div class="row" style="margin-top: 30px;">
-                      <div class="form-group mb-3 col-xs-12 col-sm-6">
-                        <label for="expire_date">Expire Date
-                        </label>
-                        <input id="expire_date" name="expire_date" type="date" class="form-control validate"
-                          data-large-mode="true" />
-                      </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-                  <div id="image-preview" class="tm-product-img-dummy mx-auto">
-                    <i class="fas fa-cloud-upload-alt tm-upload-icon"
-                      onclick="document.getElementById('fileInput').click();"></i>
-                  </div>
-                  <div class="custom-file mt-3 mb-3">
-                    <input id="fileInput" type="file" style="display:none;" name="image" onchange="previewImage(event)"
-                      multiple required />
-
-                    <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD BANNER IMAGE"
-                      onclick="document.getElementById('fileInput').click();" />
-                  </div>
-
-
-                </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Banner</button>
-                </div>
-                </form>
-              </div>
-            </div>
+            </table>
           </div>
     </div>
   </div>
+  <div class="container">
+    <div class="row">
+      <div class=" col-xl-8 col-lg-7 col-md-7 col-sm-12 mx-auto" id="modal">
+        <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+          <span class="close">&times;</span>
+
+          <div class="row tm-edit-product-row">
+            <div class="col-xl-6 col-lg-7 col-md-12">
+              <form action="/admin/banners" method="post" class="tm-edit-product-form" enctype="multipart/form-data">
+                <div class="form-group mb-3">
+                  <label for="banner-head">Banner Head
+                  </label>
+                  <input id="banner-head" name="bannerHead" type="text" class="form-control validate" required />
+                </div>
+                <div class="form-group mb-3">
+                  <label for="charecterist">Banner Charecterist
+                  </label>
+                  <input id="charecterist" name="charecterist" type="text" class="form-control validate" required />
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="description">Description</label>
+                  <textarea class="form-control validate" rows="3" name="description" required></textarea>
+                </div>
+
+
+                <div class="form-group mb-3 ">
+                  <label for="expire_date">Expire Date
+                  </label>
+                  <input id="expire_date" name="expire_date" type="date" class="form-control validate"
+                    data-large-mode="true" />
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
+              <div id="image-preview" class="tm-product-img-dummy mx-auto">
+                <i class="fas fa-cloud-upload-alt tm-upload-icon"
+                  onclick="document.getElementById('fileInput').click();"></i>
+              </div>
+              <div class="custom-file mt-3 mb-3">
+                <input id="fileInput" type="file" style="display:none;" name="image" onchange="previewImage(event)"
+                  multiple required />
+
+                <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD BANNER IMAGE"
+                  onclick="document.getElementById('fileInput').click();" />
+              </div>
+
+
+            </div>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Banner</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay"></div>
 
   <footer class="tm-footer row tm-mt-small">
     <div class="col-12 font-weight-light">
@@ -148,6 +155,16 @@
         reader.readAsDataURL(fileInput.files[0])
       }
     }
+
+    document.getElementById('addBannerButton').addEventListener('click', function () {
+      document.getElementById('modal').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    });
+
+    document.querySelector('.close').addEventListener('click', function () {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    });
   </script>
   </body>
 

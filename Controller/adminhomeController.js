@@ -292,17 +292,19 @@ module.exports = {
         req.flash('message', `Product ${name} Edited Successfully`)
         res.redirect('/admin/products')
     },
-    adminBannerGet:(req,res) => {
+    adminBannerGet:async (req,res) => {
+        const banner = await Banners.find({})
+        // console.log(banner)
         const message = req.flash('message')
-        res.render("admin/admin-banners",{URL:'banners',message})
+        res.render("admin/admin-banners",{URL:'banners',message,banner})
     },
     adminBannerPost: async (req, res) => {
         const {bannerHead,charecterist,description,expire_date} = req.body
         console.log(description)
         const file = req.file.filename
-        console.log(file)
         var nowDate = new Date(expire_date); 
-        var date = nowDate.getFullYear()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getDate();
+        var date = nowDate.getFullYear()+'/'+(nowDate.getMonth()+1)+'/'+(nowDate.getDate());
+        console.log(date)
 
         const newBanner = new Banners({
             bannerHead,
@@ -314,6 +316,51 @@ module.exports = {
         await newBanner.save()
         req.flash('message', 'Banner Added')
         res.redirect('/admin/banners')
+    },
+    adminBannerDelete:async (req,res) => {
+        const bannerId =new ObjectId(req.params.bannerId) 
+        const deletedBanner = await Banners.findByIdAndDelete(bannerId)
+        req.flash('message', 'Banner Deleted')
+        res.redirect('/admin/banners')
+    },
+    adminBannerEdit:async (req,res) => {
+        const bannerId = new ObjectId(req.params.bannerId)
+        const banner = await Banners.findById(bannerId)
+        console.log(banner)
+        message= ''
+
+        res.render('admin/edit-banner', {banner,URL:'banners',message})
+    },
+    adminBannerEditPost:async (req,res) => {
+        const bannerId = new ObjectId(req.params.bannerId)
+        const {bannerHead,charecterist,description,expire_date} = req.body
+        console.log(description)
+        if(req.files){
+            var file = req.files.filename
+        }
+
+        if(file){
+
+            const updatedBanner = await Banners.findByIdAndUpdate(bannerId,
+                {
+                    bannerHead,
+                    charecterist,
+                    description,
+                    expire_date,
+                    image:file
+                })
+        }else {
+            const updatedBanner = await Banners.findByIdAndUpdate(bannerId,
+                {
+                    bannerHead,
+                    charecterist,
+                    description,
+                    expire_date,
+                })
+        }
+
+            req.flash('message', 'Banner Updated')
+            res.redirect('/admin/banners')
     }
 
 }

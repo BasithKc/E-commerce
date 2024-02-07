@@ -58,6 +58,9 @@ router.route('/admin/product/edit-product/:productId')
 router.route('/admin/banners')
         .get(adminController.adminBannerGet)
         .post(banner.single('image'), adminController.adminBannerPost)
-
-
+router.route('/admin/banners/delete-banner/:bannerId')
+        .get(adminController.adminBannerDelete)
+router.route('/admin/banners/edit-banner/:bannerId')
+        .get(adminController.adminBannerEdit)
+        .post(banner.single('image'), adminController.adminBannerEditPost)
 module.exports = router;

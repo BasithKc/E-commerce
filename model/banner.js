@@ -4,7 +4,7 @@ const bannerSchema = new mongoose.Schema({
   bannerHead:String,
   charecterist:String,
   description:String,
-  expire_date:Date,
+  expire_date:String,
   image:String
 })
 
