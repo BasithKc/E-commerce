@@ -1,16 +1,19 @@
 const express = require('express')
-const path = require('path')
- require('dotenv').config()
-const mongoose = require('mongoose')
 const session = require('express-session');
-const flash = require('connect-flash')
+const path = require('path')
+const mongoose = require('mongoose')
+const flash = require('connect-flash');
+require('dotenv').config()
+
 
 const dbUrl = 'mongodb://localhost:27017/E-commerce'
 const app = express()
 
+
 mongoose.connect(dbUrl)
 
 const db = mongoose.connection;
+
 db.on('error', console.error.bind(console, 'Connection error:'));
 db.once('open', () => {
     console.log('Connected to MongoDB');
@@ -35,6 +38,7 @@ app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
+    cookie: { secure: false },
 }));
 
 app.use(indexRouter)

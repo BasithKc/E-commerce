@@ -15,6 +15,8 @@
     <!-- https://getbootstrap.com/ -->
     <link rel="stylesheet" href="/css/admin/templatemo-style.css">
 
+    <link rel="stylesheet" href="/css/admin/reset-password.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!--
@@ -67,10 +69,17 @@
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link " href="#">
+                            <a class="nav-link <%= URL === 'banners'?  'active' : '' %> " href="/admin/banners">
                                 <i class=" fa-brands fa-slideshare"></i>
                                 <span>
                                     Banners</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link " href="#">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span>
+                                    Orders</span>
                             </a>
                         </li>
                     </ul>

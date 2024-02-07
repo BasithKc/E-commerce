@@ -1,93 +1,103 @@
 <%- include('partials/header.ejs') %>
   <div class="container tm-mt-big tm-mb-big">
     <div class="row">
-      <%console.log(message) %>
-        <%if(message[0]) { %>
-          <div style="z-index: 1000;" id="notification" class="notification hidden">
-            <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
-            <%= message %>
-          </div>
-          <% } %>
-            <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
-              <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
-                <div class="row">
-                  <div class="col-12">
-                    <h2 class="tm-block-title d-inline-block">Add Product</h2>
-                  </div>
-                </div>
-                <div class="row tm-edit-product-row">
-                  <div class="col-xl-6 col-lg-6 col-md-12">
-                    <form action="/admin/product/add-product" method="post" class="tm-edit-product-form"
-                      enctype="multipart/form-data">
-                      <div class="form-group mb-3">
-                        <label for="name">Product Name
-                        </label>
-                        <input id="name" name="name" type="text" class="form-control validate" required />
-                      </div>
-
-                      <div class="form-group mb-3">
-                        <label for="price">Price
-                        </label>
-                        <input id="price" name="price" type="text" class="form-control validate" required />
-                      </div>
-
-                      <div class="form-group mb-3">
-                        <label for="description">Description</label>
-                        <textarea class="form-control validate" rows="3" name="description" required></textarea>
-                      </div>
-                      <div class="form-group mb-3">
-                        <label for="category">Category</label>
-                        <select class="custom-select tm-select-accounts" id="category" name="category">
-                          <option selected>Select category</option>
-                          <option value="Mens">Mens</option>
-                          <option value="Womens">Womens</option>
-                          <option value="Trending">Trending</option>
-                        </select>
-                      </div>
-                      <div class="form-group mb-3">
-                        <label for="category">Sub-Category</label>
-                        <select class="custom-select tm-select-accounts" id="category" name="sub_category">
-                          <option selected>Select sub-category</option>
-                          <option value="T-Shirt">T-shirt</option>
-                          <option value="Hoodie">Hoodie</option>
-                          <option value="Shirt">Shirt</option>
-                        </select>
-                      </div>
-                      <div class="row">
-                        <div class="form-group mb-3 col-xs-12 col-sm-6">
-                          <label for="expire_date">Expire Date
-                          </label>
-                          <input id="expire_date" name="expire_date" type="date" class="form-control validate"
-                            data-large-mode="true" />
-                        </div>
-                        <div class="form-group mb-3 col-xs-12 col-sm-6">
-                          <label for="stock">Units In Stock
-                          </label>
-                          <input id="stock" name="stock" type="text" class="form-control validate" required />
-                        </div>
-                      </div>
-
-                  </div>
-                  <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-                    <div id="image-preview" class="tm-product-img-dummy mx-auto">
-                      <i class="fas fa-cloud-upload-alt tm-upload-icon"
-                        onclick="document.getElementById('fileInput').click();"></i>
-                    </div>
-                    <div class="custom-file mt-3 mb-3">
-                      <input id="fileInput" type="file" style="display:none;" name="image"
-                        onchange="previewImage(event)" multiple required />
-
-                      <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD PRODUCT IMAGE"
-                        onclick="document.getElementById('fileInput').click();" />
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
-                  </div>
-                  </form>
+      <%if(message[0]) { %>
+        <div style="z-index: 1000;" id="notification" class="notification hidden">
+          <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
+          <%= message %>
+        </div>
+        <% } %>
+          <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+              <div class="row">
+                <div class="col-12">
+                  <h2 class="tm-block-title d-inline-block">Add Product</h2>
                 </div>
               </div>
+              <div class="row tm-edit-product-row">
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                  <form action="/admin/product/add-product" method="post" class="tm-edit-product-form"
+                    enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                      <label for="name">Product Name
+                      </label>
+                      <input id="name" name="name" type="text" class="form-control validate" required />
+                    </div>
+
+                    <div class="form-group mb-3">
+                      <label for="price">Price
+                      </label>
+                      <input id="price" name="price" type="text" class="form-control validate" required />
+                    </div>
+
+                    <div class="form-group mb-3">
+                      <label for="description">Description</label>
+                      <textarea class="form-control validate" rows="3" name="description" required></textarea>
+                    </div>
+                    <div class="form-group mb-3" style="position: relative;">
+                      <i class="fa-solid fa-plus" id="add-specification"></i>
+                      <label for="specification1">Specifications</label>
+                      <ul id="specification-list">
+                        <li>
+                          <input type="text" id="specification1" name="specifications[]" required
+                            class="form-control validate"><i class="fa-solid fa-xmark"></i>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="category">Category</label>
+                      <select class="custom-select tm-select-accounts" id="category" name="category">
+                        <option selected>Select category</option>
+                        <option value="Mens">Mens</option>
+                        <option value="Womens">Womens</option>
+                        <option value="Trending">Trending</option>
+                      </select>
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="category">Sub-Category</label>
+                      <select class="custom-select tm-select-accounts" id="category" name="sub_category">
+                        <option selected>Select sub-category</option>
+                        <option value="T-Shirt">T-shirt</option>
+                        <option value="Hoodie">Hoodie</option>
+                        <option value="Shirt">Shirt</option>
+                      </select>
+                    </div>
+
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
+                  <div id="image-preview" class="tm-product-img-dummy mx-auto">
+                    <i class="fas fa-cloud-upload-alt tm-upload-icon"
+                      onclick="document.getElementById('fileInput').click();"></i>
+                  </div>
+                  <div class="custom-file mt-3 mb-3">
+                    <input id="fileInput" type="file" style="display:none;" name="image" onchange="previewImage(event)"
+                      multiple required />
+
+                    <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD PRODUCT IMAGE"
+                      onclick="document.getElementById('fileInput').click();" />
+                  </div>
+                  <div class="row" style="margin-top: 30px;">
+                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                      <label for="expire_date">Expire Date
+                      </label>
+                      <input id="expire_date" name="expire_date" type="date" class="form-control validate"
+                        data-large-mode="true" />
+                    </div>
+                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                      <label for="stock">Units In Stock
+                      </label>
+                      <input id="stock" name="stock" type="text" class="form-control validate" required />
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
+                </div>
+                </form>
+              </div>
             </div>
+          </div>
     </div>
   </div>
   <footer class="tm-footer row tm-mt-small">
@@ -138,6 +148,34 @@
     setTimeout(function () {
       notification.style.display = 'none';
     }, 5000);
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const addButton = document.getElementById('add-specification');
+      const specificationList = document.getElementById('specification-list');
+
+      addButton.addEventListener('click', function () {
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.name = 'specifications[]';
+        newInput.className = 'form-control validate';
+
+        const newListItem = document.createElement('li');
+        newListItem.appendChild(newInput);
+
+        const removeIcon = document.createElement('i');
+        removeIcon.className = 'fa-solid fa-xmark remove-specification';
+        newListItem.appendChild(removeIcon);
+
+        specificationList.appendChild(newListItem);
+      });
+
+      specificationList.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove-specification')) {
+          const listItem = event.target.parentNode;
+          listItem.remove();
+        }
+      });
+    });
   </script>
   </body>
 

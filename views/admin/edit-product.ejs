@@ -31,17 +31,44 @@
                     <%= product.description%>
                   </textarea>
                 </div>
+                <div class="form-group mb-3" style="position: relative;">
+                  <i class="fa-solid fa-plus" id="add-specification"></i>
+                  <label for="specifications">specifications</label>
+                  <ul id="specification-list">
+                    <% product.specifications.forEach(spec=> { %>
+                      <li>
+                        <input type="text" value=" <%= spec %>" name="specifications[]" class="form-control validate"><i
+                          class="fa-solid fa-xmark"></i>
+                      </li>
+                      <% }) %>
+                  </ul>
+                </div>
                 <div class="form-group mb-3">
                   <label for="category">Category</label>
+                  <select name="category" class="custom-select tm-select-accounts" id="category">
+                    <option>Select category</option>
+                    <% categories.forEach(category=> { %>
+                      <option value="<%= category.name %>" <%=category.name===categoryName.category[0].name ? 'selected'
+                        : '' %>>
+
+                        <%= category.name %>
+                      </option>
+                      <% }) %>
+                  </select>
+                </div>
+                <div class=" form-group mb-3">
+                  <label for="category">Sub Category</label>
                   <select name="category" class=" custom-select tm-select-accounts" id="category">
                     <option>Select category</option>
-                    <option value="<%= product.category[0].name %>" selected>
-                      <%= product.category[0].name %>
+                    <option value="<%= product.sub_category %>" selected>
+                      <%= product.sub_category %>
                     </option>
-                    <% if(product.category[0].name==='Mens' ){ %>
-                      <option value="Womens">Womens</option>
+                    <% if(product.sub_category===' T-Shirt' ){ %>
+                      <option value="Hoodie">Hoodie</option>
+                      <option value="Shirt">Shirt</option>
                       <%} else {%>
-                        <option value="Mens">Mens</option>
+                        <option value="T-Shirt">T-shirt</option>
+                        <option value="Shirt">Shirt</option>
                         <% }%>
                   </select>
                 </div>
@@ -49,7 +76,7 @@
                   <div class="form-group mb-3 col-xs-12 col-sm-6">
                     <label for="expire_date">Expire Date
                     </label>
-                    <input id="expire_date" name="expire_date" type="text" value="<%= product.expire_date %>"
+                    <input id="expire_date" name="expire_date" type="date" value="<%= product.expire_date %>"
                       class="form-control validate" data-large-mode="true" />
                   </div>
                   <div class="form-group mb-3 col-xs-12 col-sm-6">
@@ -118,6 +145,33 @@
 
       }
     }
+    document.addEventListener('DOMContentLoaded', function () {
+      const addButton = document.getElementById('add-specification');
+      const specificationList = document.getElementById('specification-list');
+
+      addButton.addEventListener('click', function () {
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.name = 'specifications[]';
+        newInput.className = 'form-control validate';
+
+        const newListItem = document.createElement('li');
+        newListItem.appendChild(newInput);
+
+        const removeIcon = document.createElement('i');
+        removeIcon.className = 'fa-solid fa-xmark remove-specification';
+        newListItem.appendChild(removeIcon);
+
+        specificationList.appendChild(newListItem);
+      });
+
+      specificationList.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove-specification')) {
+          const listItem = event.target.parentNode;
+          listItem.remove();
+        }
+      });
+    });
   </script>
   </body>
 

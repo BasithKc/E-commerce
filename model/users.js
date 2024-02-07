@@ -33,7 +33,13 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   channel: String,
-  profile:String
+  profile:String,
+  isSuspend:{
+    type:Boolean,
+    default:false
+  },
+  suspensionEndTime: { type: Date, default: null }
+
 });
 
 // Custom method to compare and validate passwords

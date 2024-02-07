@@ -1,0 +1,151 @@
+<%- include('partials/header.ejs') %>
+    <div class="container mt-5">
+
+        <!-- row -->
+        <div class="row tm-content-row">
+
+            <div class="tm-block-col tm-col-avatar">
+                <div class="tm-bg-primary-dark tm-block tm-block-avatar">
+
+                    <div class="tm-avatar-container">
+
+                        <% if(!userData.profile){%>
+                            <img src="/assets/img/profile.png" alt="Avatar" class="tm-avatar img-fluid mb-4" />
+                            <% } else {%>
+                                <img src="/assets/images/users/<%= userData.profile%>" alt="Avatar"
+                                    class="tm-avatar img-fluid mb-4" />
+                                <% } %>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tm-block-col tm-col-account-settings">
+                <div class="tm-bg-primary-dark tm-block tm-block-settings">
+                    <h2 class="tm-block-title">Account Settings</h2>
+                    <form class="tm-signup-form row" id="account-settings-form" enctype="multipart/form-data">
+                        <div class="form-group col-lg-6">
+                            <label for="firstName">First Name</label>
+                            <input style="color: black;" value=" <%=userData.firstName %>" id="firstName"
+                                name="first-name" type="text" class="form-control validate " disabled />
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="lastName">Last Name</label>
+                            <input style="color: black;" value="<%= userData.lastName %>" id="lastName" name="last-name"
+                                type="text" class="form-control validate" disabled />
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="email">Account Email</label>
+                            <input style="color: black;" id="email" value="<%= userData.email %>" name="email"
+                                type="email" class="form-control validate" disabled />
+                        </div>
+
+                        <div class="form-group col-lg-6">
+                            <label for="phone">Phone</label>
+                            <input style="color: black;" id="phone" value="<%= userData.number %>" name="number"
+                                type="tel" class="form-control validate" disabled />
+                        </div>
+
+                    </form>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label class="tm-hide-sm">&nbsp;</label>
+                            <a href="/admin/users/delete-user/<%= userData._id %>">
+                                <button class=" btn btn-primary btn-block text-uppercase">
+                                    Delete Account
+                                </button>
+                            </a>
+                        </div>
+                        <div class="col-lg-6">
+                            <label class="tm-hide-sm">&nbsp;</label>
+
+                            <button class=" btn btn-primary btn-block text-uppercase" id="blockButton">
+                                Block Account
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mt-5">
+        <!-- row -->
+        <div class="row " id="modal">
+            <div class="tm-block-col col-lg-11">
+                <div class="tm-bg-primary-dark tm-block ">
+                    <span class="close">&times;</span>
+                    <h2 class="" style="text-align: center;color: white;">Block User Account</h2>
+                    <form class="tm-signup-form row" id="suspend-form"
+                        action="<%= userData.isSuspend  ? '/admin/users/unblock-user/' + userData._id : '/admin/users/block-user/' + userData._id %>"
+                        method="post">
+                        <div class="form-group col-lg-8">
+                            <label for="userId">User Id</label>
+                            <input style="color: black;" value=" <%=userData._id %>" id="userId" name="user-id"
+                                type="text" class="form-control validate " />
+                        </div>
+                        <% if(!userData.isSuspend) {%>
+                            <div class="form-group col-lg-8">
+                                <label for="block-time">Suspension Duration (in hours):</label>
+                                <input style="color: black;" value="" id="block-time" name="blockTime" type="text"
+                                    class="form-control validate" />
+                            </div>
+                            <%}%>
+                                <% if(userData.isSuspend) {%>
+                                    <div class="form-group col-lg-8">
+                                        <label class="tm-hide-sm">&nbsp;</label>
+
+                                        <button type="submit" class=" btn btn-primary btn-block text-uppercase">
+                                            Unblock Account
+                                        </button>
+                                    </div>
+                                    <%} else {%>
+                                        <div class="form-group col-lg-8">
+                                            <label class="tm-hide-sm">&nbsp;</label>
+
+                                            <button type="submit" class=" btn btn-primary btn-block text-uppercase">
+                                                Block Account
+                                            </button>
+                                        </div>
+                                        <%}%>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="overlay" class="overlay"></div>
+
+    <footer class="tm-footer row tm-mt-small">
+        <div class="col-12 font-weight-light">
+            <p class="text-center text-white mb-0 px-4 small">
+                Copyright &copy; <b>2018</b> All rights reserved.
+
+                Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template
+                    Mo</a>
+            </p>
+        </div>
+    </footer>
+    </div>
+    <script>
+        document.getElementById('blockButton').addEventListener('click', function () {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        });
+
+        document.querySelector('.close').addEventListener('click', function () {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        });
+
+    </script>
+
+    <script src="/js/admin/jquery-3.3.1.min.js"></script>
+    <!-- https://jquery.com/download/ -->
+    <script src="/js/admin/bootstrap.min.js"></script>
+    <!-- https://getbootstrap.com/ -->
+    </body>
+
+    </html>

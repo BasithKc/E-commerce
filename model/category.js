@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const categorySchema = new mongoose.Schema({
     name:String,
-    sub_category:String,
+    sub_category:[String],
     description:{type: String, required: true},
 })
 //categorySchema.virtual("url").get(function(){

@@ -16,7 +16,10 @@ module.exports = {
         const {email, password} = req.body
         try{
             const user = await Users.findOne({email})
-
+            console.log(user.isSuspend)
+            if (user.isSuspend && user.suspensionEndTime > new Date() ) {
+                return res.status(403).send('Your account is suspended.');
+            }
             const correctPassword = user.isCorrectPassword(password)
 
             if(!user || !correctPassword ){               

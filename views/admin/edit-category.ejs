@@ -22,17 +22,10 @@
                                 <div class="form-group mb-3">
                                     <label for="category">Sub Category</label>
                                     <select name="sub_category" class=" custom-select tm-select-accounts" id="category">
-                                        <option>Select sub-category</option>
                                         <option value="<%= category.sub_category %>" selected>
                                             <%= category.sub_category %>
                                         </option>
-                                        <% if(category.sub_category=='Hoodie' ){ %>
-                                            <option value="T-Shirt">T-Shirt</option>
-                                            <option value="Shirt">Shirt</option>
-                                            <%} else {%>
-                                                <option value="Hoodie">Hoodie</option>
-                                                <option value="Shirt">Shirt</option>
-                                                <% }%>
+
                                     </select>
                                 </div>
                                 <div class="form-group mb-3">

@@ -3,74 +3,91 @@
 
     <!-- row -->
     <div class="row tm-content-row">
-      <div class="tm-block-col tm-col-avatar">
-        <div class="tm-bg-primary-dark tm-block tm-block-avatar">
-          <h2 class="tm-block-title">Change Avatar</h2>
-          <div class="tm-avatar-container">
-            <img src="/assets/img/profile.png" alt="Avatar" class="tm-avatar img-fluid mb-4" />
-            <a href="#" class="tm-avatar-delete-link">
-              <i class="far fa-trash-alt tm-product-delete-icon"></i>
-            </a>
-          </div>
-          <input type="file" name="" id="avatar" style="display: none;" onchange="imagePreview(event)">
-          <button onclick="document.getElementById('avatar').click()" class="btn btn-primary btn-block text-uppercase">
-            Upload New Photo
-          </button>
+      <%if(message) { %>
+        <div id="notification" class="notification hidden">
+          <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
+          <%= message %>
         </div>
-      </div>
-      <div class="tm-block-col tm-col-account-settings">
-        <div class="tm-bg-primary-dark tm-block tm-block-settings">
-          <h2 class="tm-block-title">Account Settings</h2>
-          <form action="" class="tm-signup-form row" id="accountSettingsForm" enctype="multipart/form-data">
-            <div class="form-group col-lg-6">
-              <label for="first-name">First Name</label>
-              <input value="<%= adminData.firstName  %>" id="firstName" name="first-name" type="text"
-                class="form-control validate " />
+        <% } %>
+          <%if(message1.length> 0) { %>
+            <div id="notification" class="notification hidden">
+              <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
+              <%= message1 %>
             </div>
-            <div class="form-group col-lg-6">
-              <label for="last-name">Last Name</label>
-              <input value="<%= adminData.lastName %>" id="lastName" name="last-name" type="text"
-                class="form-control validate" />
-            </div>
-            <div class="form-group col-lg-6">
-              <label for="email">Account Email</label>
-              <input id="email" value="<%= adminData.email %>" name="email" type="email"
-                class="form-control validate" />
-            </div>
+            <% } %>
+              <div class="tm-block-col tm-col-avatar">
+                <div class="tm-bg-primary-dark tm-block tm-block-avatar">
+                  <h2 class="tm-block-title">Change Avatar</h2>
+                  <div class="tm-avatar-container">
 
-            <div class="form-group col-lg-6">
-              <label for="phone">Phone</label>
-              <input id="phone" value="<%= adminData.number %>" name="number" type="tel"
-                class="form-control validate" />
-            </div>
-            <div class="form-group col-lg-6">
-              <label class="tm-hide-sm">&nbsp;</label>
-              <button type="submit" class="btn btn-primary btn-block text-uppercase">
-                Update Your Profile
-              </button>
-            </div>
-            <div class="form-group col-lg-6">
-              <label class="tm-hide-sm">&nbsp;</label>
-              <a href="/admin/accounts/delete-account/<%= adminData._id %>">
-                <button class=" btn btn-primary btn-block text-uppercase">
-                  Delete Your Account
-                </button>
-              </a>
-            </div>
-          </form>
-          <div class="row">
-            <div class="col-lg-12">
-              <label class="tm-hide-sm">&nbsp;</label>
-              <a href="/admin/accounts/reset-password">
-                <button class="btn btn-primary btn-block text-uppercase">
-                  Update Your Password?
-                </button>
-              </a>
-            </div>
+                    <% if(!adminData.profile){%>
+                      <img src="/assets/img/profile.png" alt="Avatar" class="tm-avatar img-fluid mb-4" />
+                      <% } else {%>
+                        <img src="/assets/images/users/<%= adminData.profile%>" alt="Avatar"
+                          class="tm-avatar img-fluid mb-4" />
+                        <% } %><a href="#" class="tm-avatar-delete-link">
+                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                          </a>
+                  </div>
+                  <input type="file" name="avatar" id="avatar" style="display: none;" onchange="imagePreview(event)">
+                  <button onclick="document.getElementById('avatar').click()"
+                    class="btn btn-primary btn-block text-uppercase">
+                    Upload New Photo
+                  </button>
+                </div>
+              </div>
+              <div class="tm-block-col tm-col-account-settings">
+                <div class="tm-bg-primary-dark tm-block tm-block-settings">
+                  <h2 class="tm-block-title">Account Settings</h2>
+                  <form class="tm-signup-form row" id="account-settings-form" enctype="multipart/form-data">
+                    <div class="form-group col-lg-6">
+                      <label for="firstName">First Name</label>
+                      <input value="<%= adminData.firstName  %>" id="firstName" name="first-name" type="text"
+                        class="form-control validate " />
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label for="lastName">Last Name</label>
+                      <input value="<%= adminData.lastName %>" id="lastName" name="last-name" type="text"
+                        class="form-control validate" />
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label for="email">Account Email</label>
+                      <input id="email" value="<%= adminData.email %>" name="email" type="email"
+                        class="form-control validate" />
+                    </div>
 
-          </div>
-        </div>
-      </div>
+                    <div class="form-group col-lg-6">
+                      <label for="phone">Phone</label>
+                      <input id="phone" value="<%= adminData.number %>" name="number" type="tel"
+                        class="form-control validate" />
+                    </div>
+                    <div class="form-group col-lg-12">
+                      <label class="tm-hide-sm">&nbsp;</label>
+                      <input type="submit" class="btn btn-primary btn-block text-uppercase" value="Update Your Profile">
+                    </div>
+
+                  </form>
+                  <div class="row">
+                    <div class=" col-lg-6">
+                      <label class="tm-hide-sm">&nbsp;</label>
+                      <a href="/admin/accounts/reset-password">
+                        <button class="btn btn-primary btn-block text-uppercase">
+                          Update Your Password?
+                        </button>
+                      </a>
+                    </div>
+                    <div class="col-lg-6">
+                      <label class="tm-hide-sm">&nbsp;</label>
+                      <a href="/admin/accounts/delete-account/<%= adminData._id %>">
+                        <button class=" btn btn-primary btn-block text-uppercase">
+                          Delete Your Account
+                        </button>
+                      </a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
     </div>
   </div>
   <footer class="tm-footer row tm-mt-small">
@@ -88,34 +105,50 @@
   <!-- https://jquery.com/download/ -->
   <script src="/js/admin/bootstrap.min.js"></script>
   <!-- https://getbootstrap.com/ -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   <script>
-    document.getElementById('accountSettingsForm').addEventListener('submit', async function (event) {
+    window.myData = {};
+    window.myData.ejsVariable = '<%= adminData._id %>';
+    console.log(window.myData.ejsVariable);
+
+
+    async function updateProfile(event) {
       event.preventDefault();
-      var fileInput = document.getElementById('avatar');
+
+      const fileInput = document.getElementById('avatar');
+      const file = fileInput.files[0];
+      console.log(file)
       if (fileInput.files.length > 0) {
-        var file = fileInput.files[0]
-        var formData = new FormData();
+        const formData = new FormData();
 
-        formData.append('avatar', file);
-
-        var formInputs = document.querySelectorAll('.tm-signup-form input[type="text"], .tm-signup-form input[type="email"], .tm-signup-form input[type="tel"]');
+        const formInputs = document.querySelectorAll('.tm-signup-form input[type="text"], .tm-signup-form input[type="email"], .tm-signup-form input[type="tel"]');
         formInputs.forEach(function (input) {
           formData.append(input.name, input.value);
-        })
-      }
-      try {
-        const response = await ('/admin/accounts/update-profile/<%= adminData._id %>', {
-          method: 'POST',
-          body: formData
-        })
-        const json = await response.json()
-        if (json.success) {
-          window.location.href = '/admin/accounts?message=account updated Successfully'
+        });
+        formData.append('avatar', file);
+
+        console.log('Form Data:', formData);
+
+        try {
+          const response = await axios.post(`/admin/accounts/update-profile/${window.myData.ejsVariable}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+
+          console.log('Response:', response);
+
+          if (response.status === 200 && response.data.success) {
+            window.location.href = '/admin/accounts?message=account updated Successfully';
+          } else {
+            console.error('Error:', response.data.message);
+          }
+        } catch (error) {
+          console.error('Error:', error);
         }
-      } catch (error) {
-        console.log(error);
       }
-    })
+    }
     function imagePreview(event) {
       const fileInput = event.target
       const reader = new FileReader()
@@ -129,6 +162,13 @@
         reader.readAsDataURL(fileInput.files[0])
       }
     }
+    const notification = document.getElementById('notification');
+    setTimeout(function () {
+      notification.style.display = 'none';
+    }, 5000);
+
+
+    document.getElementById('account-settings-form').addEventListener('submit', (event) => updateProfile(event))
   </script>
   </body>
 

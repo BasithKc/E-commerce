@@ -31,7 +31,7 @@
                           <%=product.name%>
                         </td>
                         <td>
-                          <%=product.price%>
+                          $<%=product.price%>
                         </td>
                         <td>
                           <%=product.stock %>
@@ -41,7 +41,7 @@
                         </td> -->
                         <td>
                           <a href="/admin/product/edit-product/<%= product._id %>" class="tm-product-edit-link">
-                            <i class="far fa-solid fa-pen-to-square tm-product-edit-icon"></i>
+                            <i class="far fa-solid fa-pen-to-square "></i>
                           </a>
                         </td>
                         <td>
@@ -71,7 +71,7 @@
                       <tr>
                         <td style="cursor: pointer;">
                           <a href="/admin/product/edit-category/<%= category._id%>">
-                            <%= category.name %> - <%= category.sub_category %>
+                            <%= category.name %>
                           </a>
                         </td>
                         <td class="text-center">
@@ -144,7 +144,6 @@
   <!-- https://getbootstrap.com/ -->
   <script>
     function editProduct(productId) {
-
       window.location.href = `/admin/product/edit-product/${productId}`;
     }
 

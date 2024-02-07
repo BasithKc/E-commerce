@@ -1,58 +1,81 @@
 <%- include('partials/header.ejs') %>
     <div class="container mt-5">
         <div class="row tm-content-row">
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 tm-block-col">
-                <div class="tm-bg-primary-dark tm-block tm-block-products">
-                    <div class="tm-product-table-container">
-                        <table class="table table-hover tm-table-small tm-product-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">PROFILE</th>
-                                    <th scope="col">FIRST NAME</th>
-                                    <th scope="col">LAST NAME</th>
-                                    <th scope="col">EMAIL</th>
-                                    <th scope="col">ROLE</th>
-                                    <th scope="col">&nbsp;</th>
-                                    <th scope="col">&nbsp;</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% users.forEach(user=> {%>
-
-                                    <tr>
-                                        <th scope="row"><img src="/assets/images/users/" style=" border-radius: 50%; width: 40px; height:
-                                                40px;" src="" alt=""></th>
-                                        <td class="tm-product-name" style="cursor: pointer;" onclick="">
-                                            <%= user.firstName%>
-                                        </td>
-                                        <td>
-                                            <%= user.lastName%>
-                                        </td>
-                                        <td>
-                                            <%= user.email%>
-                                        </td>
-                                        <td>
-                                            <%= user.role %>
-                                        </td>
-
-                                        <td>
-                                            <a href=" /admin/product/edit-product" class="tm-product-edit-link">
-                                                <i class="far fa-solid fa-pen-to-square tm-product-edit-icon"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="/admin/delete-product/" class="tm-product-delete-link">
-                                                <i class="far fa-trash-alt tm-product-delete-icon"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <%})%>
-                            </tbody>
-                        </table>
-                    </div>
-
+            <%if(message[0]) { %>
+                <div id="notification" class="notification hidden">
+                    <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
+                    <%= message %>
                 </div>
-            </div>
+                <% } %>
+                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 tm-block-col">
+                        <div class="tm-bg-primary-dark tm-block tm-block-products">
+                            <div class="tm-product-table-container">
+                                <table class="table table-hover tm-table-small tm-product-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">PROFILE</th>
+                                            <th scope="col">FIRST NAME</th>
+                                            <th scope="col">LAST NAME</th>
+                                            <th scope="col">EMAIL</th>
+                                            <th scope="col">ROLE</th>
+                                            <th scope="col">STATUS</th>
+                                            <th scope="col">&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% users.forEach(user=> {%>
+
+                                            <tr>
+                                                <th scope="row">
+                                                    <a href="/admin/users/edit-user/<%= user._id%>">
+                                                        <% if(user.profile) {%>
+                                                            <img src="/assets/images/users/<%= user.profile %>" style=" border-radius: 50%; width: 40px; height:
+                                                40px;" src="" alt="">
+                                                            <% } else {%>
+                                                                <img src="/assets/img/profile.png" style=" border-radius: 50%; width: 40px; height:
+                                                    40px;" src="" alt="">
+                                                                <% }%>
+                                                    </a>
+                                                </th>
+                                                <td class="tm-product-name" style="cursor: pointer;" onclick="">
+                                                    <a href="/admin/users/edit-user/<%= user._id%>">
+                                                        <%= user.firstName%>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <%= user.lastName%>
+                                                </td>
+                                                <td>
+                                                    <%= user.email%>
+                                                </td>
+                                                <td>
+                                                    <%= user.role %>
+                                                </td>
+
+                                                <td>
+                                                    <% if(user.isSuspend) {%>
+                                                        INACTIVE <i class="fa-sharp fa-solid fa-circle"
+                                                            style="color: #f31616;"></i>
+                                                        <%}else{%>
+                                                            ACTIVE <i class="fa-sharp fa-solid fa-circle"
+                                                                style="color: #49e600;"></i>
+                                                            <% } %>
+                                                </td>
+                                                <td>
+                                                    <a href="/admin/users/delete-user/<%= user._id%>"
+                                                        class="tm-product-delete-link">
+                                                        <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+
+                                            <%})%>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
 
         </div>
         <footer class="tm-footer row tm-mt-small">
@@ -71,7 +94,12 @@
     <!-- https://jquery.com/download/ -->
     <script src="/js/admin/bootstrap.min.js"></script>
     <!-- https://getbootstrap.com/ -->
-
+    <script>
+        const notification = document.getElementById('notification');
+        setTimeout(function () {
+            notification.style.display = 'none';
+        }, 5000);
+    </script>
     </body>
 
     </html>
