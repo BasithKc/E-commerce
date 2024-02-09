@@ -55,14 +55,26 @@
                                 </button>
                             </a>
                         </div>
-                        <div class="col-lg-6">
-                            <label class="tm-hide-sm">&nbsp;</label>
 
-                            <button class=" btn btn-primary btn-block text-uppercase" id="blockButton">
-                                Block Account
-                            </button>
+                        <% if(userData.isSuspend) {%>
+                            <div class="col-lg-6">
+                                <label class="tm-hide-sm">&nbsp;</label>
 
-                        </div>
+                                <button type="submit" class=" btn btn-primary btn-block text-uppercase"
+                                    id="blockButton">
+                                    Unblock Account
+                                </button>
+                            </div>
+                            <%} else {%>
+                                <div class="col-lg-6">
+                                    <label class="tm-hide-sm">&nbsp;</label>
+
+                                    <button type="submit" class=" btn btn-primary btn-block text-uppercase"
+                                        id="blockButton">
+                                        Block Account
+                                    </button>
+                                </div>
+                                <%}%>
 
                     </div>
                 </div>

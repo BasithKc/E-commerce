@@ -1,0 +1,89 @@
+<%- include('partials/header.ejs') %>
+  <div class="container mt-5">
+    <h2 style="text-align: center;text-transform: uppercase;">Coupons Management</h2>
+    <div class="row tm-content-row">
+      <%if(message[0]) { %>
+        <div id="notification" class="notification hidden">
+          <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
+          <%= message %>
+        </div>
+        <% } %>
+          <div class="col-sm-12 col-md-12 col-lg-8 col-xl-12 tm-block-col">
+            <div class="tm-bg-primary-dark tm-block tm-block-products">
+              <div class="tm-product-table-container">
+                <table class="table table-hover tm-table-small tm-product-table">
+                  <thead>
+                    <tr>
+
+                      <th scope="col">COUPON CODE</th>
+                      <th scope="col">COUPON TYPE</th>
+                      <th scope="col">COUPON AMOUNT</th>
+                      <th scope="col">PRODUCT ID</th>
+                      <th scope="col">START DATE</th>
+                      <th scope="col">EXPIRE DATE</th>
+                      <th scope="col">&nbsp;</th>
+                      <th scope="col">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% coupons.forEach(coupon=>{%>
+                      <tr>
+
+                        <td class="tm-product-name">
+                          <%=coupon.code%>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                          <%=coupon.amount%>
+                        </td>
+                        <td>
+                        </td>
+
+                        <td></td>
+                        <td>
+                          <%=coupon.expireDate%>
+                        </td>
+                        <td>
+                          <a href="/admin/coupons/edit-coupon/<%=coupon._id%>" class="tm-product-edit-link">
+                            <i class="far fa-solid fa-pen-to-square "></i>
+                          </a>
+                        </td>
+
+
+                        <td>
+                          <a href="/admin/coupons/delete-coupon/<%=coupon._id%>" class="tm-product-delete-link">
+                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      <%})%>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+
+  <footer class="tm-footer row tm-mt-small">
+    <div class="col-12 font-weight-light">
+      <p class="text-center text-white mb-0 px-4 small">
+        Copyright &copy; <b>2018</b> All rights reserved.
+
+        Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template
+          Mo</a>
+      </p>
+    </div>
+  </footer>
+  </div>
+  <script>
+    const notification = document.getElementById('notification');
+    setTimeout(function () {
+      notification.style.display = 'none';
+    }, 5000);
+  </script>
+  </body>
+
+  </html>

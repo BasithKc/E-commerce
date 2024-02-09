@@ -33,10 +33,10 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   channel: String,
-  profile:String,
-  isSuspend:{
-    type:Boolean,
-    default:false
+  profile: String,
+  isSuspend: {
+    type: Boolean,
+    default: false
   },
   suspensionEndTime: { type: Date, default: null }
 
@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.isCorrectPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
+
 // Hashing the password using bcrypt before saving it in database
 userSchema.pre('save', function (next) {
   var user = this;
@@ -63,11 +64,13 @@ userSchema.pre('save', function (next) {
     });
   });
 });
+
 userSchema.pre('update', function (next) {
   var user = this;
   if (!user.isModified('password')) {
     return next();
   }
+
   bcrypt.genSalt(10, function (err, salt) {
     if (err) return next(err);
     bcrypt.hash(user.password, salt, function (err, hash) {
@@ -79,4 +82,5 @@ userSchema.pre('update', function (next) {
     });
   });
 });
+
 module.exports = mongoose.model('User', userSchema);

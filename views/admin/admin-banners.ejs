@@ -1,6 +1,6 @@
 <%- include('partials/header.ejs') %>
-  <div class="container tm-mt-big tm-mb-big" style="height: 55vh;">
-    <div class="row">
+  <div class="container mt-5">
+    <div class="row ">
       <%if(message[0]) { %>
         <div style="z-index: 1000;" id="notification" class="notification hidden">
           <i class="fa-sharp fa-solid fa-check" style="color: #FFD43B;"></i>
@@ -12,47 +12,50 @@
                 class="fa-solid fa-plus" id="add-specification"></i>
             </button>
           </div>
-          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="display: flex;justify-content: center;">
+          <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 tm-block-col">
 
-            <table class="table table-hover" style="width: 70%;">
-              <thead>
-                <tr>
-                  <th scope="col">&nbsp; </th>
-                  <th scope="col">Banner Head</th>
-                  <th scope="col">Expire Date</th>
-                  <th scope="col">&nbsp; </th>
-                  <th scope="col">&nbsp; </th>
-                </tr>
-              </thead>
-              <tbody>
-                <% banner.forEach( ban=>{%>
+            <div class="tm-product-table-container">
+              <table class="table table-hover tm-table-small tm-product-table">
+                <thead>
                   <tr>
-                    <th scope="row">
-                      <a href="/admin/users/edit-user/">
-                        <img src="/assets/images/banners/<%= ban.image %>" style="  width: 150px; height:100px;">
-                      </a>
-                    </th>
-                    <td>
-                      <%= ban.bannerHead%>
-                    </td>
-                    <td>
-                      <%= ban.expire_date%>
-                    </td>
-                    <td>
-                      <a href="/admin/banners/edit-banner/<%= ban._id%>" class="tm-product-edit-link">
-                        <i class="far fa-solid fa-pen-to-square"></i>
-                      </a>
-                    </td>
-                    <td>
-                      <a href="/admin/banners/delete-banner/<%= ban._id%>" class="tm-product-delete-link">
-                        <i class="far fa-trash-alt tm-product-delete-icon"></i>
-                      </a>
-                    </td>
+                    <th scope=" col">&nbsp; </th>
+                    <th scope="col">Banner Head</th>
+                    <th scope="col">Expire Date</th>
+                    <th scope="col">&nbsp; </th>
+                    <th scope="col">&nbsp; </th>
                   </tr>
-                  <% }) %>
-              </tbody>
+                </thead>
+                <tbody>
+                  <% banner.forEach( ban=>{%>
+                    <tr>
+                      <th scope="row">
+                        <a href="/admin/users/edit-user/">
+                          <img src="/assets/images/banners/<%= ban.image %>" style="  width: 150px; height:100px;">
+                        </a>
+                      </th>
+                      <td>
+                        <%= ban.bannerHead%>
+                      </td>
+                      <td>
+                        <%= ban.expire_date%>
+                      </td>
+                      <td>
+                        <a href="/admin/banners/edit-banner/<%= ban._id%>" class="tm-product-edit-link">
+                          <i class="far fa-solid fa-pen-to-square"></i>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="/admin/banners/delete-banner/<%= ban._id%>" class="tm-product-delete-link">
+                          <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
 
-            </table>
+              </table>
+            </div>
+
           </div>
     </div>
   </div>
