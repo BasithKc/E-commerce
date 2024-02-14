@@ -458,11 +458,11 @@ input[type='checkbox']:focus {
 .tm-product-edit-link:hover .tm-product-edit-icon {
   color: #6d8ca6;
 }
-a{
+a {
   text-decoration: none;
   color: white;
 }
-#modal{
+#modal {
   display: none;
   position: fixed;
   z-index: 1000;
@@ -481,7 +481,39 @@ a{
   margin-top: 5px;
   margin-left: -40px;
 }
-.form-group .fa-plus{
+.select-color {
+  margin-top: 50px;
+}
+.color-option {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  position: relative;
+}
+.color-option:hover {
+  border-color: #000;
+}
+.color-option input[type='radio'] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.color-option input[type='radio']:checked::after {
+  content: '\2713'; /* Unicode checkmark symbol */
+  font-size: 24px;
+  color: #b8b1b1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.form-group .fa-plus {
   position: absolute;
   top: 0px;
   right: 0;
@@ -490,13 +522,13 @@ a{
   padding: 6px;
   color: white;
 }
-.fa-xmark{
+.fa-xmark {
   cursor: pointer;
 }
 
 .close {
   position: absolute;
-  top:10px;
+  top: 10px;
   right: 30px;
   padding: 10px;
   cursor: pointer;
@@ -570,8 +602,8 @@ a{
   border-radius: 5px;
   transition: opacity 0.5s ease-in-out;
 }
-.tm-product-img-dummy.bg-img{
-   background-repeat: no-repeat;
+.tm-product-img-dummy.bg-img {
+  background-repeat: no-repeat;
 }
 .tm-product-img-edit {
   max-width: 100%;

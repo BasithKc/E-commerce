@@ -89,13 +89,42 @@
                       <input id="stock" name="stock" type="text" class="form-control validate" required />
                     </div>
                   </div>
+                         <!-- Color Picker -->
+                <div class="select-color form-group mb-3">
+                  <p style="color: white;">Select One Colour</p>
+                  <label class="color-option" style="background-color: red;">
+                    <input type="radio" name="color" value="red" >
+                  </label>
+                  <label class="color-option" style="background-color: green;">
+                      <input type="radio" name="color" value="green" >
+                  </label>
+                  <label class="color-option" style="background-color: black;">
+                      <input type="radio" name="color" value="black" >
+                  </label>
+                  <label class="color-option" style="background-color: blue;">
+                      <input type="radio" name="color" value="blue">
+                  </label>
+                  <label class="color-option" style="background-color: white;">
+                      <input type="radio" name="color" value="white" >
+                  </label>
+                </div>
+
+                <!-- Size picker -->
+                <div class="form-group mb-3">
+                  <select name="selectSize" class="form-control custom-select tm-select-accounts">
+                    <option value="">Please Select Size</option>
+                    <option value="Extra Small">XS</option>
+                    <option value="Medium" >M</option>
+                    <option value="Large">L</option>
+                    <option value="Extra Large">XL</option>
+                </select>
 
                 </div>
+              </div>
                 <div class="col-12">
                   <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
-                </div>
+                </div> 
                 </form>
-              </div>
             </div>
           </div>
     </div>

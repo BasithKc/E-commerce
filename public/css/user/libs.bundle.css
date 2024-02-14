@@ -1726,6 +1726,63 @@ button.swiper-pagination-bullet {
   width: 5px;
   height: 98%;
 }
+.color-option {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  position: relative;
+}
+.color-option:hover {
+  border-color: #000;
+}
+.color-option input[type='radio'] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.wishlist-button {
+  position: relative;
+  z-index: 100;
+}
+.heart-icon {
+  font-size: 1.4rem;
+}
+.price-wish {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.remove-from-wishlist button {
+  background-color: orangered;
+  border: none;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  position: absolute;
+  right: 0;
+  bottom: 10%;
+}
+.remove-from-wishlist button:hover {
+  background-color: orange;
+}
+.remove-from-wishlist button i {
+  font-size: 1.1rem;
+}
+.qucik-add-button {
+  width: 100%;
+}
+.qucik-add-button:hover {
+  background-color: gray;
+  color: black;
+}
 .swiper-scrollbar-drag {
   height: 100%;
   width: 100%;

@@ -38,7 +38,7 @@
                     <% product.specifications.forEach(spec=> { %>
                       <li>
                         <input type="text" value=" <%= spec %>" name="specifications[]" class="form-control validate"><i
-                          class="fa-solid fa-xmark"></i>
+                          class="fa-solid fa-xmark" style="color: red;"></i>
                       </li>
                       <% }) %>
                   </ul>
@@ -72,20 +72,7 @@
                         <% }%>
                   </select>
                 </div>
-                <div class="row">
-                  <div class="form-group mb-3 col-xs-12 col-sm-6">
-                    <label for="expire_date">Expire Date
-                    </label>
-                    <input id="expire_date" name="expire_date" type="date" value="<%= product.expire_date %>"
-                      class="form-control validate" data-large-mode="true" />
-                  </div>
-                  <div class="form-group mb-3 col-xs-12 col-sm-6">
-                    <label for="stock">Units In Stock
-                    </label>
-                    <input id="stock" name="stock" type="text" value="<%= product.stock %>"
-                      class="form-control validate" />
-                  </div>
-                </div>
+              
 
             </div>
             <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
@@ -100,6 +87,52 @@
                 <input type="button" class="btn btn-primary btn-block mx-auto" value="CHANGE IMAGE NOW"
                   onclick="document.getElementById('fileInput').click();" />
               </div>
+
+              <div class="row" style="margin-top: 45px;">
+                <div class="form-group mb-3 col-xs-12 col-sm-6">
+                  <label for="expire_date">Expire Date
+                  </label>
+                  <input id="expire_date" name="expire_date" type="text" value="<%= product.expire_date %>"
+                    class="form-control validate" data-large-mode="true" />
+                </div>
+                <div class="form-group mb-3 col-xs-12 col-sm-6">
+                  <label for="stock">Units In Stock
+                  </label>
+                  <input id="stock" name="stock" type="text" value="<%= product.stock %>"
+                    class="form-control validate" />
+                </div>
+              </div>
+
+              <!-- Color Picker -->
+              <div class="select-color form-group mb-3">
+                <p style="color: white;">Select One Colour</p>
+                <label class="color-option" style="background-color: red;">
+                  <input type="radio" name="color" value="red" <%= product.color === 'red' ? 'checked' : '' %>>
+              </label>
+              <label class="color-option" style="background-color: green;">
+                  <input type="radio" name="color" value="green" <%= product.color === 'green' ? 'checked' : '' %>>
+              </label>
+              <label class="color-option" style="background-color: black;">
+                  <input type="radio" name="color" value="black" <%= product.color === 'black' ? 'checked' : '' %>>
+              </label>
+              <label class="color-option" style="background-color: blue;">
+                  <input type="radio" name="color" value="blue" <%= product.color === 'blue' ? 'checked' : '' %>>
+              </label>
+              <label class="color-option" style="background-color: white;">
+                  <input type="radio" name="color" value="white" <%= product.color === 'white' ? 'checked' : '' %>>
+              </label>
+              </div>
+
+              <!-- Size picker -->
+              <div class="form-group mb-3">
+                <select name="selectSize" class="form-control custom-select tm-select-accounts">
+                  <option value="">Please Select Size</option>
+                  <option value="Extra Small" <%= product.size === 'Extra Small' ? 'selected' : '' %>>XS</option>
+                  <option value="Medium" <%= product.size === 'Medium' ? 'selected' : '' %>>M</option>
+                  <option value="Large" <%= product.size === 'Large' ? 'selected' : '' %>>L</option>
+                  <option value="Extra Large" <%= product.size === 'Extra Large' ? 'selected' : '' %>>XL</option>
+              </select>
+            </div>
             </div>
             <div class="col-12">
               <button type="submit" class="btn btn-primary btn-block text-uppercase">Update Now</button>
@@ -127,11 +160,7 @@
   <script src="/js/admin/.min.js"></script>
   <!-- https://getbootstrap.com/ -->
   <script>
-    $(function () {
-      $("#expire_date").datepicker({
-        defaultDate: "10/22/2020"
-      });
-    });
+  
     function previewImage(event) {
       const fileInput = event.target
       var reader = new FileReader()
@@ -172,6 +201,26 @@
         }
       });
     });
+
+          //Expire date input field 
+        const expireDateInput =  document.getElementById('expire_date')
+        //If selected type should be date
+        expireDateInput.addEventListener('focus', () => {
+          const dateInput = document.createElement('input');
+          dateInput.setAttribute('type', 'date');
+          dateInput.setAttribute('name', 'expire_date');
+          dateInput.setAttribute('id', 'expire_date');
+          dateInput.setAttribute('class', 'form-control validate');
+          dateInput.setAttribute('data-large-mode', 'true');
+          dateInput.setAttribute('onchange', 'checkDate()')
+          const today = new Date().toISOString().split('T')[0];
+          dateInput.setAttribute('min', today);
+          // Replace the original input element with the new date input         
+          expireDateInput.parentNode.replaceChild(dateInput, expireDateInput);
+
+        })
+
+    
   </script>
   </body>
 

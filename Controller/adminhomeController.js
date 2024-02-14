@@ -85,6 +85,8 @@ module.exports = {
     },
 
     adminAddProductPost: async (req, res) => {
+
+        //Destrucring the data from formbdody
         const {
             name,
             price,
@@ -94,38 +96,59 @@ module.exports = {
             expire_date,
             stock,
             specifications,
+            color,
+            selectSize
         } = req.body;
+
+        //Converting the stringed date to Date object
         var nowDate = new Date(expire_date);
+
+        //Finding only year, month and date format
         var date =
             nowDate.getFullYear() +
             '/' +
             (nowDate.getMonth() + 1) +
             '/' +
             nowDate.getDate();
+
+        //Checking for the category  
         const categoryCheck = await Categories.findOne({ name: category });
+
+        //Destructring req.files for product image
         const files = req.files;
+
+        //Selecting only filename
         const imagePaths = files.map((file) => file.filename);
-        const newProduct = new Products({
-            name,
-            price: `${price}`,
-            description,
-            specifications: [],
-            categoryId: categoryCheck._id,
-            sub_category,
-            expire_date: date,
-            stock,
-            image: imagePaths,
-        });
+
         try {
+            //Adding to database
+            const newProduct = new Products({
+                name,
+                price: `${price}`,
+                description,
+                specifications: [],
+                categoryId: categoryCheck._id,
+                sub_category,
+                expire_date: date,
+                stock,
+                image: imagePaths,
+                color,
+                size: selectSize
+            });
+
+            //Pushing the array of specification to specification field of doc
             specifications.forEach((spec) => {
                 newProduct.specifications.push(spec);
             });
 
+            //Save the newProduct
             await newProduct.save();
-            console.log('product saved');
+
+            //Redirecting along with the flash message
             req.flash('message', 'Product Added Seccessfully');
             return res.redirect('/admin/products');
         } catch (err) {
+            //Catching errors during the add process
             console.log(err);
         }
     },
@@ -277,10 +300,10 @@ module.exports = {
         res.redirect('/admin/products');
     },
 
+    //render product details page and edit
     editProductGet: async (req, res) => {
         const productId = new ObjectId(req.params.productId);
         const product = await Products.findOne({ _id: productId });
-        console.log('hello');
         const categories = await Categories.find({});
 
         const categoryName = await Products.aggregate([
@@ -296,7 +319,6 @@ module.exports = {
                 },
             },
         ]);
-        console.log(categoryName[0].category[0].name);
         if (categoryName.length > 0) {
             res.render('admin/edit-product', {
                 URL: 'products',
@@ -309,8 +331,13 @@ module.exports = {
         }
     },
 
+    //function to edit product and update db
     editProductPost: async (req, res) => {
+
+        //Converting product id to object id, to access product correctly
         const productId = new ObjectId(req.params.productId);
+
+        //Destructuring form datas from req.body
         const {
             name,
             price,
@@ -319,9 +346,14 @@ module.exports = {
             expire_date,
             stock,
             specifications,
+            color,
+            selectSize
         } = req.body;
-        console.log(specifications);
+
+        //Converting string date to Date object
         var nowDate = new Date(expire_date);
+
+        //Taking only year, month and date to constant date
         var date =
             nowDate.getFullYear() +
             '/' +
@@ -329,9 +361,16 @@ module.exports = {
             '/' +
             nowDate.getDate();
 
+        //Checking whether category exist or not
         const categoryCheck = await Categories.findOne({ name: category });
+
+        //Destructuring files from input file of product image
         const files = req.files;
+
+        //mapping files and destructuring only filename which was created by multer, and assigning to imagePath as an array
         const imagePaths = files.map((file) => file.filename);
+
+        //if data in file input exist
         if (req.files.length > 0) {
             const product = await Products.findOneAndUpdate(
                 productId,
@@ -344,10 +383,13 @@ module.exports = {
                     expire_date: date,
                     stock,
                     image: imagePaths,
+                    color,
+                    selectSize
                 },
                 { new: true }
             );
         } else {
+            // data do not exist in input file
             const product = await Products.findOneAndUpdate(
                 productId,
                 {
@@ -358,21 +400,24 @@ module.exports = {
                     categoryId: categoryCheck._id,
                     expire_date: date,
                     stock,
+                    color,
+                    size: selectSize
                 },
                 { new: true }
             );
         }
+        //Sending confirmation message using flash
         req.flash('message', `Product ${name} Edited Successfully`);
         res.redirect('/admin/products');
     },
 
     adminBannerGet: async (req, res) => {
         const banner = await Banners.find({});
-        // console.log(banner)
         const message = req.flash('message');
         res.render('admin/admin-banners', { URL: 'banners', message, banner });
     },
 
+    //Banner creation
     adminBannerPost: async (req, res) => {
         const { bannerHead, charecterist, description, expire_date } = req.body;
         console.log(description);
@@ -398,6 +443,7 @@ module.exports = {
         res.redirect('/admin/banners');
     },
 
+    //Bannner Delete
     adminBannerDelete: async (req, res) => {
         const bannerId = new ObjectId(req.params.bannerId);
         const deletedBanner = await Banners.findByIdAndDelete(bannerId);
@@ -405,6 +451,7 @@ module.exports = {
         res.redirect('/admin/banners');
     },
 
+    //Banner Edit page rendering
     adminBannerEdit: async (req, res) => {
         const bannerId = new ObjectId(req.params.bannerId);
         const banner = await Banners.findById(bannerId);
@@ -414,6 +461,7 @@ module.exports = {
         res.render('admin/edit-banner', { banner, URL: 'banners', message });
     },
 
+    //Banner Editing 
     adminBannerEditPost: async (req, res) => {
         const bannerId = new ObjectId(req.params.bannerId);
         const { bannerHead, charecterist, description, expire_date } = req.body;

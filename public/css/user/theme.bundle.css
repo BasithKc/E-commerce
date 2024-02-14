@@ -1173,6 +1173,10 @@ abbr[title] {
   -webkit-text-decoration-skip-ink: none;
   text-decoration-skip-ink: none;
 }
+.custom-radio-button {
+  background-color: white !important;
+  border-color: black !important;
+}
 address {
   margin-bottom: 1rem;
   font-style: normal;
@@ -19231,58 +19235,58 @@ label {
   background-origin: padding-box;
 }
 .pi.pi-paypal {
-  background: url(../svgs/paypal.svg) 50% no-repeat;
+  background: url(../assets/svgs/paypal.svg) 50% no-repeat;
 }
 .pi.pi-apple-pay {
-  background: url(../svgs/apple-pay.svg) 50% no-repeat;
+  background: url(../assets/svgs/apple-pay.svg) 50% no-repeat;
 }
 .pi.pi-google-pay {
-  background: url(../svgs/google-pay.svg) 50% no-repeat;
+  background: url(../assets/svgs/google-pay.svg) 50% no-repeat;
 }
 .pi.pi-alipay {
-  background: url(../svgs/alipay.svg) 50% no-repeat;
+  background: url(../assets/svgs/alipay.svg) 50% no-repeat;
 }
 .pi.pi-mastercard {
-  background: url(../svgs/mastercard.svg) 50% no-repeat;
+  background: url(../assets/svgs/mastercard.svg) 50% no-repeat;
 }
 .pi.pi-visa {
-  background: url(../svgs/visa.svg) 50% no-repeat;
+  background: url(../assets/svgs/visa.svg) 50% no-repeat;
 }
 .pi.pi-american-express {
-  background: url(../svgs/american-express.svg) 50% no-repeat;
+  background: url(../assets/svgs/american-express.svg) 50% no-repeat;
 }
 .pi.pi-diners-club {
-  background: url(../svgs/diners-club.svg) 50% no-repeat;
+  background: url(../assets/svgs/diners-club.svg) 50% no-repeat;
 }
 .pi.pi-maestro {
-  background: url(../svgs/maestro.svg) 50% no-repeat;
+  background: url(../assets/svgs/maestro.svg) 50% no-repeat;
 }
 .pi.pi-vpay {
-  background: url(../svgs/vpay.svg) 50% no-repeat;
+  background: url(../assets/svgs/vpay.svg) 50% no-repeat;
 }
 .pi.pi-girocard {
-  background: url(../svgs/girocard.svg) 50% no-repeat;
+  background: url(../assets/svgs/girocard.svg) 50% no-repeat;
 }
 .pi.pi-klarna {
-  background: url(../svgs/klarna.svg) 50% no-repeat;
+  background: url(../assets/svgs/klarna.svg) 50% no-repeat;
 }
 .pi.pi-giropay {
-  background: url(../svgs/giropay.svg) 50% no-repeat;
+  background: url(../assets/svgs/giropay.svg) 50% no-repeat;
 }
 .pi.pi-ideal {
-  background: url(../svgs/ideal.svg) 50% no-repeat;
+  background: url(../assets/svgs/ideal.svg) 50% no-repeat;
 }
 .pi.pi-przelewy24 {
-  background: url(../svgs/przelewy24.svg) 50% no-repeat;
+  background: url(../assets/svgs/przelewy24.svg) 50% no-repeat;
 }
 .pi.pi-bitcoin {
-  background: url(../svgs/bitcoin.svg) 50% no-repeat;
+  background: url(../assets/svgs/bitcoin.svg) 50% no-repeat;
 }
 .pi.pi-ethereum {
-  background: url(../svgs/ethereum.svg) 50% no-repeat;
+  background: url(../assets/svgs/ethereum.svg) 50% no-repeat;
 }
 .pi.pi-ripple {
-  background: url(../svgs/ripple.svg) 50% no-repeat;
+  background: url(../assets/svgs/ripple.svg) 50% no-repeat;
 }
 .pi.pi-lg {
   width: 80px;
@@ -19576,7 +19580,7 @@ label {
 }
 @font-face {
   font-family: remixicon;
-  src: url(../fonts/remixicon.woff) format('woff');
+  src: url(../assets/fonts/remixicon.woff) format('woff');
   font-display: auto;
 }
 [class*=' ri-'],
