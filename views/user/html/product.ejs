@@ -166,7 +166,10 @@
 
                     <!-- Add To Cart-->
                     <div class="d-flex justify-content-between mt-3">
-                        <button class="btn btn-dark btn-dark-chunky flex-grow-1 me-2 text-white">Add To Cart</button>
+                        <a href="#">
+
+                            <button class="btn btn-dark btn-dark-chunky flex-grow-1 me-2 text-white qucik-add-button">Add To Cart</button>
+                        </a>
                         <button class="btn btn-orange btn-orange-chunky"><i class="ri-heart-line"></i></button>
                     </div>
                     <!-- /Add To Cart-->
@@ -713,6 +716,8 @@
                             <!-- Card Product-->
                             <div class="card position-relative h-100 card-listing hover-trigger">
                                 <div class="card-header">
+                                    <a class="mb-0 mx-2 mx-md-4 fs-p  text-decoration-none d-block text-center"
+                                    href="/user/product-details/<%= hoodie._id%>">
                                     <picture class="position-relative overflow-hidden d-block bg-light">
                                         <img class="w-100 img-fluid position-relative z-index-10" title=""
                                             src="/assets/images/products/<%= hoodie.image[0]%>" alt="">
@@ -724,9 +729,11 @@
                                         </picture>
                                         <%}%>
                                             <div class="card-actions">
-                                                <span
-                                                    class="small text-uppercase tracking-wide fw-bolder text-center d-block">Quick
+                                                 <a href="#">
+                                                    <span
+                                                    class="small text-uppercase tracking-wide fw-bolder text-center d-block qucik-add-button">Quick
                                                     Add</span>
+                                                  </a>
                                                 <div
                                                     class="d-flex justify-content-center align-items-center flex-wrap mt-3">
                                                     <button class="btn btn-outline-dark btn-sm mx-2">S</button>
@@ -736,6 +743,21 @@
                                             </div>
                                 </div>
                                 <div class="card-body px-0 text-center">
+                                    <div class="quantity-selector">
+                                        <label for="quantity">Quantity:</label>
+                                        <select name="quantity" id="quantity" >
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
                                     <div class="d-flex justify-content-center align-items-center mx-auto mb-1">
                                         <!-- Review Stars Small-->
                                         <div class="rating position-relative d-table">
@@ -755,8 +777,7 @@
                                             </div>
                                         </div> <span class="small fw-bolder ms-2 text-muted"> 4.7 (456)</span>
                                     </div>
-                                    <a class="mb-0 mx-2 mx-md-4 fs-p link-cover text-decoration-none d-block text-center"
-                                        href="/user/product-details/<%= hoodie._id%>">
+                                  
                                         <%= hoodie.name%>
                                     </a>
                                     <p class="fw-bolder m-0 mt-2"> $<%= hoodie.price%>
@@ -1633,6 +1654,8 @@
 
     <!-- Theme JS -->
     <script src="/js/user/theme.bundle.js"></script>
+
+    <script src="/js/user/userhome.js"></script>
     </body>
 
     </html>

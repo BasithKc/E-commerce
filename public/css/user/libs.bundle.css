@@ -1759,7 +1759,7 @@ button.swiper-pagination-bullet {
   justify-content: center;
   position: relative;
 }
-.remove-from-wishlist button {
+.remove-from-wishlist {
   background-color: orangered;
   border: none;
   color: white;
@@ -1770,10 +1770,10 @@ button.swiper-pagination-bullet {
   right: 0;
   bottom: 10%;
 }
-.remove-from-wishlist button:hover {
+.remove-from-wishlist:hover {
   background-color: orange;
 }
-.remove-from-wishlist button i {
+.remove-from-wishlist i {
   font-size: 1.1rem;
 }
 .qucik-add-button {
@@ -1783,6 +1783,7 @@ button.swiper-pagination-bullet {
   background-color: gray;
   color: black;
 }
+
 .swiper-scrollbar-drag {
   height: 100%;
   width: 100%;

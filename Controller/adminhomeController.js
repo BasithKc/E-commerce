@@ -4,7 +4,6 @@ const Users = require('../model/users');
 const Banners = require('../model/banner');
 const { ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
-const couponGenerator = require('../middlewares/coupongenerator');
 const Coupons = require('../model/coupon');
 
 module.exports = {
@@ -419,18 +418,25 @@ module.exports = {
 
     //Banner creation
     adminBannerPost: async (req, res) => {
+
+        //take data from req.body
         const { bannerHead, charecterist, description, expire_date } = req.body;
-        console.log(description);
+
+        //taking multer created filename from req.file
         const file = req.file.filename;
+
+        //Converting string date to Date
         var nowDate = new Date(expire_date);
+
+        //get only year, month and date
         var date =
             nowDate.getFullYear() +
             '/' +
             (nowDate.getMonth() + 1) +
             '/' +
             nowDate.getDate();
-        console.log(date);
 
+        //Create new instance of banner using above data
         const newBanner = new Banners({
             bannerHead,
             charecterist,
@@ -438,8 +444,8 @@ module.exports = {
             expire_date: date,
             image: file,
         });
-        await newBanner.save();
-        req.flash('message', 'Banner Added');
+        await newBanner.save();//save
+        req.flash('message', 'Banner Added'); //message passing in req.flash
         res.redirect('/admin/banners');
     },
 

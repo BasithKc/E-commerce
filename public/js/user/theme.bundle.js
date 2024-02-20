@@ -9,7 +9,7 @@
         Object.prototype.hasOwnProperty.call(s, r) && s[r] && p.push(s[r][0]),
         (s[r] = 0);
     for (n in c) Object.prototype.hasOwnProperty.call(c, n) && (e[n] = c[n]);
-    for (l && l(t); p.length; ) p.shift()();
+    for (l && l(t); p.length;) p.shift()();
     return a.push.apply(a, d || []), o();
   }
   function o() {
@@ -47,8 +47,8 @@
       var o = Object.create(null);
       if (
         (r.r(o),
-        Object.defineProperty(o, 'default', { enumerable: !0, value: e }),
-        2 & t && 'string' != typeof e)
+          Object.defineProperty(o, 'default', { enumerable: !0, value: e }),
+          2 & t && 'string' != typeof e)
       )
         for (var n in e)
           r.d(
@@ -64,11 +64,11 @@
       var t =
         e && e.__esModule
           ? function () {
-              return e.default;
-            }
+            return e.default;
+          }
           : function () {
-              return e;
-            };
+            return e;
+          };
       return r.d(t, 'a', t), t;
     }),
     (r.o = function (e, t) {
@@ -91,7 +91,8 @@
         t = document.querySelector('.billing-address'),
         o = document.querySelectorAll('[name="checkoutPaymentMethod"]') || [],
         n = document.querySelector('.card-details'),
-        s = document.querySelector('.paypal-details');
+        u = document.querySelector('.cash-on-delivery-details'),
+        s = document.querySelector('.razorpay-details');
       e &&
         t &&
         e.addEventListener('change', (e) => {
@@ -100,18 +101,18 @@
             : t.classList.add('d-none');
         }),
         o.length > 0 &&
-          o.forEach((e) => {
-            e.addEventListener('change', (e) => {
-              e &&
-                e.target &&
-                e.target.id &&
-                (({ type: e }) => {
-                  'checkoutPaymentStripe' === e
-                    ? (s.classList.add('d-none'), n.classList.remove('d-none'))
-                    : (s.classList.remove('d-none'), n.classList.add('d-none'));
-                })({ type: e.target.id });
-            });
+        o.forEach((e) => {
+          e.addEventListener('change', (e) => {
+            e &&
+              e.target &&
+              e.target.id &&
+              (({ type: e }) => {
+                'checkoutPaymentStripe' === e
+                  ? (s.classList.add('d-none'), u.classList.add('d-none'), n.classList.remove('d-none'))
+                  : (s.classList.remove('d-none'), n.classList.add('d-none'), u.classList.add('d-none'));
+              })({ type: e.target.id });
           });
+        });
     })();
   },
   129: function (e, t) {
@@ -182,16 +183,16 @@
               n = o ? o.querySelectorAll('.filter-options .form-group') : [];
             t.value && n && o
               ? n.forEach((e) => {
-                  e.innerText
-                    .trim()
-                    .toLowerCase()
-                    .includes(t.value.toLowerCase().trim())
-                    ? e.classList.remove('d-none')
-                    : e.classList.add('d-none');
-                })
+                e.innerText
+                  .trim()
+                  .toLowerCase()
+                  .includes(t.value.toLowerCase().trim())
+                  ? e.classList.remove('d-none')
+                  : e.classList.add('d-none');
+              })
               : n.forEach((e) => {
-                  e.classList.remove('d-none');
-                });
+                e.classList.remove('d-none');
+              });
           })(t, e);
         });
       });
@@ -202,7 +203,7 @@
       document.body.classList.add('page-loaded');
     });
   },
-  181: function (e, t, o) {},
+  181: function (e, t, o) { },
   182: function (e, t, o) {
     'use strict';
     o.r(t);
@@ -257,9 +258,9 @@
       init() {
         this.options.placement && this.positionHotspot(),
           this.options.alwaysVisible &&
-            this.hotspot.classList.add('always-show'),
+          this.hotspot.classList.add('always-show'),
           this.options.alwaysAnimate &&
-            this.hotspot.classList.add('always-animate'),
+          this.hotspot.classList.add('always-animate'),
           this.setHotspotContent(),
           Object(c.a)(this.hotspot, {
             allowHTML: !0,
@@ -323,32 +324,32 @@
               e.showMenu();
             });
           }),
-          this.hideEvents.forEach((t) => {
-            this.menuParent.addEventListener(t, function () {
-              e.hideMenu();
-            });
-          }));
+            this.hideEvents.forEach((t) => {
+              this.menuParent.addEventListener(t, function () {
+                e.hideMenu();
+              });
+            }));
       }
       showMenu() {
         window.innerWidth < this.breakpointLG ||
           (this.dropdownMenu && this.dropdownMenu.classList.add('show'),
-          this.menuToggle &&
+            this.menuToggle &&
             (this.menuToggle.classList.add('show'),
-            this.menuToggle.setAttribute('aria-expanded', 'true')));
+              this.menuToggle.setAttribute('aria-expanded', 'true')));
       }
       hideMenu() {
         window.innerWidth < this.breakpointLG ||
           (this.dropdownMenu && this.dropdownMenu.classList.remove('show'),
-          this.menuToggle &&
+            this.menuToggle &&
             (this.menuToggle.classList.remove('show'),
-            this.menuToggle.setAttribute('aria-expanded', 'false')));
+              this.menuToggle.setAttribute('aria-expanded', 'false')));
       }
     }
     document.addEventListener('DOMContentLoaded', () => {
       const e =
-          document.querySelectorAll(
-            '.navbar-nav .dropdown, .navbar-nav .dropend'
-          ) || [],
+        document.querySelectorAll(
+          '.navbar-nav .dropdown, .navbar-nav .dropend'
+        ) || [],
         t = document.querySelectorAll('.navbar-toggler') || [];
       e.length > 0 &&
         e.forEach((e) => {
@@ -444,9 +445,9 @@
           const e = document.querySelector('.swiper-product-imgs');
           if (e) {
             const o =
-                getComputedStyle(document.documentElement).getPropertyValue(
-                  '--theme-breakpoint-lg'
-                ) || '992px',
+              getComputedStyle(document.documentElement).getPropertyValue(
+                '--theme-breakpoint-lg'
+              ) || '992px',
               n = window.matchMedia(`(max-width: ${o})`),
               s = document.querySelector('.swiper-wrap'),
               a = {
@@ -466,24 +467,24 @@
             function t() {
               n.matches
                 ? (function () {
-                    s && s.classList.add('swiper-wrapper');
-                    r = new w.a(e, a);
-                  })()
+                  s && s.classList.add('swiper-wrapper');
+                  r = new w.a(e, a);
+                })()
                 : (function () {
-                    void 0 !== r && r.destroy(!0, !0);
-                    s && s.classList.remove('swiper-wrapper');
-                  })();
+                  void 0 !== r && r.destroy(!0, !0);
+                  s && s.classList.remove('swiper-wrapper');
+                })();
             }
             n.addListener(t), t();
           }
         });
         var e = new w.a('.gallery-thumbs-horizontal', {
-            spaceBetween: 10,
-            slidesPerView: 4,
-            freeMode: !0,
-            watchSlidesVisibility: !0,
-            watchSlidesProgress: !0,
-          }),
+          spaceBetween: 10,
+          slidesPerView: 4,
+          freeMode: !0,
+          watchSlidesVisibility: !0,
+          watchSlidesProgress: !0,
+        }),
           t =
             (new w.a('.gallery-top-horizontal', {
               spaceBetween: 0,
@@ -491,23 +492,23 @@
               navigation: { nextEl: '.swiper-next', prevEl: '.swiper-prev' },
               thumbs: { swiper: e },
             }),
-            (e = new w.a('.gallery-thumbs-vertical', {
-              spaceBetween: 5,
-              slidesPerView: 'auto',
-              direction: 'vertical',
-            })),
-            new w.a('.gallery-top-vertical', {
-              spaceBetween: 0,
-              effect: 'fade',
-              thumbs: { swiper: e },
-            }),
-            new w.a('.swiper-linked-carousel-large', {
-              spaceBetween: 0,
-              slidesPerView: 1,
-              roundLengths: !0,
-              loop: !0,
-              controller: { control: o },
-            })),
+              (e = new w.a('.gallery-thumbs-vertical', {
+                spaceBetween: 5,
+                slidesPerView: 'auto',
+                direction: 'vertical',
+              })),
+              new w.a('.gallery-top-vertical', {
+                spaceBetween: 0,
+                effect: 'fade',
+                thumbs: { swiper: e },
+              }),
+              new w.a('.swiper-linked-carousel-large', {
+                spaceBetween: 0,
+                slidesPerView: 1,
+                roundLengths: !0,
+                loop: !0,
+                controller: { control: o },
+              })),
           o = new w.a('.swiper-linked-carousel-small', {
             spaceBetween: 0,
             slidesPerView: 1,

@@ -1,18 +1,34 @@
+//Third party modules
+const Razorpay = require('razorpay')
 
 //Importing models
 const Products = require('../model/product')
 const Categories = require('../model/category')
 const Banners = require('../model/banner')
 const Wishlist = require('../model/wishlist')
+const Cart = require('../model/cart')
+const Users = require('../model/users')
+const Addresses = require('../model/address')
+const Orders = require('../model/order')
 
 //ObjectID
 const { ObjectId } = require('mongodb');
 
+//Middlewares
+const dateConvert = require('../middlewares/dateConvert')
+
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_ID_KEY,
+    key_secret: process.env.RAZORPAY_SECRET_KEY
+})
 
 module.exports = {
     getUserHome: async (req, res) => {
 
         try {
+            //Userid
+            const userId = new ObjectId(req.session.userId)
+
             //fetching hoodies from database using lookup
             const hoodies = await Products.aggregate([
                 {
@@ -84,12 +100,45 @@ module.exports = {
             //Bringing Banners 
             const banners = await Banners.find({})
 
+
+
+            //Cart products Bringing
+            const carts = await Cart.findOne({ userId })
+
+            if (carts) {
+                const productIds = carts.products.map(product => product.productId)//Extracting the product id in an array
+
+                // Fetching products based on productIds
+                const cartProducts = await Products.find({ _id: { $in: productIds } })
+
+                // Creating a map to quickly look up products by their ID
+                const productMap = new Map(cartProducts.map(product => [(product._id).toString(), product]))
+
+                //Now populate the cart with product details
+                var populatedCarts = [];
+                carts.products.forEach(product => {
+                    populatedCarts.push({
+                        product: productMap.get((product.productId).toString()),
+                        quantity: product.quantity
+                    });
+
+                });
+
+                var totalPrice = 0;
+                populatedCarts.forEach(cart => {
+
+                    totalPrice += Number(cart.product.price) * Number(cart.quantity);
+                })
+            }
+
+
+
             //rendering user's home page along with banners and products to display
-            res.render('user/html/index', { hoodies, banners, mustHaveProducts, firsttShirts, firstHoodies, secondtShirts, trendingProduct })
+            res.render('user/html/index', { hoodies, banners, mustHaveProducts, firsttShirts, firstHoodies, secondtShirts, trendingProduct, carts: populatedCarts, totalPrice })
         } catch (error) {
             //If any error occurs on asyncronous operation collect it
-
-            res.status(500).send({ message: 'Server Error', errror })
+            console.log(error)
+            res.status(500).send({ message: 'Server Error', error })
         }
     },
 
@@ -145,41 +194,110 @@ module.exports = {
     },
 
     //Men's category displaying
-    getMensCategory: async (req, res) => {
+    getCategory: async (req, res) => {
 
         try {
-            //Get mens products using lookup
-            const mensProduct = await Products.aggregate([
 
-                {
-                    $lookup: {
-                        from: 'categories',
-                        localField: 'categoryId',
-                        foreignField: '_id',
-                        as: 'category'
+            //pagination
+
+            const page = parseInt(req.query.page) || 1 // Current page number, default to 1
+            const limit = 7// Products per page
+            const skip = (page - 1) * limit // calculate skip value
+
+            //extracting category from query 
+            const category = req.query.category
+
+            if (category === 'Mens') {
+
+                //Get mens products using lookup
+                var mensProducts = await Products.aggregate([
+
+                    {
+                        $lookup: {
+                            from: 'categories',
+                            localField: 'categoryId',
+                            foreignField: '_id',
+                            as: 'category'
+                        }
+                    },
+
+                    {
+                        $match: {
+                            $or: [
+                                { 'category.name': 'Mens' }
+                            ]
+                        }
+                    },
+                    {
+                        $skip: skip // Skip documents based on the page number and limit
+                    },
+                    {
+                        $limit: limit // Limit the number of documents returned per page
                     }
-                },
 
-                {
-                    $match: {
-                        $or: [
-                            { 'category.name': 'Mens' }
-                        ]
+                ])
+            } else if (category === 'Womens') {
+
+                //Get Womens products using lookup
+                var womensProducts = await Products.aggregate([
+
+                    {
+                        $lookup: {
+                            from: 'categories',
+                            localField: 'categoryId',
+                            foreignField: '_id',
+                            as: 'category'
+                        }
+                    },
+
+                    {
+                        $match: {
+                            $or: [
+                                { 'category.name': 'Womens' }
+                            ]
+                        }
+                    },
+                    {
+                        $skip: skip // Skip documents based on the page number and limit
+                    },
+                    {
+                        $limit: limit // Limit the number of documents returned per page
                     }
-                },
 
-            ])
+                ])
+            } else if (category === 'Hoodies') {
+                //Get hoodie products using lookup
+                var hoodies = await Products.aggregate([
+
+                    {
+                        $match: {
+                            sub_category: 'Hoodie'
+                        }
+                    },
+                    {
+                        $skip: skip // Skip documents based on the page number and limit
+                    },
+                    {
+                        $limit: limit // Limit the number of documents returned per page
+                    }
+
+                ])
+            }
+            //Banner 
+            const banners = await Banners.find({ charecterist: 'Category' })
+
+
             //Render mens category page along with products
-            res.render('user/html/category', { mensProduct })
+            res.render('user/html/category', { products: mensProducts || womensProducts || hoodies, banners, page, category });
 
-        } catch (error) {
+        }
+        catch (error) {
             //console if any error happens
             console.log(error)
         }
 
-
-
     },
+
 
     //Render Wishlist page along with favorite products
     getWishlistPage: async (req, res) => {
@@ -200,6 +318,7 @@ module.exports = {
         }
 
     },
+
     //Function to add to wishlist
     addToWishList: async (req, res) => {
 
@@ -311,10 +430,9 @@ module.exports = {
         try {
 
             //UserId
-            const userId = req.session.userId
+            const userId = new ObjectId(req.session.userId)
 
             const wishlist = await Wishlist.findOne({ userId })
-
             if (!wishlist) {
                 return res.status(404).json({ message: 'User not found' });
             }
@@ -323,6 +441,336 @@ module.exports = {
 
         } catch (error) {
             console.log(error)
+        }
+
+    },
+
+    //getCart page
+    getCartPage: async (req, res) => {
+        const userId = new ObjectId(req.session.userId)
+        try {
+            //Cart products Bringing
+            const carts = await Cart.findOne({ userId })
+
+            if (carts) {
+                const productIds = carts.products.map(product => product.productId)//Extracting the product id in an array
+
+                // Fetching products based on productIds
+                const cartProducts = await Products.find({ _id: { $in: productIds } })
+
+                // Creating a map to quickly look up products by their ID
+                const productMap = new Map(cartProducts.map(product => [(product._id).toString(), product]))
+
+                //Now populate the cart with product details
+                var populatedCarts = [];
+                carts.products.forEach(product => {
+                    populatedCarts.push({
+                        product: productMap.get((product.productId).toString()),
+                        quantity: product.quantity
+                    });
+
+                });
+
+                var totalPrice = 0;
+                populatedCarts.forEach(cart => {
+
+                    totalPrice += Number(cart.product.price) * Number(cart.quantity);
+                })
+            }
+
+            //rendering user's home page along with banners and products to display
+            res.render('user/html/cart', { carts: populatedCarts, totalPrice })
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
+    removeFromCart: async (req, res) => {
+        //PRoduct id from params
+        const productId = new ObjectId(req.params.productId)
+
+        const userId = new ObjectId(req.session.userId);
+
+        const deleteFromCart = await Cart.findOneAndUpdate(
+            { userId },
+            { $pull: { products: { productId: productId } } },
+            { new: true }
+        )
+        res.redirect('/userhome')
+
+    },
+    //Fetch cart on page loading
+    fetchCart: async (req, res) => {
+        try {
+
+            //UserId
+            const userId = new ObjectId(req.session.userId)
+
+            let userCart = await Cart.findOne({ userId })
+
+            if (!userCart) {
+                userCart = new Cart(
+                    {
+                        userId,
+                        products: []
+                    });
+                await userCart.save()
+            }
+            // Return the wishlist array from the user document
+            res.status(200).json({ cart: userCart.products });
+
+        } catch (error) {
+            console.log(error)
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+    },
+
+    //Function to add to cart
+    addtoCart: async (req, res) => {
+        try {
+
+            //Getting userid from session.userId
+            let userId = req.session.userId
+
+            //quantity
+            const quantity = parseInt(req.query.quantity) || 1;
+
+            if (!userId) {
+                return res.status(400).json({ success: false, message: "User ID not found" });
+            }
+
+            //Getting productId from req.body
+            const productId = new ObjectId(req.params.productId)
+
+            // Find the product details
+            const productDetails = await Products.findById(productId);
+
+
+            //Checking if user already has a cart with products
+            let userCart = await Cart.findOne({ userId });
+
+            // Find if the product already exists in the cart
+            const existingProductIndex = userCart.products.findIndex(product => product.productId.equals(productId));
+
+            if (existingProductIndex !== -1) {
+                console.log(userCart)
+                // If the product exists, update its quantity 
+                userCart.products[existingProductIndex].quantity = quantity;
+
+                await userCart.save();
+
+            } else {
+
+                //If the product does not exist, push the product and quantity to the products array of cart
+                const userCartProduct = await Cart.findOneAndUpdate(
+                    { userId },
+                    {
+                        $push: {
+                            products: {
+                                productId,
+                                quantity
+                            }
+                        },
+                    },
+                    { new: true }
+
+                )
+            }
+            return res.status(200).json({ success: true })    //return success
+
+        } catch (error) {
+
+            //Catching if any erro occurs
+            console.log(error)
+            res.status(500).json({ success: false })
+        }
+    },
+
+    //checkout Page Rendering
+    checkoutPage: async (req, res) => {
+
+        const userId = new ObjectId(req.session.userId)
+
+        const user = await Users.findById(userId);
+
+        //Addrss find for user
+        const addressExist = await Addresses.findOne({ userId })
+
+        //Cart products Bringing
+        const carts = await Cart.findOne({ userId })
+
+        if (carts) {
+            const productIds = carts.products.map(product => product.productId)//Extracting the product id in an array
+
+            // Fetching products based on productIds
+            const cartProducts = await Products.find({ _id: { $in: productIds } })
+
+            // Creating a map to quickly look up products by their ID
+            const productMap = new Map(cartProducts.map(product => [(product._id).toString(), product]))
+
+            //Now populate the cart with product details
+            var populatedCarts = [];
+            carts.products.forEach(product => {
+                populatedCarts.push({
+                    product: productMap.get((product.productId).toString()),
+                    quantity: product.quantity
+                });
+
+            });
+
+            var totalPrice = 0;
+            populatedCarts.forEach(cart => {
+
+                totalPrice += Number(cart.product.price) * Number(cart.quantity);
+            })
+        }
+
+
+
+        //rendering user's home page along with banners and products to display
+        res.render('user/html/checkout', {
+            carts: populatedCarts,
+            totalPrice,
+            user,
+            address: addressExist.addresses
+        })
+    },
+
+    //create Order 
+    createOrder: async (req, res) => {
+
+        try {
+            //Session userId
+            const userId = new ObjectId(req.session.userId)
+            const user = await Users.findOne({ _id: userId })
+
+
+            const { address, country, state, zipCode, totalPrice, post } = req.body //req.body of axios
+
+            const options = {
+                amount: totalPrice * 100,
+                currency: 'INR',
+            }
+
+            const addresstoAdd = {
+                address,
+                country,
+                state,
+                post,
+                zip_code: zipCode
+            }
+
+            //checking if already any address is creted for this user
+            const userExist = await Addresses.findOne({ userId })
+
+            if (!userExist) {
+
+                //new instance creation for address
+                var newAddress = new Addresses({
+                    userId,
+                    addresses: [addresstoAdd]
+                })
+                await newAddress.save()
+            }
+            // } else {
+            //     await Addresses.findOneAndUpdate(
+            //         { userId },
+            //         { $push: { addresses: addresstoAdd } },
+            //         { new: true }
+            //     )
+            // }
+
+            const order = await razorpay.orders.create(options)
+            res.json({ order, key_id: process.env.RAZORPAY_ID_KEY, user, address: addresstoAdd, totalPrice })
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    },
+    //complete order
+    completeOrder: async (req, res) => {
+
+        const { responseData, products } = req.body
+        //Order Id
+        const orderId = responseData.order.id
+
+        //Admin for Operator
+        const admin = await Users.findOne({ role: 'admin' })
+
+        //delivery location
+        const deliveryLocation = responseData.address
+        //User Id
+        const userId = new ObjectId(req.session.userId)
+
+        //date
+        const currentDate = new Date()
+
+        const startDate = dateConvert(currentDate) //Start Date
+
+        const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+        const dueDate = dateConvert(estimatedDate)//End date
+
+        try {
+
+            //Find if user already have a orders
+            const orderExist = await Orders.findOne({ userId })
+
+            //User doesn't have already an order
+            if (!orderExist) {
+
+                //Create new instance of order
+                const newOrder = new Orders({
+                    userId,
+                    orders: [{
+                        orderId,
+                        products: products,
+                        operator: admin.firstName + ' ' + admin.lastName,
+                        location: deliveryLocation.post,
+                        start_date: startDate,
+                        estDeliverydue: dueDate
+                    }]
+
+                })
+                await newOrder.save()
+
+            } else {
+                //If order exist push the order details to orders
+                await Orders.findOneAndUpdate(
+                    { userId },
+                    {
+                        $push: {
+                            orders: {
+                                orderId,
+                                products: products,
+                                location: deliveryLocation.post,
+                                start_date: startDate,
+                                estDeliverydue: dueDate
+                            }
+                        }
+                    }
+                )
+            }
+
+
+            //Delete the products from cart
+            const productIds = products.map(product => product.productId);
+            await Cart.findOneAndUpdate(
+                { userId: userId },
+                {
+                    $pull: {
+                        products: { productId: { $in: productIds } }
+                    }
+                }
+            )
+
+            res.status(200).json({ success: true })
+
+        } catch (error) {
+
+            console.log(error)//catching the error
         }
 
     },
@@ -336,3 +784,4 @@ module.exports = {
         return res.redirect('/')
     }
 }
+

@@ -18827,6 +18827,13 @@ label {
   margin-right: 0.5rem;
   transition: all 0.2s linear;
 }
+.see-all-button{
+  position:relative;
+}
+.see-all-button a{
+  position:absolute;
+  top:25%
+}
 .form-check-custom label:after {
   content: '';
   position: absolute;
@@ -26604,7 +26611,7 @@ swiper-slide {
 }
 .swiper-btn-side {
   position: absolute;
-  top: 45%;
+  top: 35%;
   left: 0;
   z-index: 30;
 }

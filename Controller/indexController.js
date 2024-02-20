@@ -16,15 +16,22 @@ module.exports = {
 
     //Post login page
     postLogin: async (req, res) => {
+
+        //Collect datas from req.body
         const { email, password } = req.body
         try {
+            //Fetch user Details
             const user = await Users.findOne({ email })
-            console.log(user.isSuspend)
+
+            //Checking if the user is suspended or not
             if (user.isSuspend && user.suspensionEndTime > new Date()) {
-                return res.status(403).send('Your account is suspended.');
+                return res.status(403).send('Your account is suspended.');//in case of suspend
             }
+
+            //calling isCorrectPassword method to check password of user schema
             const correctPassword = user.isCorrectPassword(password)
 
+            //if not user or not correct password
             if (!user || !correctPassword) {
                 req.flash('error', 'Invalid username or password')
                 return res.redirect('/')
@@ -40,7 +47,6 @@ module.exports = {
 
                     //If user redirect to userhome page and storing userId in session
                     req.session.userId = user._id
-                    console.log(req.session.userId)
                     res.redirect('/userhome')
 
                 } else {
@@ -59,6 +65,7 @@ module.exports = {
 
 
     },
+
     getSignup: (req, res) => {
         const errorMessage = req.query.error;
         res.render('signup', { errorMessage })
