@@ -1,21 +1,30 @@
+//importing models
 const Products = require('../model/product');
 const Categories = require('../model/category');
 const Users = require('../model/users');
 const Banners = require('../model/banner');
-const { ObjectId } = require('mongodb');
-const bcrypt = require('bcrypt');
 const Coupons = require('../model/coupon');
+const Orders = require('../model/order')
+
+//Objectid
+const { ObjectId } = require('mongodb');
+
+//third party module
+const bcrypt = require('bcrypt');
 
 module.exports = {
+    //admin dashboard
     getAdminHome: (req, res) => {
         res.render('admin/adminhome', { URL: 'dashboard' });
     },
 
+    //Admin logout function
     adminLogout: (req, res) => {
         req.session.destroy();
         res.redirect('/');
     },
 
+    //Admin product page rendering
     adminProduct: async (req, res) => {
         const products = await Products.find({});
         const categories = await Categories.find({});
@@ -28,12 +37,14 @@ module.exports = {
         });
     },
 
+    //Admin list of users page rendering
     adminUserList: async (req, res) => {
         const message = req.flash('message');
         const users = await Users.find({});
         res.render('admin/usersPage', { URL: 'users', users, message });
     },
 
+    //Admin edit and seee of users details function
     adminUserListEditPage: async (req, res) => {
         const userId = new ObjectId(req.params.userId);
         const user = await Users.findOne({ _id: userId });
@@ -498,7 +509,11 @@ module.exports = {
     },
 
     adminOrders: async (req, res) => {
-        res.render('admin/order-page', { URL: 'orders' });
+
+        //Fetching  Order details
+        const totalOrders = await Orders.find({})
+
+        res.render('admin/order-page', { URL: 'orders', totalOrders });
     },
 
     adminCouponPage: async (req, res) => {

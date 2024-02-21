@@ -1783,7 +1783,12 @@ button.swiper-pagination-bullet {
   background-color: gray;
   color: black;
 }
-
+.swiper-slide a {
+  text-decoration: none;
+}
+.filter-options a {
+  text-decoration: none;
+}
 .swiper-scrollbar-drag {
   height: 100%;
   width: 100%;

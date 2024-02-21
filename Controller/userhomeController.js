@@ -193,7 +193,7 @@ module.exports = {
         }
     },
 
-    //Men's category displaying
+    // category displaying
     getCategory: async (req, res) => {
 
         try {
@@ -206,12 +206,11 @@ module.exports = {
 
             //extracting category from query 
             const category = req.query.category
+            const sort = req.query.sort
 
             if (category === 'Mens') {
 
-                //Get mens products using lookup
-                var mensProducts = await Products.aggregate([
-
+                const pipeline = [
                     {
                         $lookup: {
                             from: 'categories',
@@ -228,19 +227,31 @@ module.exports = {
                             ]
                         }
                     },
+
+
                     {
                         $skip: skip // Skip documents based on the page number and limit
                     },
+
                     {
                         $limit: limit // Limit the number of documents returned per page
                     }
+                ];
 
-                ])
+                // Adjust the pipeline based on the value of the 'sort' variable
+                if (sort === 'LowHi') {
+                    pipeline.splice(2, 0, { $sort: { price: 1 } }); // Insert $sort stage at index 2 for ascending price
+                } else if (sort === 'HiLow') {
+                    pipeline.splice(2, 0, { $sort: { price: -1 } }); // Insert $sort stage at index 2 for descending price
+                }
+
+                // Execute the aggregation pipeline
+                var mensProducts = await Products.aggregate(pipeline);
+
             } else if (category === 'Womens') {
 
-                //Get Womens products using lookup
-                var womensProducts = await Products.aggregate([
 
+                const pipeline = [
                     {
                         $lookup: {
                             from: 'categories',
@@ -249,7 +260,6 @@ module.exports = {
                             as: 'category'
                         }
                     },
-
                     {
                         $match: {
                             $or: [
@@ -263,25 +273,44 @@ module.exports = {
                     {
                         $limit: limit // Limit the number of documents returned per page
                     }
+                ];
 
-                ])
+                // Adjust the pipeline based on the value of the 'sort' variable
+                if (sort === 'LowHi') {
+                    pipeline.splice(2, 0, { $sort: { price: 1 } }); // Insert $sort stage at index 2 for ascending price
+                } else if (sort === 'HiLow') {
+                    pipeline.splice(2, 0, { $sort: { price: -1 } }); // Insert $sort stage at index 2 for descending price
+                }
+
+                // Execute the aggregation pipeline
+                var mensProducts = await Products.aggregate(pipeline);
+
             } else if (category === 'Hoodies') {
-                //Get hoodie products using lookup
-                var hoodies = await Products.aggregate([
 
+                const pipeline = [
                     {
                         $match: {
                             sub_category: 'Hoodie'
                         }
                     },
                     {
-                        $skip: skip // Skip documents based on the page number and limit
+                        $skip: skip
                     },
                     {
                         $limit: limit // Limit the number of documents returned per page
                     }
 
-                ])
+                ];
+
+                // Adjust the pipeline based on the value of the 'sort' variable
+                if (sort === 'LowHi') {
+                    pipeline.splice(2, 0, { $sort: { price: 1 } }); // Insert $sort stage at index 2 for ascending price
+                } else if (sort === 'HiLow') {
+                    pipeline.splice(2, 0, { $sort: { price: -1 } }); // Insert $sort stage at index 2 for descending price
+                }
+
+                //Get hoodie products using lookup
+                var hoodies = await Products.aggregate(pipeline)
             }
             //Banner 
             const banners = await Banners.find({ charecterist: 'Category' })
@@ -496,7 +525,7 @@ module.exports = {
             { $pull: { products: { productId: productId } } },
             { new: true }
         )
-        res.redirect('/userhome')
+        res.redirect('/user/cart-page')
 
     },
     //Fetch cart on page loading
@@ -633,7 +662,7 @@ module.exports = {
             carts: populatedCarts,
             totalPrice,
             user,
-            address: addressExist.addresses
+            address: addressExist?.addresses
         })
     },
 
@@ -662,16 +691,16 @@ module.exports = {
             }
 
             //checking if already any address is creted for this user
-            const userExist = await Addresses.findOne({ userId })
+            let addressExist = await Addresses.findOne({ userId })
 
-            if (!userExist) {
+            if (!addressExist) {
 
                 //new instance creation for address
-                var newAddress = new Addresses({
+                addressExist = new Addresses({
                     userId,
                     addresses: [addresstoAdd]
                 })
-                await newAddress.save()
+                await addressExist.save()
             }
             // } else {
             //     await Addresses.findOneAndUpdate(
@@ -682,7 +711,7 @@ module.exports = {
             // }
 
             const order = await razorpay.orders.create(options)
-            res.json({ order, key_id: process.env.RAZORPAY_ID_KEY, user, address: addresstoAdd, totalPrice })
+            res.json({ order, key_id: process.env.RAZORPAY_ID_KEY, user, address: addressExist, totalPrice })
 
         } catch (error) {
             console.log(error)
@@ -700,7 +729,7 @@ module.exports = {
         const admin = await Users.findOne({ role: 'admin' })
 
         //delivery location
-        const deliveryLocation = responseData.address
+        const address = responseData.address
         //User Id
         const userId = new ObjectId(req.session.userId)
 
@@ -726,9 +755,10 @@ module.exports = {
                     userId,
                     orders: [{
                         orderId,
+                        addressId: address._id,
                         products: products,
                         operator: admin.firstName + ' ' + admin.lastName,
-                        location: deliveryLocation.post,
+                        location: address.post,
                         start_date: startDate,
                         estDeliverydue: dueDate
                     }]
@@ -738,20 +768,23 @@ module.exports = {
 
             } else {
                 //If order exist push the order details to orders
-                await Orders.findOneAndUpdate(
+                const pushOrder = await Orders.findOneAndUpdate(
                     { userId },
                     {
                         $push: {
                             orders: {
                                 orderId,
+                                addressId: address._id,
                                 products: products,
                                 location: deliveryLocation.post,
+                                operator: admin.firstName + ' ' + admin.lastName,
                                 start_date: startDate,
                                 estDeliverydue: dueDate
                             }
                         }
                     }
                 )
+                console.log(pushOrder)
             }
 
 

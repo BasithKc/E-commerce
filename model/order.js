@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 
 const order = {
   orderId: String,
+  addressId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'addresses',
+    required: true,
+  },
   products: [
     {
       productId: {

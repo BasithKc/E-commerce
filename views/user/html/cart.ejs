@@ -33,11 +33,35 @@
                                     
                                     <!-- Details -->
                                         <td>
-                                            <div class="ps-sm-3">
+                                            <div class="ps-sm-3 card">
                                                 <h6 class="mb-2 fw-bolder">
                                                     <%= cart.product.name%>
                                                 </h6>
                                                 <small class="d-block text-muted"> <%= cart.product.color%> / <%= cart.product.size%></small>
+
+                                                <div class="quantity-selector mt-3" style="display: flex;gap: 20px;">
+                                            
+                                                    <div class="quantity-sec ">
+                                                        <label for="quantity">Qty:</label>
+                                                        <select name="quantity" id="quantity" >
+                                                            <option value="1" <%= cart.quantity === 1? 'selected': '' %>>1</option>
+                                                            <option value="2" <%= cart.quantity === 2? 'selected': '' %>>2</option>
+                                                            <option value="3" <%= cart.quantity === 3? 'selected': '' %>>3</option>
+                                                            <option value="4" <%= cart.quantity === 4? 'selected': '' %>>4</option>
+                                                            <option value="5" <%= cart.quantity === 5 ? 'selected': '' %>>5</option>
+                                                            <option value="6" <%= cart.quantity === 6? 'selected': '' %>>6</option>
+                                                            <option value="7" <%= cart.quantity === 7? 'selected': '' %>>7</option>
+                                                            <option value="8" <%= cart.quantity === 8? 'selected': '' %>>8</option>
+                                                            <option value="9" <%= cart.quantity === 9? 'selected': '' %>>9</option>
+                                                            <option value="10" <%= cart.quantity === 10? 'selected': '' %>>10</option>
+                                                        </select>
+                                                    </div>
+                                                   
+                                                    <div class="update">
+            
+                                                        <button class="quantity-update-button" style="height: 25px; background-color:rgb(51, 49, 49); color: white;border: none;" data-product-id="<%= cart.product._id%>">update</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     <!-- Details -->
@@ -56,7 +80,7 @@
                                                 <a href="/user/remove-from-cart/<%= cart.product._id%>" style="text-decoration: none;">
                                                     <i class="ri-close-circle-line ri-lg"></i>
                                                 </a>
-                                                <p class="fw-bolder mt-3 m-sm-0">$<%= cart.product.price * cart.quantity %></p>
+                                                <p class="fw-bolder mt-3 m-sm-0">$<%= (cart.product.price * cart.quantity).toFixed(2) %></p>
                                             </div>
                                         </td>
                                     <!-- /Actions -->
@@ -843,6 +867,9 @@
             </div>
         </div>
     </section>
+
+    <!-- Include Axios via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <!-- Theme JS -->
     <!-- Vendor JS -->
     <script src="/js/user/vendor.bundle.js"></script>

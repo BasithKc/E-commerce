@@ -210,16 +210,16 @@ async function fetchDeleteWishlist(productId) {
 
 const addtoCartButtons = document.querySelectorAll('.qucik-add-button')
 
-//looping
-addtoCartButtons.forEach(button => {
+const updatequantityButtons = document.querySelectorAll('.quantity-update-button')
+
+updatequantityButtons.forEach(button => {
   button.addEventListener('click', async function (event) {
-
     event.preventDefault()
-
     //get the quantity which was selected by user
+
     const quantitySelect = this.closest('.card').querySelector('select[name="quantity"]');
     const quantity = quantitySelect.value
-    console.log(quantity)
+
     //Get the productID
     const productId = this.dataset.productId
 
@@ -229,7 +229,33 @@ addtoCartButtons.forEach(button => {
       const data = response.data
       if (data.success) {
         cartLength.innerHTML = Number(cartLengthValue) + Number(quantity)
-        const messageBox = this.closest('.card').querySelector('.message-box')
+
+        window.location.href = '/user/cart-page'
+      }
+    }
+  })
+})
+
+//looping
+addtoCartButtons.forEach(button => {
+  button.addEventListener('click', async function (event) {
+
+    event.preventDefault()
+
+    //get the quantity which was selected by user
+    const quantitySelect = this.closest('.card').querySelector('select[name="quantity"]');
+    const quantity = quantitySelect.value
+
+    //Get the productID
+    const productId = this.dataset.productId
+
+    const response = await axios.get(`/user/add-to-cart/${productId}?quantity=${quantity}`)
+
+    if (response.status === 200) {
+      const data = response.data
+      if (data.success) {
+        cartLength.innerHTML = Number(cartLengthValue) + Number(quantity)
+        const messageBox = this.closest('.card').querySelector('#message-box')
 
         if (messageBox) {
 

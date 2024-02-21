@@ -53,7 +53,7 @@
                 <!-- /Images Section-->
 
                 <!-- Product Info Section-->
-                <div class="col-12 col-lg-5">
+                <div class="col-12 col-lg-5 card">
                     <div class="pb-3">
 
                         <!-- Product Name, Review, Brand, Price-->
@@ -161,16 +161,36 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- quantity -->
+                        <div class="quantity-selector">
+                            <label for="quantity">Quantity:</label>
+                            <select name="quantity" id="quantity" >
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+
+                        <p class="fw-bolder m-0 mt-2 " id="message-box" style="color: blue; text-align: center;"></p> 
                     </div>
                     <!-- /Product Options-->
 
                     <!-- Add To Cart-->
                     <div class="d-flex justify-content-between mt-3">
+                        <a href="#" >
+                            <span
+                            class="small text-uppercase tracking-wide fw-bolder text-center d-block qucik-add-button text-white d-flex align-items-center justify-content-center" data-product-id="<%= product._id%>" style="background-color: #12151C;  width: 27vw;height: 101%;">Add to Cart</span>
+                          </a>
                         <a href="#">
-
-                            <button class="btn btn-dark btn-dark-chunky flex-grow-1 me-2 text-white qucik-add-button">Add To Cart</button>
+                            <button class="btn btn-orange btn-orange-chunky wishlist-button" data-product-id="<%= product._id%>"> <i class="ri-heart-line heart-icon"></i></button>
                         </a>
-                        <button class="btn btn-orange btn-orange-chunky"><i class="ri-heart-line"></i></button>
                     </div>
                     <!-- /Add To Cart-->
 
@@ -1648,6 +1668,9 @@
             </div>
         </div>
     </section>
+
+     <!-- Include Axios via CDN -->
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Theme JS -->
     <!-- Vendor JS -->
     <script src="/js/user/vendor.bundle.js"></script>

@@ -11,24 +11,29 @@
                 <th scope="col">STATUS</th>
                 <th scope="col">OPERATORS</th>
                 <th scope="col">LOCATION</th>
-                <th scope="col">DISTANCE</th>
                 <th scope="col">START DATE</th>
                 <th scope="col">EST DELIVERY DUE</th>
               </tr>
             </thead>
             <tbody>
+              <% totalOrders.forEach(userOrder => { %>
+                  <% userOrder.orders.forEach(order => {%>
+
+            
               <tr>
-                <th scope="row"><b>#122349</b></th>
+                <th scope="row"><b><%= order.orderId %></b></th>
                 <td>
-                  <div class="tm-status-circle moving">
-                  </div>Moving
+                  <div class="tm-status-circle moving">                   
+                  </div><%= order.status %>
                 </td>
-                <td><b>Oliver Trag</b></td>
-                <td><b>London, UK</b></td>
-                <td><b>485 km</b></td>
-                <td>16:00, 12 NOV 2018</td>
-                <td>08:00, 18 NOV 2018</td>
+                <td><b><%= order.operator %></b></td>
+                <td><b><%= order.location %></b></td>              
+                <td><%= order.start_date %></td>
+                <td><%= order.estDeliverydue %></td>
               </tr>
+
+              <% })%>
+            <%})%>;
 
             </tbody>
           </table>
