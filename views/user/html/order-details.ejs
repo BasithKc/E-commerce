@@ -1,0 +1,189 @@
+<%- include('partials/productHeader.ejs')%>
+<section class="h-100 h-custom" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-12">
+        <div class="card border-top border-bottom border-3" >
+          <div class="card-body p-5">
+
+            <p class="lead fw-bold mb-5" style="color: #f37a27;">Delivery Addresss</p>
+
+            <div class="row">
+              <div class="col mb-5">
+                <p class="small text-muted mb-1"><%= address.addresses[0].name%></p>
+                <p><%= address.addresses[0].address%>, <%= address.addresses[0].post%></p>
+                <p><%= address.addresses[0].zip_code%>, <%= address.addresses[0].state%>, <%= address.addresses[0].country%></p>
+                <p class="small text-muted mb-1"><%= address.addresses[0].number%></p>
+              </div>
+              <div class="col mb-5">
+                <p class="small text-muted mb-1">Order No.</p>
+                <p><%= orderPro.orderId%></p>
+              </div>
+              <% if(!orderPro.status === 'Cancelled'){%>
+              <div class="col mb-2">
+               <a href="/user/account/orders/cancel-order/<%= orderPro.orderId%>?product=<%=product._id%>">
+                <p class=" text-muted mb-1"><i class="ri-close-line"></i>Cancel Order</p>
+               </a> 
+              </div>
+              <%}%>
+            </div>
+
+            <div class="mx-n5 px-5 py-4" style="background-color: #f2f2f2;">
+              <div class="row d-flex align-items-center">
+                <div class="col-md-8 col-lg-3">
+                  <img src="/assets/images/products/<%= product.image[0]%>" alt="" style="width: 150px;height: 150px;">
+                </div>
+                <div class="col-md-8 col-lg-6">
+                  <p><%= product.name%></p>
+                  <small>Color:<%= product.color %></small>
+                  <small>size:<%= product.size %></small><br>
+                  <small>Quantity:<%= orderPro.quantity %></small>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                  <p>£<%= (product.price * orderPro.quantity).toFixed(2)%></p>
+                </div>
+              </div>
+            </div>
+
+
+            <p class="lead fw-bold mb-4 pb-2 mt-4" style="color: #f37a27;">Tracking Order</p>
+
+            <%if (orderPro.status === 'Cancelled'){%> 
+              <div class="row">
+                <div class="col-lg-6 ">
+                  <div class="horizontal-timeline">
+                    <ul class="list-inline items d-flex justify-content-between">
+                      <li class="list-inline-item items-list">
+                        <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
+                      </li>
+                   
+                   
+                      <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                        <p style="margin-right: -8px; color: red;" > Canceled</p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <%}else  {%>
+                
+                
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="horizontal-timeline">
+                      <ul class="list-inline items d-flex justify-content-between">
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
+                        </li>
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Shipped</p>
+                        </li>
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">On the way</p>
+                        </li>
+                        <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                          <p style="margin-right: -8px; <%= orderPro.status === 'delivered' ? 'color: #fff;' : '' %>">Delivered</p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+              <%}%>
+
+            <p class="mt-4 pt-2 mb-0">Want any help? <a href="#!" style="color: #f37a27;">Please contact
+                us</a></p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Footer -->
+    <!-- Footer-->
+    <footer class="bg-dark mt-10  ">
+    
+      <!-- Footer socials-->
+      <div class="bg-light py-4">
+          <div class="container d-flex justify-content-center align-items-center py-2">
+              <p class="lead fw-bolder mb-0 lh-1">Find us online</p>
+              <ul class="list-unstyled d-flex justify-content-start align-items-center mb-0 ms-3 lh-1">
+                  <li class="mx-1 mb-0 lh-1"><a
+                          class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                              class="ri-instagram-fill ri-xl lh-1"></i></a></li>
+                  <li class="mx-1 mb-0 lh-1"><a
+                          class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                              class="ri-facebook-fill ri-xl lh-1"></i></a></li>
+                  <li class="mx-1 mb-0 lh-1"><a
+                          class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                              class="ri-twitter-fill ri-xl lh-1"></i></a></li>
+                  <li class="mx-1 mb-0 lh-1"><a
+                          class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                              class="ri-snapchat-fill ri-xl lh-1"></i></a></li>
+              </ul>
+          </div>
+      </div>    
+      <!-- / Footer socials-->
+  
+      
+      <!-- Info Bar-->
+      <div class="container mt-7">
+          <div class="row">
+          
+              <!-- Info box-->
+              <div class="col-12 col-md-4 mb-3 mb-xxl-0 text-white" data-aos="fade-left">
+                  <div class="border-white-opacity border-2 p-4 d-flex flex-column flex-lg-row justify-content-start align-items-start h-100">
+                      <i class="ri-questionnaire-line ri-lg mb-3 mb-lg-0"></i>
+                      <div class="ms-lg-4">
+                          <p class="mb-1 lh-1 fw-bold">Customer Services</p>
+                          <small class="text-muted"><a class="text-muted" href="#">Click here</a> to chat with our support team</small>
+                      </div>
+                  </div>
+              </div>
+              <!-- / Info box-->
+          
+              <!-- Info box-->
+              <div class="col-12 col-md-4 mb-3 mb-xxl-0 text-white" data-aos="fade-left" data-aos-delay="250">
+                  <div class="border-white-opacity border-2 p-4 d-flex flex-column flex-lg-row justify-content-start align-items-start h-100">
+                      <i class="ri-truck-line ri-lg mb-3 mb-lg-0"></i>
+                      <div class="ms-lg-4">
+                          <p class="mb-1 lh-1 fw-bold">Free Delivery</p>
+                          <small class="text-muted">Free standard delivery on all orders over $100</small>
+                      </div>
+                  </div>
+              </div>
+              <!-- / Info box-->
+              
+              <!-- Info box-->
+              <div class="col-12 col-md-4 mb-3 mb-xxl-0 text-white" data-aos="fade-left" data-aos-delay="500">
+                  <div class="border-white-opacity border-2 p-4 d-flex flex-column flex-lg-row justify-content-start align-items-start h-100">
+                      <i class="ri-repeat-line ri-lg mb-3 mb-lg-0"></i>
+                      <div class="ms-lg-4">
+                          <p class="mb-1 lh-1 fw-bold">Returns</p>
+                          <small class="text-muted">30 day money-back returns if you change your mind</small>
+                      </div>
+                  </div>
+              </div>
+              <!-- / Info box-->    
+          
+          </div>    </div>
+      <!-- / Info Bar-->     
+  
+     
+  
+  </footer>
+  <!-- / Footer-->
+
+<!-- Theme JS -->
+    <!-- Vendor JS -->
+    <script src="/js/user/vendor.bundle.js"></script>
+    
+    <!-- Theme JS -->
+    <script src="/js/user/theme.bundle.js"></script>
+
+    <script src="/js/user/userhome.js"></script>
+</body>
+</html>

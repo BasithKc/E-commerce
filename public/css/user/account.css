@@ -1,0 +1,160 @@
+.emp-profile {
+  padding: 3%;
+  margin-top: 3%;
+  margin-bottom: 3%;
+  border-radius: 0.5rem;
+  background-color: #e3e3e4;
+}
+.profile-img,
+.profile-work {
+  text-align: left;
+  background-color: white;
+}
+
+.profile-img img {
+  width: 60px;
+  height: 60px;
+}
+.profile-img .file {
+  position: relative;
+  width: 30%;
+  color: black;
+  border: none;
+  border-radius: 0;
+  font-size: 15px;
+  text-align: left;
+}
+.profile-img .file input {
+  position: absolute;
+  opacity: 0;
+  right: 0;
+  top: 0;
+}
+.profile-head h5 {
+  color: #333;
+}
+.profile-head h6 {
+  color: #0062cc;
+}
+.profile-edit-btn {
+  border: none;
+  border-radius: 1.5rem;
+  width: 70%;
+  padding: 2%;
+  font-weight: 600;
+  color: #6c757d;
+  cursor: pointer;
+}
+.proile-rating {
+  font-size: 12px;
+  color: #818182;
+  margin-top: 5%;
+}
+.proile-rating span {
+  color: #495057;
+  font-size: 15px;
+  font-weight: 600;
+}
+.profile-head .nav-tabs {
+  margin-bottom: 5%;
+}
+.profile-head .nav-tabs .nav-link {
+  font-weight: 600;
+  border: none;
+}
+.profile-head .nav-tabs .nav-link.active {
+  border: none;
+  border-bottom: 2px solid #0062cc;
+}
+.profile-work {
+  padding: 14%;
+  margin-top: -15%;
+}
+.profile-work p {
+  font-size: 17px;
+  color: #818182;
+  font-weight: 600;
+  margin-top: 10%;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.profile-work i {
+  margin-right: 30px;
+}
+.profile-work a {
+  text-decoration: none;
+  color: #495057;
+  font-weight: 600;
+  font-size: 17px;
+}
+.profile-work ul {
+  list-style: none;
+}
+.profile-tab label {
+  font-weight: 600;
+}
+.profile-tab p {
+  font-weight: 600;
+  color: #0062cc;
+}
+.profile-tab input[type='text'],
+.profile-tab input[type='tel'],
+.profile-tab input[type='email'] {
+  height: 40px;
+  width: 85%;
+}
+.add-address:hover {
+  cursor: pointer;
+}
+input[type='radio'] {
+  width: 18px; /* Set the width */
+  height: 18px;
+  /* Set the height */
+  margin-right: 10px;
+}
+.more-option {
+  right: 10px;
+  top: 10px;
+  display: none;
+}
+.more-option ul li:hover {
+  cursor: pointer;
+  color: skyblue;
+}
+.more-option-click {
+  cursor: pointer;
+}
+.ri-more-2-line {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+.order-serach input {
+  height: 40px;
+  border: none;
+}
+.order-serach p {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  font-size: 1rem;
+  width: 150px;
+}
+.order-serach input::placeholder {
+  padding-left: 10px;
+}
+.name-feature {
+  display: flex;
+  gap: 5px;
+}
+.name-feature span {
+  font-size: 0.8rem;
+  color: gray;
+}
+.order-list a {
+  text-decoration: none;
+}
+.order-list a:hover .order-product {
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+}

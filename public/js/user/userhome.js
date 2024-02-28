@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const productId = button.dataset.productId // Get the product ID
       const heartIcon = button.querySelector('.heart-icon')
 
-      // Check if the product is in the wishlist
+      // Check if the product is in the wishlist 
       if (wishlist.includes(productId)) {
 
         // Product is in the wishlist, set heart icon to filled state
@@ -218,7 +218,7 @@ updatequantityButtons.forEach(button => {
     //get the quantity which was selected by user
 
     const quantitySelect = this.closest('.card').querySelector('select[name="quantity"]');
-    const quantity = quantitySelect.value
+    const quantity = quantitySelect.value || 1
 
     //Get the productID
     const productId = this.dataset.productId
@@ -270,6 +270,7 @@ addtoCartButtons.forEach(button => {
 
   })
 })
+
 
 
 

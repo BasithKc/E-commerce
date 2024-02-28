@@ -14,8 +14,15 @@ const bcrypt = require('bcrypt');
 
 module.exports = {
     //admin dashboard
-    getAdminHome: (req, res) => {
-        res.render('admin/adminhome', { URL: 'dashboard' });
+    getAdminHome: async (req, res) => {
+        // Fetch signed-up user data from MongoDB
+        const userData = await Users.find({});
+
+        // Format data for graph
+        const formattedData = formatDataForGraph(userData);
+        console.log(formattedData)
+
+        res.render('admin/adminhome', { URL: 'dashboard', graphData: formattedData });
     },
 
     //Admin logout function
@@ -26,9 +33,12 @@ module.exports = {
 
     //Admin product page rendering
     adminProduct: async (req, res) => {
-        const products = await Products.find({});
-        const categories = await Categories.find({});
-        const message = req.flash('message') || '';
+        const products = await Products.find({}); //fetch product  list from db
+
+        const categories = await Categories.find({});//fetch category list from db
+
+        const message = req.flash('message') || ''; //accepting flash message
+
         res.render('admin/product', {
             URL: 'products',
             message,
@@ -40,20 +50,28 @@ module.exports = {
     //Admin list of users page rendering
     adminUserList: async (req, res) => {
         const message = req.flash('message');
-        const users = await Users.find({});
-        res.render('admin/usersPage', { URL: 'users', users, message });
+        const users = await Users.find({});//get all the registered users in database
+
+        res.render('admin/usersPage', {
+            URL: 'users',
+            users,
+            message
+        });
     },
 
     //Admin edit and seee of users details function
     adminUserListEditPage: async (req, res) => {
-        const userId = new ObjectId(req.params.userId);
-        const user = await Users.findOne({ _id: userId });
+        const userId = new ObjectId(req.params.userId); //req params 
+
+        const user = await Users.findOne({ _id: userId }); // find the user using the userId
+
         res.render('admin/users-edit', { userData: user, URL: 'users' });
     },
 
+    //user deleting by admin
     adminUserDelete: async (req, res) => {
         const userId = new ObjectId(req.params.userId);
-        const deleteUser = await Users.findByIdAndDelete(userId);
+        const deleteUser = await Users.findByIdAndDelete(userId);//find by id and delete the whole document
     },
 
     adminUserBlockpost: async (req, res) => {
@@ -540,3 +558,40 @@ module.exports = {
         res.redirect('/admin/coupons');
     },
 };
+
+function formatDataForGraph(userData) {
+    //Count signups by month
+    let signupCountByMonth = {}
+
+    var labels = []
+    var data = []
+
+    userData.forEach(user => {
+
+        var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+        var singupMonth = months[user.dateCreated.getMonth()];
+
+        let key = `${singupMonth} `; // Format: 'YYYY-MM'
+
+        if (signupCountByMonth[key]) {
+            signupCountByMonth[key]++
+        } else {
+            signupCountByMonth[key] = 1
+        }
+
+
+    })
+
+    // Convert signupCountsByMonth object to arrays for Chart.js
+    Object.keys(signupCountByMonth).forEach(key => {
+        labels.push(key)
+        data.push(signupCountByMonth[key])
+    })
+    // console.log(labels)
+
+    return {
+        label: labels,
+        data: data
+    }
+}

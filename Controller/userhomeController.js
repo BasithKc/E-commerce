@@ -142,6 +142,212 @@ module.exports = {
         }
     },
 
+    //User account page
+    getUserAccountPage: async (req, res) => {
+
+        //Userid
+        const userId = new ObjectId(req.session.userId)
+
+        const nav = req.query.nav
+
+        const user = await Users.findOne({ _id: userId })
+
+        res.render('user/html/account', { user, nav })
+    },
+
+    //User profile updation
+    updateUserProfile: async (req, res) => {
+
+        const userId = new ObjectId(req.session.userId)
+        const { fname, lname, email, gender, number } = req.body
+
+        const updateUser = await Users.updateOne(
+            { _id: userId },
+            {
+                $set: {
+                    firstName: fname,
+                    lastName: lname,
+                    email: email,
+                    gender: gender,
+                    number: number
+                }
+            },
+            { new: true }
+        )
+        res.redirect('/user/account')
+    },
+
+    //address listing page
+    getUserAddress: async (req, res) => {
+
+        //nav
+        const nav = req.query.nav
+        //UserId
+        const userId = new ObjectId(req.session.userId)
+
+        //User
+        const user = await Users.findById(userId)
+
+        //Addressess fetching
+        const address = await Addresses.findOne({ userId })
+
+        res.render('user/html/account-addres', { address: address?.addresses, nav, user })
+    },
+
+    //Address adding
+    addAddressPost: async (req, res) => {
+        //Userid
+        const userId = new ObjectId(req.session.userId)
+        //req.body
+        const { name, number, zip_code, post, address, country, state, addressType } = req.body
+        console.log(req.body)
+        const addresstoAdd = {
+            name,
+            number,
+            address,
+            country,
+            state,
+            post,
+            zip_code,
+            addressType
+        }
+
+        //checking if already any address is creted for this user
+        let addressExist = await Addresses.findOne({ userId })
+
+        if (!addressExist) {
+
+            //new instance creation for address
+            addressExist = new Addresses({
+                userId,
+                addresses: [addresstoAdd]
+            })
+            await addressExist.save()
+        }
+        else {
+            await Addresses.findOneAndUpdate(
+                { userId },
+                { $push: { addresses: addresstoAdd } },
+                { new: true }
+            )
+        }
+
+        res.redirect('/user/account/address?nav=Manage Addresses');
+    },
+
+    //Address deleting
+    deleteAddress: async (req, res) => {
+
+        const userId = new ObjectId(req.session.userId)
+
+        //addressid from req.params
+        const addressId = req.params.addressId
+
+        try {
+            //Find by userid and delete the selected address  from array of addresses
+            await Addresses.findOneAndDelete(
+                { userId },
+                { addresses: { $pull: { _id: addressId } } },
+                { new: true }
+            )
+            res.redirect('/user/account/address?nav=Manage Addresses')
+
+        } catch (error) {
+            console.log(error)
+        }
+
+
+    },
+
+    //Order listing 
+    getOrdersList: async (req, res) => {
+
+        try {
+            //userId
+            const userId = new ObjectId(req.session.userId)
+
+            // Find the user document by userId
+            const orders = await Orders.findOne({ userId }).populate({
+                path: 'orders',
+                populate: {
+                    path: 'product',
+                    model: 'products'
+                }
+            })
+
+            res.render('user/html/orders', { orders: orders.orders })
+        } catch (error) {
+            console.log(error)
+        }
+
+
+    },
+
+    //function to show details of product
+    OrderDetailsPage: async (req, res) => {
+        const userId = new ObjectId(req.session.userId)
+        //Order id from params
+        const orderId = req.params.orderId;
+
+        const orders = await Orders.aggregate([
+            { $match: { userId } },
+            { $match: { "orders.orderId": orderId } }
+        ]);
+
+
+        const productId = new ObjectId(req.query.product) //productId from query
+
+
+        let orderPro;
+
+        orders[0].orders.map(order => {
+            // Find the product within the order's products array
+            if (order.product.toString() === productId.toString()) {
+                orderPro = order
+
+            }
+
+        });
+
+        const address = await Addresses.findOne({ userId, addresses: { $elemMatch: { _id: orderPro.addressId } } });
+        //fetching address
+
+        const productDetails = await Products.findOne({ _id: orderPro.product })
+
+
+        res.render('user/html/order-details', {
+            product: productDetails,
+            address,
+            orderPro,
+        })
+    },
+
+    orderCancel: async (req, res) => {
+        const userId = new ObjectId(req.session.userId)
+
+        const orderId = req.params.orderId //orderId
+        const productId = new ObjectId(req.query.product)//product id
+        console.log(productId)
+
+        // Find the orders that match the specified userId and orderId
+        const orders = await Orders.findOne({ userId, "orders.orderId": orderId });
+
+        const currentDate = new Date()
+
+        const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+        const cancellDate = dateConvert(estimatedDate)//End date
+        // Update the status of the specific order
+        orders.orders.forEach(order => {
+            if (order.product.toString() === productId.toString()) {
+                order.status = 'Cancelled';
+                order.cancelledDate = cancellDate
+            }
+        });
+        await orders.save()
+
+        res.redirect('/user/account/orders/order-details/' + orderId + '?product=' + productId.toString());
+    },
     //Fuction to show product Details
     getProductDetails: async (req, res) => {
 
@@ -626,40 +832,51 @@ module.exports = {
         //Addrss find for user
         const addressExist = await Addresses.findOne({ userId })
 
-        //Cart products Bringing
-        const carts = await Cart.findOne({ userId })
+        if (!req.params.productId) {
 
-        if (carts) {
-            const productIds = carts.products.map(product => product.productId)//Extracting the product id in an array
+            //Cart products Bringing
+            const carts = await Cart.findOne({ userId })
 
-            // Fetching products based on productIds
-            const cartProducts = await Products.find({ _id: { $in: productIds } })
+            if (carts) {
+                const productIds = carts.products.map(product => product.productId)//Extracting the product id in an array
 
-            // Creating a map to quickly look up products by their ID
-            const productMap = new Map(cartProducts.map(product => [(product._id).toString(), product]))
+                // Fetching products based on productIds
+                const cartProducts = await Products.find({ _id: { $in: productIds } })
 
-            //Now populate the cart with product details
-            var populatedCarts = [];
-            carts.products.forEach(product => {
-                populatedCarts.push({
-                    product: productMap.get((product.productId).toString()),
-                    quantity: product.quantity
+                // Creating a map to quickly look up products by their ID
+                const productMap = new Map(cartProducts.map(product => [(product._id).toString(), product]))
+
+                //Now populate the cart with product details
+                var populatedCarts = [];
+                carts.products.forEach(product => {
+                    populatedCarts.push({
+                        product: productMap.get((product.productId).toString()),
+                        quantity: product.quantity
+                    });
+
                 });
 
-            });
+                var totalPrice = 0;
+                populatedCarts.forEach(cart => {
 
-            var totalPrice = 0;
-            populatedCarts.forEach(cart => {
+                    totalPrice += Number(cart.product.price) * Number(cart.quantity);
+                })
+            }
+        } else {
+            const productId = new ObjectId(req.params.productId)
 
-                totalPrice += Number(cart.product.price) * Number(cart.quantity);
-            })
+            var product = await Products.find({ _id: productId })
+            console.log(product)
+
+            totalPrice = product[0].price
         }
+
 
 
 
         //rendering user's home page along with banners and products to display
         res.render('user/html/checkout', {
-            carts: populatedCarts,
+            carts: populatedCarts || product,
             totalPrice,
             user,
             address: addressExist?.addresses
@@ -675,7 +892,7 @@ module.exports = {
             const user = await Users.findOne({ _id: userId })
 
 
-            const { address, country, state, zipCode, totalPrice, post } = req.body //req.body of axios
+            const { address, country, state, zipCode, totalPrice, post, addressType } = req.body //req.body of axios
 
             const options = {
                 amount: totalPrice * 100,
@@ -687,7 +904,8 @@ module.exports = {
                 country,
                 state,
                 post,
-                zip_code: zipCode
+                zip_code: zipCode,
+                addressType
             }
 
             //checking if already any address is creted for this user
@@ -702,13 +920,7 @@ module.exports = {
                 })
                 await addressExist.save()
             }
-            // } else {
-            //     await Addresses.findOneAndUpdate(
-            //         { userId },
-            //         { $push: { addresses: addresstoAdd } },
-            //         { new: true }
-            //     )
-            // }
+
 
             const order = await razorpay.orders.create(options)
             res.json({ order, key_id: process.env.RAZORPAY_ID_KEY, user, address: addressExist, totalPrice })
@@ -718,6 +930,7 @@ module.exports = {
         }
 
     },
+
     //complete order
     completeOrder: async (req, res) => {
 
@@ -729,7 +942,7 @@ module.exports = {
         const admin = await Users.findOne({ role: 'admin' })
 
         //delivery location
-        const address = responseData.address
+        const address = responseData.address.addresses[0]
         //User Id
         const userId = new ObjectId(req.session.userId)
 
@@ -745,51 +958,57 @@ module.exports = {
         try {
 
             //Find if user already have a orders
-            const orderExist = await Orders.findOne({ userId })
+            let orderExist = await Orders.findOne({ userId })
 
             //User doesn't have already an order
             if (!orderExist) {
 
-                //Create new instance of order
-                const newOrder = new Orders({
+                orderExist = new Orders({
                     userId,
-                    orders: [{
+                    orders: []
+                })
+
+                products.forEach(async (product) => {
+                    orderExist.orders.push({
+
                         orderId,
                         addressId: address._id,
-                        products: products,
+                        product: product.productId,
+                        quantity: product.quantity,
+                        location: `${address.post}, ${address.state}`,
                         operator: admin.firstName + ' ' + admin.lastName,
                         location: address.post,
                         start_date: startDate,
                         estDeliverydue: dueDate
-                    }]
 
+                    })
                 })
-                await newOrder.save()
+                await orderExist.save()
 
             } else {
                 //If order exist push the order details to orders
-                const pushOrder = await Orders.findOneAndUpdate(
-                    { userId },
-                    {
-                        $push: {
-                            orders: {
-                                orderId,
-                                addressId: address._id,
-                                products: products,
-                                location: deliveryLocation.post,
-                                operator: admin.firstName + ' ' + admin.lastName,
-                                start_date: startDate,
-                                estDeliverydue: dueDate
-                            }
-                        }
-                    }
-                )
-                console.log(pushOrder)
+                products.forEach(async (product) => {
+                    orderExist.orders.push({
+
+                        orderId,
+                        addressId: address._id,
+                        product: product.productId,
+                        quantity: product.quantity,
+                        location: `${address.post, address.state}`,
+                        operator: admin.firstName + ' ' + admin.lastName,
+                        location: address.post,
+                        start_date: startDate,
+                        estDeliverydue: dueDate
+
+                    })
+                })
+                await orderExist.save()
             }
 
 
             //Delete the products from cart
             const productIds = products.map(product => product.productId);
+
             await Cart.findOneAndUpdate(
                 { userId: userId },
                 {

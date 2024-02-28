@@ -27,6 +27,9 @@
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="/css/user/libs.bundle.css" />
 
+    <link rel="stylesheet" href="/css/user/account.css">
+
+    <link rel="stylesheet" href="/css/user/order-details.css">
     <!-- Main CSS -->
     <link rel="stylesheet" href="/css/user/theme.bundle.css" />
 
@@ -36,8 +39,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        <!-- Country list -->
-        <script src="https://cdn.jsdelivr.net/npm/country-list@2.0.1/index.js"></script>
+    <!-- Bootstrap -->
+<!-- 
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+
+    <!-- Country list -->
+    <script src="https://cdn.jsdelivr.net/npm/country-list@2.0.1/index.js"></script>
+
     <!-- Font Awsome -->
     <script src="https://kit.fontawesome.com/290ae120bc.js" crossorigin="anonymous"></script>
 
@@ -311,14 +321,14 @@
                     </li>
                     <!-- /Navbar Wishlist-->
     
-                    <!-- Navbar Login-->
-                    <li class="ms-1 d-none d-lg-inline-block">
-                        <a class="btn btn-link px-2 text-decoration-none d-flex align-items-center"
-                            href="#">
+                       <!-- Navbar Account-->
+                       <li class="ms-1 d-none d-lg-inline-block">
+                            
+                        <a class="btn btn-link px-2 text-decoration-none d-flex align-items-center" href="/user/account?nav=Personal Information">
                             <i class="ri-user-line ri-lg align-middle"></i>
                         </a>
-                    </li>
-                    <!-- /Navbar Login-->
+                </li>
+                <!-- /Navbar Login-->
     
                     <!-- Navbar Cart-->
                     <li class="ms-1 d-inline-block position-relative">

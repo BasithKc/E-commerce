@@ -1,0 +1,254 @@
+<%- include('partials/productHeader.ejs')  %>
+
+<section class="mt-0" style="background-color: rgb(245, 240, 240);">
+
+  <div class="container">
+
+    <div class="row">
+
+        <!-- order Aside/Sidebar -->
+        <div class="d-none d-lg-flex col-lg-3">
+            <div class="pe-4 p-3">
+                <div class="container mt-2" >
+
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                          <li class="breadcrumb-item breadcrumb-light "><a class="text-dark" href="#">Home</a></li>
+                          <li class="breadcrumb-item breadcrumb-light"><a class="text-dark" href="#">My Account </a></li>
+                          <li class="breadcrumb-item active breadcrumb-light text-dark" aria-current="page">My Orders</li>
+                        </ol>
+                    </nav>  
+                </div>
+                <!-- Category Aside -->
+                <aside style="background-color: white; padding: 10px 80px 0 20px;">   
+                 
+                    <h3 class="mt-4">Filters</h3>           
+                        <!-- Status Filter -->
+                        <div class="py-4 widget-filter border-top">
+                            <a class="small text-body text-decoration-none text-secondary-hover transition-all transition-all fs-6 fw-bolder d-block ">
+                                ORDER STATUS
+                            </a>
+                            <div id="filter-brands" class="collapse show mt-3">
+                              
+                                <div class="simplebar-wrapper">
+                                    <div class="filter-options" data-pixr-simplebar>
+                                            <div class="form-group form-check mb-0">
+                                                <input type="checkbox" class="form-check-input" id="filter-brand-0">
+                                                <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                    for="filter-brand-0">On the way </label>
+                                            </div>                            
+                                            <div class="form-group form-check mb-0">
+                                                <input type="checkbox" class="form-check-input" id="filter-brand-1">
+                                                <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                    for="filter-brand-1">Delivered  </label>
+                                            </div>                            
+                                            <div class="form-group form-check mb-0">
+                                                <input type="checkbox" class="form-check-input" id="filter-brand-2">
+                                                <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                    for="filter-brand-2">Cancelled </label>
+                                            </div>                            
+                                            <div class="form-group form-check mb-0">
+                                                <input type="checkbox" class="form-check-input" id="filter-brand-3">
+                                                <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                    for="filter-brand-3">Returned </label>
+                                            <div> 
+                                         </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Stutus Filter -->
+                
+                        <!-- Time Filter -->
+                        <div class="py-4 widget-filter border-top">
+                            <a class="small text-body text-decoration-none text-secondary-hover transition-all transition-all fs-6 fw-bolder d-block ">
+                                ORDER TIME
+                            </a>
+                            <div id="filter-type" class="collapse show  mt-3">
+                             
+                                <div class="filter-options">
+                                        <div class="form-group form-check mb-0">
+                                            <input type="checkbox" class="form-check-input" id="filter-type-0">
+                                            <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                for="filter-type-0">Last 30 days </label>
+                                        </div>                        
+                                        <div class="form-group form-check mb-0">
+                                            <input type="checkbox" class="form-check-input" id="filter-type-1">
+                                            <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                for="filter-type-1">2023</label>
+                                        </div>                        
+                                        <div class="form-group form-check mb-0">
+                                            <input type="checkbox" class="form-check-input" id="filter-type-2">
+                                            <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                for="filter-type-2">2022</label>
+                                        </div>                        
+                                        <div class="form-group form-check mb-0">
+                                            <input type="checkbox" class="form-check-input" id="filter-type-3">
+                                            <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                for="filter-type-3">2021 </label>
+                                        </div>                        
+                                        <div class="form-group form-check mb-0">
+                                            <input type="checkbox" class="form-check-input" id="filter-type-4">
+                                            <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                for="filter-type-4">2020 </label>
+                                        </div>                        
+                                        <div class="form-group form-check mb-0">
+                                            <input type="checkbox" class="form-check-input" id="filter-type-5">
+                                            <label class="form-check-label fw-normal text-body flex-grow-1 d-flex justify-content-between"
+                                                for="filter-type-5">Older </label>
+                                        </div>                
+                                    </div>
+                            </div>
+                        </div>
+                        <!-- / Type Filter -->
+                
+                </aside>
+                <!-- / Category Aside-->             
+            </div>
+        </div>
+        <!-- / order Aside/Sidebar -->
+
+
+         <!-- order Products-->
+         <div class="col-12 col-lg-9">
+            <div class="row">
+                <div class="col-md-12 mt-6 d-flex order-serach">
+                    <input type="search" name="" placeholder="Search your orders here" id="" style="width: 85%;">
+                    <p class="bg-primary text-white border-0"><i class="ri-search-line"></i> Search Orders</p>
+                </div>
+            </div>
+            <!-- Products-->
+            <div class="row">
+                
+                <div class="col-12 order-list">
+                <% orders.forEach(order => {%>
+                    
+                        <a href="/user/account/orders/order-details/<%=order.orderId%>?product=<%= order.product._id%>" class="product-card">
+                            <div class="col-12 border border-3 d-flex bg-white align-items-center order-product" style="padding: 20px 50px;">
+                                <div class="col-md-2">
+                                    <img src="/assets/images/products/<%= order.product.image[0] %>" alt="" style="width: 120px;height: 120px;">
+                                </div>
+                                <div class="col-md-4 d-flex flex-column ">
+                                    <p><%= order.product.name %></p>
+                                    <div class="name-feature">
+    
+                                        <% if(order.product.color){%>
+                                            <span>Color: <span><%= order.product.color %></span></span>
+                                        <%}%>
+                                        <% if(order.product.size){%>
+                                            <span>Size: <span><%= order.product.size %></span></span>
+                                        <%}%>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    $<%= order.product.price%>
+                                </div>
+                                <div class="col-md-5" style="margin-left: 20px;">
+                                    <% if(order.status === 'created' || order.status === 'shipped' ){%>
+                                        <p style="font-weight: bold;"><i style="color: green;font-weight: bold;font-size: 0.9rem;" class="ri-circle-line"></i> Delivery Expected by <%= order.estDeliverydue%></p>
+                                        <p style="font-size: 0.9rem;">Your Order has been placed</p>
+                                    <%} else if(order.status === 'Cancelled'){%>
+                                        <p style="font-weight: bold;"><i style="color: red;font-weight: bold;font-size: 0.9rem;" class="ri-circle-fill"></i> Delivery Cancelled on <%= order.cancelledDate%></p>
+                                        <p style="font-size: 0.9rem;">Your Order has been cancelled as per your request</p>
+
+                                    <%}%>
+                                </div>
+                            </div>                                            
+                        </a>
+                                     
+                    <%})%>
+                </div>
+            </div>
+            <!-- / Products-->
+        </div>
+        <!-- / order Products-->
+
+      </div>
+    </div>
+</section>
+
+  <!-- Footer -->
+    <!-- Footer-->
+    <footer class="bg-dark mt-10  ">
+    
+        <!-- Footer socials-->
+        <div class="bg-light py-4">
+            <div class="container d-flex justify-content-center align-items-center py-2">
+                <p class="lead fw-bolder mb-0 lh-1">Find us online</p>
+                <ul class="list-unstyled d-flex justify-content-start align-items-center mb-0 ms-3 lh-1">
+                    <li class="mx-1 mb-0 lh-1"><a
+                            class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                                class="ri-instagram-fill ri-xl lh-1"></i></a></li>
+                    <li class="mx-1 mb-0 lh-1"><a
+                            class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                                class="ri-facebook-fill ri-xl lh-1"></i></a></li>
+                    <li class="mx-1 mb-0 lh-1"><a
+                            class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                                class="ri-twitter-fill ri-xl lh-1"></i></a></li>
+                    <li class="mx-1 mb-0 lh-1"><a
+                            class="text-muted text-decoration-none opacity-75-hover transition-all lh-1" href="#"><i
+                                class="ri-snapchat-fill ri-xl lh-1"></i></a></li>
+                </ul>
+            </div>
+        </div>    
+        <!-- / Footer socials-->
+    
+        
+        <!-- Info Bar-->
+        <div class="container mt-7">
+            <div class="row">
+            
+                <!-- Info box-->
+                <div class="col-12 col-md-4 mb-3 mb-xxl-0 text-white" data-aos="fade-left">
+                    <div class="border-white-opacity border-2 p-4 d-flex flex-column flex-lg-row justify-content-start align-items-start h-100">
+                        <i class="ri-questionnaire-line ri-lg mb-3 mb-lg-0"></i>
+                        <div class="ms-lg-4">
+                            <p class="mb-1 lh-1 fw-bold">Customer Services</p>
+                            <small class="text-muted"><a class="text-muted" href="#">Click here</a> to chat with our support team</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- / Info box-->
+            
+                <!-- Info box-->
+                <div class="col-12 col-md-4 mb-3 mb-xxl-0 text-white" data-aos="fade-left" data-aos-delay="250">
+                    <div class="border-white-opacity border-2 p-4 d-flex flex-column flex-lg-row justify-content-start align-items-start h-100">
+                        <i class="ri-truck-line ri-lg mb-3 mb-lg-0"></i>
+                        <div class="ms-lg-4">
+                            <p class="mb-1 lh-1 fw-bold">Free Delivery</p>
+                            <small class="text-muted">Free standard delivery on all orders over $100</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- / Info box-->
+                
+                <!-- Info box-->
+                <div class="col-12 col-md-4 mb-3 mb-xxl-0 text-white" data-aos="fade-left" data-aos-delay="500">
+                    <div class="border-white-opacity border-2 p-4 d-flex flex-column flex-lg-row justify-content-start align-items-start h-100">
+                        <i class="ri-repeat-line ri-lg mb-3 mb-lg-0"></i>
+                        <div class="ms-lg-4">
+                            <p class="mb-1 lh-1 fw-bold">Returns</p>
+                            <small class="text-muted">30 day money-back returns if you change your mind</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- / Info box-->    
+            
+            </div>    </div>
+        <!-- / Info Bar-->     
+    
+       
+    
+    </footer>
+    <!-- / Footer-->
+
+            <!-- Theme JS -->
+            <!-- Vendor JS -->
+            <script src="/js/user/vendor.bundle.js"></script>
+            
+            <!-- Theme JS -->
+            <script src="/js/user/theme.bundle.js"></script>
+        
+            <script src="/js/user/userhome.js"></script>
+        </body>
+        
+    </html>

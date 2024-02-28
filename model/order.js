@@ -5,29 +5,21 @@ const order = {
   addressId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'addresses',
-    required: true,
   },
-  products: [
-    {
-      productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
-      },
-      quantity: {
-        type: Number,
-        required: true
-      }
-    }
-  ],
-
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'products'
+  },
+  quantity: Number,
+  location: String,
   status: { type: String, default: 'created' }, // created, paid, shipped, delivered
   operator: String,
   location: String,
   start_date: {
     type: String,
   },
-  estDeliverydue: String
+  estDeliverydue: String,
+  cancelledDate: String
 
 }
 

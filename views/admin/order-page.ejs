@@ -23,7 +23,11 @@
               <tr>
                 <th scope="row"><b><%= order.orderId %></b></th>
                 <td>
-                  <div class="tm-status-circle moving">                   
+                  <% if(order.status === 'Cancelled') {%>
+                  <i class="fa-solid fa-circle" style="color: #fb0404;font-size: 0.5rem;"></i>
+                  <%} else {%>
+                  <div class="tm-status-circle moving">
+                  <%}%>                   
                   </div><%= order.status %>
                 </td>
                 <td><b><%= order.operator %></b></td>
