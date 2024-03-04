@@ -1,98 +1,109 @@
-<%- include('partials/productHeader.ejs') %>
+<%- include('partials/productHeader.ejs')%>
+<div class="row px-4">
+  <div class="col-md-12 d-flex justify-content-between bg-light mt-2 p-3 px-5">
+    <h2>Rating & Reviews</h2>
 
-
-<div class="container emp-profile">
-            <form method="post" action="/user/account/update-profile">
-                <div class="row">
-                    <div class="col-md-4 pl-2" >
-                        <div class="profile-img" style="z-index: 100;position: relative;border-radius: 0 0 10px 0;">
-                            <img src="/assets/img/profile.png" alt="" style="margin-left: 10px;"/>
-                            <div class="file btn btn-lg ">
-                                Hello,
-                                <h4><%= user.firstName%></h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="profile-head text-center">
-                            <h3>
-                               <%= nav%>
-                            </h3>
-                        </div>
-                    </div>
-                   
-                </div>
-                <div class="row ">
-                    <%- include('partials/accountPagesidenav.ejs') %>
-                    <div class="col-md-7 " style="background-color:  white;border-radius: 10px 0 0 0;">
-                        <div class="tab-content profile-tab ml-5 p-5" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label>First Name</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="text" name="fname" id="" value="<%= user.firstName%>"disabled>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label>Last Name</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="text" name="lname" id="" value="<%= user.lastName%>"disabled>                                            
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                          <div class="col-md-6">
-                                              <label>Gender</label>
-                                          </div>
-                                          <div class="col-md-6 d-flex " style="gap: 10px;">
-                                            <input type="radio" id="male" name="gender" value="male" <%= user.gender === 'male'? 'checked': "" %> disabled>
-                                            <label for="male">Male</label>
-                                            
-                                            <input type="radio" id="female" name="gender" value="female" <%= user.gender === 'femal'? 'checked': "" %> disabled>
-                                            <label for="female">Female</label>
-                                          </div>
-                                      </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label for="email">Email</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="email" name="email" id="email" value="<%= user.email%>"disabled>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label for="number">Phone</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="tel" name="number" id="" value="<%= user.number%>" disabled>                                            
-                                            </div>
-                                        </div>
-                                    
-                            </div>
-                          </div>
-                          <div class="row">
-
-                            <div class="col-md-4 mt-3 profile-edit">
-                              <button class="profile-edit-btn">Edit Profile</button>
-                            </div>
-                            <div class="col-md-4 mt-3 edit-cancel" style="display: none;">
-                            <button  class="profile-edit-btn"   style="background-color: blue; color: white;  ">Cancel</button>
-                        </div>
-                          <div class="col-md-4 mt-3 edit-save" style="display: none;">
-                            <button type="submit" class="profile-edit-btn"  style="background: blue; color: white; ">Save</button>
-                        </div>
-                          </div>
-                      </div>
-                </div>
-            </form>           
+    <div class="col-2">
+      <a href="/user/product-details/<%= product._id %>" style="text-decoration: none;">
+        <div class="product-details d-flex " style="gap: 10px;">
+          <div class="name-star d-flex flex-column">
+            <p><%= product.name %></p>
+    
+            <div class="d-flex justify-content-end" style="gap: 10px;">
+              <span style="background-color: green;font-size: 0.7rem; border-radius: 5px ;padding: 3px;" class="text-white"><%= product.star %><i class="ri-star-line"></i></span>
+              <span  class="text-right">(<%= product.stock %>)</span>
+    
+            </div>
+          </div>
+        
+          <img src="/assets/images/products/<%= product.image[0] %>" alt="" style="width: 70px; height: 70px; border: .5px solid rgb(214, 209, 209);">
+    
         </div>
+      </a>
+      
+    </div>
+  </div>
+</div>
 
+<!-- Side -->
+<div class="row px-4 mt-2">
+  <div class="col-md-3" >
+    <div class="row">
+      
+      <div class="col-md-12 bg-light" style="padding: 10px;">
+        <p style="font-weight: 500;font-size: 1.5rem;">What makes  a good review</p>
+      </div>
+    </div>
+    <!-- Rating Criteria -->
+    <div class="row mt-1">
+      <div class="col-md-12 bg-light" style="padding: 10px;">
+        <p style="font-weight: 400;font-size: 1.4rem;">Have you used this product?</p>
+        <p style="font-size: 0.9rem;">Your review should be about your experience with the product.</p>
+      </div>
+    </div>
 
-            <!-- Footer -->
+    <div class="row mt-1">
+      <div class="col-md-12 bg-light" style="padding: 10px;">
+        <p style="font-weight: 400;font-size: 1.4rem;">Why review a product?</p>
+        <p style="font-size: 0.9rem;">Your valuable feedback will help fellow shoppers decide!</p>
+      </div>
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-12 bg-light" style="padding: 10px;">
+        <p style="font-weight: 400;font-size: 1.4rem;">How to review a product?</p>
+        <p style="font-size: 0.9rem;">Your review should include facts. An honest opinion is always appreciated. If you have an issue with the product or service please contact us from the help centre.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8 position-relative"  style="margin-left: 10px;width: 74%;">
+    <div class="row border">
+      <div class="col-md-12 rate-product bg-light p-3">
+        <h4>Rate the Product</h4>
+        <div class="mt-3 d-flex align-items-center stars-value"> 
+          <i class="ri-star-line" data-value="Very Bad" ></i>
+          <i class="ri-star-line" data-value="Bad"></i>
+          <i class="ri-star-line" data-value="Good"></i>
+          <i class="ri-star-line" data-value="Very Good"></i>
+          <i class="ri-star-line" data-value="Excellent"></i>
+          <span class="ratingvalue" style="font-weight: bold;"></span>
+        </div>
+      </div>
+    </div>
+  
+      <div class="row border">
+        <div class="col-md-12  bg-light p-3">
+            <h4>Review this product</h4>
+            <div class="mt-4">
+              <textarea name="review_text" id="review_text" rows="10"  placeholder="Write Your Review Here..." style="width: 100%;"></textarea>
+    
+            </div>
+          </div>
+      </div>
+
+      <div class="row border">
+        <div class="col-md-12 bg-light p-3 d-flex justify-content-between ">
+
+          <i class="ri-camera-line" style="font-size: 1.5rem;cursor: pointer;" onclick="document.getElementById('photoUpload').click()"></i>
+          <input type="file" name="" id="photoUpload" class="d-none">
+          
+          <button class="text-uppercase" type="submit" style="border: none;background-color: orangered; color: white;padding: 20px 100px; font-weight: bold; font-size: 1.5rem;" onclick="submitReview('<%= product._id%>')">Submit</button>   
+         
+        </div>
+      </div>
+
+      
+
+        <% if(message){ %>
+          <p class="text-center position-absolute text-white bg-dark" id="message"  style=" height: 60px; width: 50%;left: 10%;bottom: 1%;font-size: 1.5rem;"><i class="ri-check-line" style="background-color: green; border-radius: 50%; "></i><%= message %></p>
+          <% } %>
+      
+
+  </div>
+</div>
+
+<!-- Footer -->
     <!-- Footer-->
     <footer class="bg-dark mt-10  ">
 
@@ -343,48 +354,112 @@
 
   </footer>
   <!-- / Footer--> <!-- / Footer-->
-              <!-- Theme JS -->
+
+     <!-- Include Axios via CDN -->
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+  const stars = document.querySelectorAll('.ri-star-line')//stars
+  const ParentStars = document.querySelector('.stars-value') //showing rating value
+  const ratingValues = document.querySelector('.ratingvalue')
+
+  const message = document.getElementById('message')
+  setTimeout(()=> {
+    message.style.display = 'none'
+  },3000)
+  
+
+  stars.forEach((star,index) => {
+    star.addEventListener('click', (e) => {
+      let ratingValue = e.target.getAttribute('data-value')
+
+    // Remove all existing ri-star-fill classes
+        stars.forEach((star, idx) => {
+            if (idx <= index) {
+                star.classList.remove('ri-star-line')
+                star.classList.add('ri-star-fill');
+            } else {
+                star.classList.remove('ri-star-fill');
+                star.classList.add('ri-star-line')
+            }
+        });
+
+
+      if(ratingValue === 'Very Bad'){
+        ratingValues.innerHTML = '<i class="ri-emotion-sad-line"></i>'+ratingValue
+        ratingValues.style.color = 'red'
+
+      } else if(ratingValue === 'Bad'){
+        ratingValues.innerHTML ='<i class="ri-emotion-unhappy-line"></i>' +ratingValue
+        ratingValues.style.color = 'orange'
+
+      } else if(ratingValue === 'Good'){
+        ratingValues.innerHTML = '<i class="ri-emotion-happy-line"></i>'+ratingValue
+        ratingValues.style.color = 'green'
+
+      } else if(ratingValue === 'Very Good'){
+        ratingValues.innerHTML = '<i class="ri-emotion-happy-line"></i>'+ratingValue
+        ratingValues.style.color = 'green'
+
+      } else {
+        ratingValues.innerHTML ='<i class="ri-emotion-laugh-line"></i>'+ ratingValue
+        ratingValues.style.color = 'green'
+
+      }
+      
+    })
+  });
+
+
+  //function for submit revew 
+  async function submitReview(productId) {
+    const review = document.getElementById('review_text').value //review
+
+    // Define a regular expression pattern to match any emotion icon
+    const emotionRegex = /<i class="ri-emotion-[a-zA-Z]+-line"><\/i>/;
+
+   // Assuming ratingValues is the element where the rating value is displayed
+   const ratingValues = document.querySelector('.ratingvalue')
+
+    // Get the innerHTML of the ratingValues element
+    const ratingValuesHTML = ratingValues.innerHTML;
+
+   // Replace any emotion icon with an empty string
+    const ratingValue = ratingValuesHTML.replace(emotionRegex, '');
+
+ 
+    const formData = new URLSearchParams()
+  
+    formData.append('rating', ratingValue)
+    formData.append('review', review)
+    formData.append('productId', productId)
+  
+    const response =await axios.post('/user/review', formData)
+    console.log(response)
+
+    if(response.status == 200){
+      window.location.href= `/user/review/${productId}?message=Thank you for your feedback!`
+    }
+
+  }
+
+</script>
+
+    <!-- local js -->
+    <script src="/js/user/userhome.js"></script>
+  
+    <!-- swiper Js -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+
+
     <!-- Vendor JS -->
     <script src="/js/user/vendor.bundle.js"></script>
 
     <!-- Theme JS -->
     <script src="/js/user/theme.bundle.js"></script>
 
-    <script src="/js/user/userhome.js"></script>
+ 
 
-    <script>
-      const editProfileButton = document.querySelector('.profile-edit')
-      const editCancelBtn = document.querySelector('.edit-cancel')
-      const editSaveBtn  = document.querySelector('.edit-save')
 
-      const inputs = document.getElementsByTagName( 'input' )
-      console.log(inputs)
-
-      //Edit profile button clicking functions
-      editProfileButton.addEventListener('click', (event) => {
-        event.preventDefault()
-
-        inputs.forEach(input => {
-          input.disabled = false
-          editProfileButton.style.display = 'none'
-          editCancelBtn.style.display = 'block'
-          editSaveBtn.style.display = 'block'
-        });
-      })
-
-      editCancelBtn.addEventListener('click', (event) => {
-        event.preventDefault()
-
-        inputs.forEach(input => {
-          input.disabled = true
-          editProfileButton.style.display = 'block'
-          editCancelBtn.style.display = 'none'
-          editSaveBtn.style.display = 'none'
-        });
-      })
-
-     
-    </script>
 </body>
-
 </html>

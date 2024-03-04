@@ -116,7 +116,7 @@
                     <p class="bg-primary text-white border-0"><i class="ri-search-line"></i> Search Orders</p>
                 </div>
             </div>
-            <!-- Products-->
+            <!-- Orders-->
             <div class="row">
                 
                 <div class="col-12 order-list">
@@ -143,14 +143,19 @@
                                     $<%= order.product.price%>
                                 </div>
                                 <div class="col-md-5" style="margin-left: 20px;">
-                                    <% if(order.status === 'created' || order.status === 'shipped' ){%>
+                                    <% if(order.status === 'created' || order.status === 'shipped' || order.status === 'on the way' || order.status === 'shipped'){%>
                                         <p style="font-weight: bold;"><i style="color: green;font-weight: bold;font-size: 0.9rem;" class="ri-circle-line"></i> Delivery Expected by <%= order.estDeliverydue%></p>
-                                        <p style="font-size: 0.9rem;">Your Order has been placed</p>
+                                        <p style="font-size: 0.9rem;">Your Order has been <%= order.status %></p>
                                     <%} else if(order.status === 'Cancelled'){%>
                                         <p style="font-weight: bold;"><i style="color: red;font-weight: bold;font-size: 0.9rem;" class="ri-circle-fill"></i> Delivery Cancelled on <%= order.cancelledDate%></p>
                                         <p style="font-size: 0.9rem;">Your Order has been cancelled as per your request</p>
 
-                                    <%}%>
+                                    <%} else if (order.status === 'delivered') {%>
+                                        <p style="font-weight: bold;"><i style="color: green;font-weight: bold;font-size: 0.9rem;" class="ri-circle-fill"></i> Delivered  on <%= order.estDeliverydue%></p>
+                                        <p style="font-size: 0.9rem;">Your Order has been <%= order.status %></p>
+                                        <button style="color: blue; border: none;" onclick="reviewProduct('<%= order.product%>')"><i class="ri-star-fill"></i>Rate and Review</button>                                          
+                                       
+                                        <% } %>
                                 </div>
                             </div>                                            
                         </a>
@@ -158,7 +163,7 @@
                     <%})%>
                 </div>
             </div>
-            <!-- / Products-->
+            <!-- / Orders-->
         </div>
         <!-- / order Products-->
 

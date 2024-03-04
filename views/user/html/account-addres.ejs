@@ -24,24 +24,7 @@
     </div>
 
     <div class="row ">
-        <div class="col-md-4 mt-10 h-100" >
-            <div class="profile-work" style="position: relative; border-radius: 0 10px 0 0 ;">
-                <p></p>
-                
-                <p><i class="ri-account-circle-fill"></i>Account Settings</p>
-                <a href="/user/account?nav=Personal Information">Personal Information</a><br/>
-                <a href="/user/account/address?nav=Manage Address">Manage Addresses</a><br/>
-                <p><i class="ri-store-2-fill"></i>My Stuff</p>
-                <a href="">My Coupons</a><br/>
-                <a href="">My reviews & Ratings</a><br/>
-                <a href="">My Wishlist</a><br/>
-                <p> </p>
-                <a href="/user/logout">
-                    <i class="ri-logout-box-line" style="color: red;"></i> Logout
-                </a>
-            </div>
-        </div>
-
+        <%- include('partials/accountPagesidenav.ejs') %>
         <div class="col-md-8 px-5 pb-3" style="background-color:  white;border-radius: 10px 0 0 0;">
             <!-- Add address button-->
             <div class="row border mt-4 add-address-btn" style="cursor: pointer;">

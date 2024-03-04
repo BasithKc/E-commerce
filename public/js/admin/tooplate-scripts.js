@@ -1,6 +1,5 @@
 const width_threshold = 480;
 
-console.log(graphDataData)
 
 function drawLineChart() {
   if ($("#lineChart").length) {
@@ -37,7 +36,7 @@ function drawLineChart() {
         datasets: [
           {
             label: "User Signups -2024",
-            data: [0, graphDataData, 0],
+            data: [0, graphDataDataUser, 0],
             fill: false,
             borderColor: "rgb(75, 192, 192)",
             cubicInterpolationMode: "monotone",
@@ -92,15 +91,15 @@ function drawBarChart() {
     configBar = {
       type: "horizontalBar",
       data: {
-        labels: ["Red", "Aqua", "Green", "Yellow", "Purple", "Orange", "Blue"],
+        labels: orderColors,
         datasets: [
           {
             label: "# of Hits",
-            data: [33, 40, 28, 49, 58, 38, 44],
+            data: orderColorCount,
             backgroundColor: [
-              "#F7604D",
-              "#4ED6B8",
-              "#A8D582",
+              "black",
+              "white",
+              "green",
               "#D7D768",
               "#9D66CC",
               "#DB9C3F",
@@ -146,15 +145,15 @@ function drawPieChart() {
       data: {
         datasets: [
           {
-            data: [18.24, 6.5, 9.15],
+            data: categoryOrderCounts,
             backgroundColor: ["#F7604D", "#4ED6B8", "#A8D582"],
-            label: "Storage"
+            label: "Category vise Sale"
           }
         ],
         labels: [
-          "Used Storage (18.240GB)",
-          "System Storage (6.500GB)",
-          "Available Storage (9.150GB)"
+          `Mens (${categoryOrderCounts[0]} orders)`,
+          `Womens(${categoryOrderCounts[1]} orders)`,
+          `Trending(${categoryOrderCounts[2]} orders)`
         ]
       },
       options: optionsPie

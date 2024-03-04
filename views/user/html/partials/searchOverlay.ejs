@@ -1,0 +1,22 @@
+<section class="search-overlay">
+  <div class="container search-container">
+      <div class="py-5">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="lead lh-1 m-0 fw-bold">What are you looking for?</p>
+              <button class="btn btn-light btn-close-search"><i class="ri-close-circle-line align-bottom"></i>
+                  Close search</button>
+          </div>
+          <form action="/user/search" method="post">
+              <input type="text" class="form-control" id="searchForm"
+                  placeholder="Search by product or category name..." name="search">
+          </form>
+          
+
+          <div class="bg-dark p-4 text-white m-6">
+              <p class="lead m-0">Didn't find what you are looking for? <a
+                      class="transition-all opacity-50-hover text-white text-link-border border-white pb-1 border-2"
+                      href="#">Send us a message.</a></p>
+          </div>
+      </div>
+  </div>
+</section>

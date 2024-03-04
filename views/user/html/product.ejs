@@ -154,10 +154,10 @@
                             <div class="form-group">
                                 <select name="selectSize" class="form-control" data-choices>
                                     <option value="">Please Select Size</option>
-                                    <option value="Extra Small">XS</option>
-                                    <option value="Medium">M</option>
-                                    <option value="Large">L</option>
-                                    <option value="Extra Large">XL</option>
+                                    <option <%= product.size=== 'Extra Small'? 'selected': ''  %> value="Extra Small">XS</option>
+                                    <option <%= product.size === 'Medium'? 'selected': ''  %> value="Medium">M</option>
+                                    <option <%= product.size=== 'Large'? 'selected': ''  %> value="Large">L</option>
+                                    <option <%= product.size=== 'Extra Large'? 'selected': ''  %> value="Extra Large">XL</option>
                                 </select>
                             </div>
                         </div>
@@ -166,7 +166,7 @@
                         <p class="fw-bolder m-0 mt-2 " id="message-box" style="color: blue; text-align: center;"></p> 
                     </div>
                     <!-- /Product Options-->
-                    <a href="/user/checkout/<%= product._id%>?" style="text-decoration: none;">
+                    <a href="/user/checkout/?productId=<%= product._id %>" style="text-decoration: none;">
                         <span
                         class="small text-uppercase tracking-wide fw-bolder text-center d-block text-white d-flex align-items-center justify-content-center " data-product-id="<%= product._id%>" style="background-color: orangered;  width: 27vw; height: 50px;">Buy Now<i class="ri-flashlight-fill"></i></span>
                       </a>
@@ -378,19 +378,14 @@
                                                 <!-- Review Stars Small-->
                                                 <div class="rating position-relative d-table">
                                                     <div class="position-absolute stars" style="width: 90%">
+                                                        
                                                         <i class="ri-star-fill text-dark mr-1"></i>
                                                         <i class="ri-star-fill text-dark mr-1"></i>
                                                         <i class="ri-star-fill text-dark mr-1"></i>
                                                         <i class="ri-star-fill text-dark mr-1"></i>
                                                         <i class="ri-star-fill text-dark mr-1"></i>
                                                     </div>
-                                                    <div class="stars">
-                                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                                    </div>
+                                                   
                                                 </div>
                                             </li>
                                         </ul>
@@ -407,12 +402,14 @@
 
                                 </div>
 
+
+                                <% reviews.reviews.forEach(review => {%>
                                 <!-- Single Review-->
                                 <article class="py-5 border-bottom border-top">
                                     <div class="row">
                                         <div class="col-12 col-md-4">
-                                            <small class="text-muted fw-bolder">08/12/2021</small>
-                                            <p class="fw-bolder">Ben Sandhu, Ireland</p>
+                                            <small class="text-muted fw-bolder"><%= review.time %></small>
+                                            <p class="fw-bolder"><%= review.userId.firstName %> <%= review.userId.lastName %>, India</p>
                                             <span class="bg-success-faded fs-xs fw-bolder text-uppercase p-2">Verified
                                                 Customer</span>
                                         </div>
@@ -420,31 +417,24 @@
                                             <!-- Review Stars Small-->
                                             <div class="rating position-relative d-table">
                                                 <div class="position-absolute stars" style="width: 80%">
-                                                    <i class="ri-star-fill text-dark mr-1"></i>
-                                                    <i class="ri-star-fill text-dark mr-1"></i>
-                                                    <i class="ri-star-fill text-dark mr-1"></i>
-                                                    <i class="ri-star-fill text-dark mr-1"></i>
-                                                    <i class="ri-star-fill text-dark mr-1"></i>
+                                                    <% for(let star=0; star<= review.rating; star++) {%>
+                                                        <i class="ri-star-fill text-dark mr-1"></i>
+                                                   
+                                                        <%}%>
                                                 </div>
                                                 <div class="stars">
+                                                  
                                                     <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
                                                     <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
                                                     <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
                                                     <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
                                                     <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
+                                                   
                                                 </div>
+                                             
                                             </div>
-                                            <p class="fw-bolder mt-4">Happy with this considering the price</p>
-                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit sequi,
-                                                architecto placeat nam officia
-                                                sapiente ipsam at dolorum quisquam, ipsa earum qui laboriosam. Pariatur
-                                                recusandae nihil, architecto
-                                                reprehenderit perferendis obcaecati. Lorem ipsum dolor, sit amet
-                                                consectetur adipisicing elit.
-                                                Distinctio sint nesciunt velit quae, quisquam ullam veritatis itaque
-                                                repudiandae. Inventore quae
-                                                doloribus modi nihil illum accusamus voluptas suscipit neque perferendis
-                                                totam!</p>
+                                            
+                                            <p><%= review.review %></p>
 
                                             <small class="fw-bolder bg-light d-table rounded py-1 px-2">Yes, I would
                                                 recommend the product</small>
@@ -465,6 +455,7 @@
                                     </div>
                                 </article>
                                 <!-- /Single Review-->
+                                <%}) %>
 
                                 <!-- Single Review-->
                                 <article class="py-5 border-bottom ">

@@ -59,13 +59,31 @@ router.get('/user/fetch-cart', userHomeController.fetchCart)
 router.get('/user/add-to-cart/:productId', userHomeController.addtoCart)
 
 //User checkout Page
-router.get('/user/checkout/:productId', userHomeController.checkoutPage)
+router.get('/user/checkout', userHomeController.checkoutPage)
 
 //Endpoin for creating an order
 router.post('/user/create-order', userHomeController.createOrder)
 
 //Complete order
 router.post('/user/complete-order', userHomeController.completeOrder)
+
+//Review
+router.get('/user/review/:productId', userHomeController.reviewProductPage)
+
+//review edit page
+router.get('/user/review/edit/:productId', userHomeController.reviewProductEdit)
+
+router.post('/user/review/edit', userHomeController.reveiwEditPost)
+
+//Delete reveiew
+router.get('/user/review/delete/:reviewId', userHomeController.deleteReview)
+//Submit Review
+router.post('/user/review', userHomeController.submitReview)
+
+//review preview page
+router.get('/user/review-preview', userHomeController.reviewPagePreview)
+
+router.post('/user/search', userHomeController.searchProducts);
 
 //Handling logout
 router.get('/user/logout', userHomeController.logOut)

@@ -19,7 +19,7 @@
                 <p class="small text-muted mb-1">Order No.</p>
                 <p><%= orderPro.orderId%></p>
               </div>
-              <% if(!orderPro.status === 'Cancelled'){%>
+              <% if(orderPro.status !== 'Cancelled' && orderPro.status !== 'delivered'){%>
               <div class="col mb-2">
                <a href="/user/account/orders/cancel-order/<%= orderPro.orderId%>?product=<%=product._id%>">
                 <p class=" text-muted mb-1"><i class="ri-close-line"></i>Cancel Order</p>
@@ -54,18 +54,41 @@
                   <div class="horizontal-timeline">
                     <ul class="list-inline items d-flex justify-content-between">
                       <li class="list-inline-item items-list">
-                        <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
+                        <p class="py-1 px-2 rounded <%= orderPro.status === 'Cancelled' ? 'text-white' : '' %>" style="background-color: <%= ( orderPro.status === 'Cancelled') ? '#f37a27' : '' %>">Ordered</p>
                       </li>
                    
                    
                       <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
-                        <p style="margin-right: -8px; color: red;" > Canceled</p>
+                        <p style="margin-right: -8px; color: red;" > Cancelled</p>
                       </li>
                     </ul>
                   </div>
+                  <p>Delivery has been cancelled as per your request on <%= orderPro.cancelledDate%> </p>
                 </div>
               </div>
-              
+              <%} else if(orderPro.status === 'delivered') { %>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="horizontal-timeline">
+                      <ul class="list-inline items d-flex justify-content-between">
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color: <%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
+                        </li>
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Shipped</p>
+                        </li>
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">On the Way</p>
+                        </li>
+                        <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                          <p  class="py-1 px-2 rounded <%= ( orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= ( orderPro.status === 'delivered') ? '#f37a27' : '' %>"><i class="ri-check-line" style=" background-color: green;border-radius: 50%;"></i>Delivered</p>
+                        </li>
+                      </ul>
+                    </div>
+                    <p><i style="color: green;font-weight: bold;font-size: 0.9rem;" class="ri-circle-fill"></i>Your Order has benn delivered on <%= orderPro.estDeliverydue  %></p>
+                    <a href="/user/review/<%= orderPro.product %>" style="text-decoration: none; color: blue;"><i class="ri-star-fill"></i>Rate and Review</a>
+                  </div>
+                </div>
               <%}else  {%>
                 
                 
@@ -74,13 +97,13 @@
                     <div class="horizontal-timeline">
                       <ul class="list-inline items d-flex justify-content-between">
                         <li class="list-inline-item items-list">
-                          <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
+                          <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color: <%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
                         </li>
                         <li class="list-inline-item items-list">
                           <p class="py-1 px-2 rounded <%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Shipped</p>
                         </li>
                         <li class="list-inline-item items-list">
-                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">On the way</p>
+                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">On the Way</p>
                         </li>
                         <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
                           <p style="margin-right: -8px; <%= orderPro.status === 'delivered' ? 'color: #fff;' : '' %>">Delivered</p>

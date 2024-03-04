@@ -11,10 +11,15 @@ const productSchema = new mongoose.Schema({
     stock: Number,
     expire_date: String,
     size: String,
-    color: String
+    color: String,
+    star: Number, // 1-5
 })
 productSchema.methods.isInStock = function () {
     return this.stock > 0;
 }
+
+// Create a text index on name, category, and description fields
+productSchema.index({ name: "text", sub_category: "text", description: "text" });
+
 //productSchema.loadClass(Product)
 module.exports = mongoose.model("products", productSchema);

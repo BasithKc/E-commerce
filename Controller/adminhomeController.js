@@ -18,11 +18,90 @@ module.exports = {
         // Fetch signed-up user data from MongoDB
         const userData = await Users.find({});
 
-        // Format data for graph
-        const formattedData = formatDataForGraph(userData);
-        console.log(formattedData)
+        const orderData = await Orders.aggregate([
+            // Unwind the orders array to denormalize
+            { $unwind: "$orders" },
+            // Lookup product details for each order
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "orders.product",
+                    foreignField: "_id",
+                    as: "product"
+                }
+            },
+            // Unwind the product array
+            { $unwind: "$product" },
+            //Lookup category details for each product
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'product.categoryId',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
 
-        res.render('admin/adminhome', { URL: 'dashboard', graphData: formattedData });
+            {
+                // Group by category and count orders
+                $group: {
+                    _id: {
+                        category: "$category.name",
+                    },
+                    orderCount: { $sum: 1 }
+                }
+            },
+            // Project to rename _id to category and sort by order count
+            {
+                $project: {
+                    category: "$_id.category",
+                    orderCount: 1,
+                    _id: 0
+                }
+            },
+            { $sort: { orderCount: -1 } }
+        ]);
+
+        const colorData = await Orders.aggregate([
+            // Unwind the orders array to denormalize
+            { $unwind: "$orders" },
+            // Lookup product details for each order
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "orders.product",
+                    foreignField: "_id",
+                    as: "product"
+                }
+            },
+            // Unwind the product array
+            { $unwind: "$product" },
+            //Lookup category details for each product
+
+            {
+                // Group by category and count orders
+                $group: {
+                    _id: {
+                        color: "$product.color",
+                    },
+                    orderCount: { $sum: 1 }
+                }
+            },
+            // Project to rename _id to category and sort by order count
+            {
+                $project: {
+                    color: "$_id.color",
+                    orderCount: 1,
+                    _id: 0
+                }
+            },
+            { $sort: { orderCount: -1 } }
+        ]);
+
+        // Format data for graph
+        const UserSinupData = formatDataForGraph(userData);
+
+        res.render('admin/adminhome', { URL: 'dashboard', graphDataUser: UserSinupData, categoryData: orderData, colorData });
     },
 
     //Admin logout function

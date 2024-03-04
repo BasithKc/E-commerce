@@ -11,6 +11,7 @@
             <!-- Cart Items -->
             <div class="col-12 col-lg-6 col-xl-7">
                 <div class="table-responsive">
+                    <% if(carts) {%>
                     <table class="table">
                         <thead>
                             <tr>
@@ -90,6 +91,9 @@
                              
                         </tbody>
                     </table>
+                    <%} else {%>
+                        <h2 class="text-center">Cart is Empty!</h2>
+                        <%}%>
                 </div>
             </div>
             <!-- /Cart Items -->

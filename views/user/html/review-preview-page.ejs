@@ -16,7 +16,9 @@
                     <div class="col-md-6">
                         <div class="profile-head text-center">
                             <h3>
-                               <%= nav%>
+                               <%= nav%> <% if(reviews){%>
+                                (<%= reviews.length %>)
+                              <%} %>
                             </h3>
                         </div>
                     </div>
@@ -24,68 +26,56 @@
                 </div>
                 <div class="row ">
                     <%- include('partials/accountPagesidenav.ejs') %>
-                    <div class="col-md-7 " style="background-color:  white;border-radius: 10px 0 0 0;">
-                        <div class="tab-content profile-tab ml-5 p-5" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label>First Name</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="text" name="fname" id="" value="<%= user.firstName%>"disabled>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label>Last Name</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="text" name="lname" id="" value="<%= user.lastName%>"disabled>                                            
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                          <div class="col-md-6">
-                                              <label>Gender</label>
-                                          </div>
-                                          <div class="col-md-6 d-flex " style="gap: 10px;">
-                                            <input type="radio" id="male" name="gender" value="male" <%= user.gender === 'male'? 'checked': "" %> disabled>
-                                            <label for="male">Male</label>
-                                            
-                                            <input type="radio" id="female" name="gender" value="female" <%= user.gender === 'femal'? 'checked': "" %> disabled>
-                                            <label for="female">Female</label>
-                                          </div>
-                                      </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label for="email">Email</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="email" name="email" id="email" value="<%= user.email%>"disabled>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label for="number">Phone</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                              <input type="tel" name="number" id="" value="<%= user.number%>" disabled>                                            
-                                            </div>
-                                        </div>
+                     
+                    <div class="col-8 ">
+                      <% reviews.forEach(review => {%>
+                        <% review.reviews.forEach(rev => {%> 
+                             <div class="row border d-flex bg-white align-items-center px-4 ">
+                              <div class="col-md-2">
+                                <img src="/assets/images/products/<%= review.productId.image[0] %>" alt=""style="width: 50px;height: 100px;">
+                              </div>
+                              <div class="col-md-9" style="position: relative;">
+                                <p><%= review.productId.name %></p>
+                                <div class="d-flex align-items-center" style="gap: 10px;">
+                                  <span style="background-color: green;font-size: 0.9rem; border-radius: 5px ;padding: 5px;" class="text-white"><%=  rev.rating %><i class="ri-star-fill" ></i>                        
+                                  </span>
+                                </div>
+                                <p><%= rev.review %></p>
+                                <div class="d-flex justify-content-between">                                  
+                                  <p style="color: gray; font-size: 0.9rem;"><%= rev.userId.firstName%> <%= rev.userId.lastName%> <i class="ri-checkbox-circle-fill"></i> <%= rev.time %></p>
+                                  <div>
+                                    <i class="ri-thumb-up-line" style="margin-right: 50px;"></i>
+                                    <i class="ri-thumb-down-line"></i>
+                                  </div>
+                                </div>
+                                <div class="d-flex actions" style="gap: 10px;">
+                                  <a href="/user/review/edit/<%= review.productId._id %>?revId=<%= rev._id %>" style="text-decoration: none;">
+                                    <p class="review-edit-button" style="color: blue;border: none;cursor: pointer;" onclick="" data-product-id="<%= review.productId._id %>">
+                                     Edit
+                                    </p>
                                     
-                            </div>
-                          </div>
-                          <div class="row">
-
-                            <div class="col-md-4 mt-3 profile-edit">
-                              <button class="profile-edit-btn">Edit Profile</button>
-                            </div>
-                            <div class="col-md-4 mt-3 edit-cancel" style="display: none;">
-                            <button  class="profile-edit-btn"   style="background-color: blue; color: white;  ">Cancel</button>
-                        </div>
-                          <div class="col-md-4 mt-3 edit-save" style="display: none;">
-                            <button type="submit" class="profile-edit-btn"  style="background: blue; color: white; ">Save</button>
-                        </div>
-                          </div>
+                                  </a>
+                                  <a href="" style="text-decoration: none;">
+                                    <p class="review-delete-button" data-product-id="<%= review.productId._id %>" style="color: blue;border: none;">
+                                       Delete
+                                    </p>
+                                  </a>
+                                
+                                  <div class="delete-confirmation position-absolute bg-light p-3 " style="bottom: -60%;display: none;z-index: 100;">
+                                    <p>Are you sure you want to delete this review?</p>
+                                    <div class="d-flex" style="gap: 20px;">
+                                      <p class="cancel-confirmation" style="cursor: pointer;">Cancel</p>
+                                      <a href="/user/review/delete/<%= rev._id %>" style="text-decoration: none;">
+                                        <p style="color: red;">Yes, Delete</p>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                             </div> 
+                             <%}) %>             
+                      <%})%>
                       </div>
                 </div>
             </form>           
@@ -343,6 +333,33 @@
 
   </footer>
   <!-- / Footer--> <!-- / Footer-->
+
+
+  <script>
+    const deleteButtons = document.querySelectorAll('.review-delete-button')
+    cancelConfirmation = document.querySelectorAll('.cancel-confirmation')
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault()
+
+        const confirmationDiv = event.target.closest('.actions').querySelector('.delete-confirmation')
+
+        confirmationDiv.style.display = 'block'
+      })
+    })
+  
+    cancelConfirmation.forEach(button => {
+      button.addEventListener('click', (event)=> {
+        event.preventDefault()
+        const confirmationDiv = event.target.closest('.delete-confirmation')
+
+        confirmationDiv.style.display = 'none'
+
+      })
+  })
+  
+  </script>
               <!-- Theme JS -->
     <!-- Vendor JS -->
     <script src="/js/user/vendor.bundle.js"></script>
@@ -352,39 +369,10 @@
 
     <script src="/js/user/userhome.js"></script>
 
-    <script>
-      const editProfileButton = document.querySelector('.profile-edit')
-      const editCancelBtn = document.querySelector('.edit-cancel')
-      const editSaveBtn  = document.querySelector('.edit-save')
+      <!-- Include Axios via CDN -->
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-      const inputs = document.getElementsByTagName( 'input' )
-      console.log(inputs)
-
-      //Edit profile button clicking functions
-      editProfileButton.addEventListener('click', (event) => {
-        event.preventDefault()
-
-        inputs.forEach(input => {
-          input.disabled = false
-          editProfileButton.style.display = 'none'
-          editCancelBtn.style.display = 'block'
-          editSaveBtn.style.display = 'block'
-        });
-      })
-
-      editCancelBtn.addEventListener('click', (event) => {
-        event.preventDefault()
-
-        inputs.forEach(input => {
-          input.disabled = true
-          editProfileButton.style.display = 'block'
-          editCancelBtn.style.display = 'none'
-          editSaveBtn.style.display = 'none'
-        });
-      })
-
-     
-    </script>
+  
 </body>
 
 </html>

@@ -10,6 +10,8 @@ const Cart = require('../model/cart')
 const Users = require('../model/users')
 const Addresses = require('../model/address')
 const Orders = require('../model/order')
+const Reviews = require('../model/reviews')
+
 
 //ObjectID
 const { ObjectId } = require('mongodb');
@@ -337,6 +339,7 @@ module.exports = {
         const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 
         const cancellDate = dateConvert(estimatedDate)//End date
+        console.log(cancellDate)
         // Update the status of the specific order
         orders.orders.forEach(order => {
             if (order.product.toString() === productId.toString()) {
@@ -388,9 +391,16 @@ module.exports = {
 
             ])
 
+            const reviews = await Reviews.findOne(
+                { productId: product._id }).populate({
+                    path: 'reviews.userId',
+                    model: 'User'
+                })
+
+            console.log(reviews)
             //if product Exist render to product details page
             if (product) {
-                res.render('user/html/product', { product, hoodies })
+                res.render('user/html/product', { product, hoodies, reviews })
             }
 
         } catch (error) {
@@ -667,9 +677,13 @@ module.exports = {
             //UserId
             const userId = new ObjectId(req.session.userId)
 
-            const wishlist = await Wishlist.findOne({ userId })
+            let wishlist = await Wishlist.findOne({ userId })
             if (!wishlist) {
-                return res.status(404).json({ message: 'User not found' });
+                wishlist = new Wishlist({
+                    userId,
+                    products: []
+                })
+                await wishlist.save()
             }
             // Return the wishlist array from the user document
             res.status(200).json({ wishlist: wishlist.products });
@@ -714,7 +728,7 @@ module.exports = {
             }
 
             //rendering user's home page along with banners and products to display
-            res.render('user/html/cart', { carts: populatedCarts, totalPrice })
+            res.render('user/html/cart', { carts: populatedCarts, totalPrice: totalPrice || 0 })
         } catch (error) {
             console.log(error)
         }
@@ -778,18 +792,21 @@ module.exports = {
             //Getting productId from req.body
             const productId = new ObjectId(req.params.productId)
 
-            // Find the product details
-            const productDetails = await Products.findById(productId);
-
-
             //Checking if user already has a cart with products
             let userCart = await Cart.findOne({ userId });
+
+            if (!userCart) {
+                userCart = new Cart({
+                    userId,
+                    products: []
+                })
+                await userCart.save();
+            }
 
             // Find if the product already exists in the cart
             const existingProductIndex = userCart.products.findIndex(product => product.productId.equals(productId));
 
             if (existingProductIndex !== -1) {
-                console.log(userCart)
                 // If the product exists, update its quantity 
                 userCart.products[existingProductIndex].quantity = quantity;
 
@@ -811,6 +828,7 @@ module.exports = {
                     { new: true }
 
                 )
+                console.log(userCartProduct)
             }
             return res.status(200).json({ success: true })    //return success
 
@@ -832,7 +850,7 @@ module.exports = {
         //Addrss find for user
         const addressExist = await Addresses.findOne({ userId })
 
-        if (!req.params.productId) {
+        if (!req.query.productId) {
 
             //Cart products Bringing
             const carts = await Cart.findOne({ userId })
@@ -877,7 +895,7 @@ module.exports = {
         //rendering user's home page along with banners and products to display
         res.render('user/html/checkout', {
             carts: populatedCarts || product,
-            totalPrice,
+            totalPrice: totalPrice || 0,
             user,
             address: addressExist?.addresses
         })
@@ -892,37 +910,21 @@ module.exports = {
             const user = await Users.findOne({ _id: userId })
 
 
-            const { address, country, state, zipCode, totalPrice, post, addressType } = req.body //req.body of axios
+            const { totalPrice } = req.body //req.body of axios
 
             const options = {
                 amount: totalPrice * 100,
                 currency: 'INR',
             }
 
-            const addresstoAdd = {
-                address,
-                country,
-                state,
-                post,
-                zip_code: zipCode,
-                addressType
-            }
 
             //checking if already any address is creted for this user
             let addressExist = await Addresses.findOne({ userId })
 
-            if (!addressExist) {
-
-                //new instance creation for address
-                addressExist = new Addresses({
-                    userId,
-                    addresses: [addresstoAdd]
-                })
-                await addressExist.save()
-            }
 
 
             const order = await razorpay.orders.create(options)
+
             res.json({ order, key_id: process.env.RAZORPAY_ID_KEY, user, address: addressExist, totalPrice })
 
         } catch (error) {
@@ -1025,6 +1027,207 @@ module.exports = {
             console.log(error)//catching the error
         }
 
+    },
+
+    //search
+    searchProducts: async (req, res) => {
+        const value = req.body.search
+
+        try {
+
+            const products = await Products.find({ $text: { $search: value } })// Perform text search
+
+            const banners = await Banners.find({ charecterist: 'Category' })
+
+
+            res.render('user/html/category', { products, banners, page, category: '' })
+        } catch (error) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },
+
+
+    reviewProductPage: async (req, res) => {
+
+        const message = req.query.message
+        const productId = new ObjectId(req.params.productId)
+
+        const product = await Products.findById(productId)//fetch product from db
+
+        res.render('user/html/review', {
+            product,
+            message,
+        })
+    },
+
+    //function to render the page to edit a review
+    reviewProductEdit: async (req, res) => {
+        const message = req.query.message
+        const productId = new ObjectId(req.params.productId)
+
+        //if user clicks on edit button of a review which has has submitted
+        if (req.query.revId) {
+            const reviewId = new ObjectId(req.query.revId);
+
+            //review
+            var review = await Reviews.findOne({ "reviews._id": reviewId })
+            console.log(review)
+        }
+        const product = await Products.findById(productId)//fetch product from db
+
+        res.render('user/html/review-edit', {
+            product,
+            message,
+            review: review || ''
+        })
+    },
+
+    //function to edit a review posting
+    reveiwEditPost: async (req, res) => {
+        let { rating, review } = req.body;
+        console.log(req.body)
+
+        //reviewId
+        const reviewId = new ObjectId(req.body.reviewId)
+
+        console.log(reviewId)
+
+        //manipulating the rating  and review to make them safe for database
+        if (rating === 'Very Bad') {
+            rating = 1
+        } else if (rating === 'Bad') {
+            rating = 2
+        } else if (rating === 'Good') {
+            rating = 3
+        } else if (rating === 'Very Good') {
+            rating = 4
+        } else if (rating === 'Excellent') {
+            rating = 5
+        }
+
+        const date = new Date(); // Your date object
+
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Adding 1 because getMonth() returns 0-based index
+        const year = date.getFullYear();
+
+        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+
+        try {
+            let reviews = await Reviews.findOneAndUpdate(
+                {
+                    "reviews._id": reviewId
+                },
+                {
+                    $set: {
+
+                        "reviews.$.review": review,
+                        "reviews.$.rating": rating,
+                        "reviews.$.time": formattedDate
+                    }
+                },
+                {
+                    new: true, // return updated document instead of original one
+                }
+            )
+
+            res.status(200).json({ success: true })
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
+    deleteReview: async (req, res) => {
+        const reviewId = new ObjectId(req.params.reviewId)
+
+        try {
+            await Reviews.findOneAndDelete({ "reviews._id": reviewId })
+            res.redirect('/user/review-preview')
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
+    submitReview: async (req, res) => {
+        let { rating, review, productId } = req.body;
+        const userId = new ObjectId(req.session.userId);
+
+
+        //manipulating the rating  and review to make them safe for database
+        if (rating === 'Very Bad') {
+            rating = 1
+        } else if (rating === 'Bad') {
+            rating = 2
+        } else if (rating === 'Good') {
+            rating = 3
+        } else if (rating === 'Very Good') {
+            rating = 4
+        } else if (rating === 'Excellent') {
+            rating = 5
+        }
+
+        const date = new Date(); // Your date object
+
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Adding 1 because getMonth() returns 0-based index
+        const year = date.getFullYear();
+
+        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+
+        try {
+            let reviews = await Reviews.findOne({ productId })
+
+            if (!reviews) {
+
+                reviews = new Reviews({
+                    productId: new ObjectId(productId),
+                    reviews: [{
+                        userId,
+                        review,
+                        rating,
+                        time: formattedDate
+                    }]
+                })
+                await reviews.save()
+            } else {
+                reviews.reviews.push({
+                    userId,
+                    review,
+                    rating,
+                    time: formattedDate
+                })
+                await reviews.save()
+
+            }
+            res.status(200).json({ success: true })
+        } catch (error) {
+            console.log(error)
+        }
+
+    },
+
+    //review Preview
+    reviewPagePreview: async (req, res) => {
+        const userId = req.session.userId
+
+        const nav = req.query.nav//nav
+
+        //user
+        const user = await Users.findById(userId)
+
+        //fetching review for each userId
+        const reviews = await Reviews.find({ "reviews.userId": userId }).populate('productId',).populate({
+            path: 'reviews.userId',
+            model: 'User'
+        });
+
+        res.render('user/html/review-preview-page', {
+            user,
+            reviews,
+            nav,
+            reviews
+        })
     },
 
     //Logout function
