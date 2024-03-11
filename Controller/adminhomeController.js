@@ -5,6 +5,10 @@ const Users = require('../model/users');
 const Banners = require('../model/banner');
 const Coupons = require('../model/coupon');
 const Orders = require('../model/order')
+const Addresses = require('../model/address')
+
+//coupon Generator
+const couponGenerator = require('../middlewares/coupongenerator')
 
 //Objectid
 const { ObjectId } = require('mongodb');
@@ -18,6 +22,7 @@ module.exports = {
         // Fetch signed-up user data from MongoDB
         const userData = await Users.find({});
 
+        //order data for graph
         const orderData = await Orders.aggregate([
             // Unwind the orders array to denormalize
             { $unwind: "$orders" },
@@ -62,6 +67,7 @@ module.exports = {
             { $sort: { orderCount: -1 } }
         ]);
 
+        //color of orders
         const colorData = await Orders.aggregate([
             // Unwind the orders array to denormalize
             { $unwind: "$orders" },
@@ -98,8 +104,10 @@ module.exports = {
             { $sort: { orderCount: -1 } }
         ]);
 
-        // Format data for graph
+        // signup data for graph
         const UserSinupData = formatDataForGraph(userData);
+        const data = UserSinupData.data
+        console.log([...data])
 
         res.render('admin/adminhome', { URL: 'dashboard', graphDataUser: UserSinupData, categoryData: orderData, colorData });
     },
@@ -409,33 +417,40 @@ module.exports = {
 
     //render product details page and edit
     editProductGet: async (req, res) => {
-        const productId = new ObjectId(req.params.productId);
-        const product = await Products.findOne({ _id: productId });
-        const categories = await Categories.find({});
 
-        const categoryName = await Products.aggregate([
-            {
-                $match: { _id: productId },
-            },
-            {
-                $lookup: {
-                    from: 'categories',
-                    localField: 'categoryId',
-                    foreignField: '_id',
-                    as: 'category',
+        try {
+            const productId = new ObjectId(req.params.productId);
+            const product = await Products.findOne({ _id: productId });//fetching the product by the provided id
+
+            const categories = await Categories.find({}); //fetching whole categories to list in category list of the product
+
+            const categoryName = await Products.aggregate([
+                {
+                    $match: { _id: productId },
                 },
-            },
-        ]);
-        if (categoryName.length > 0) {
-            res.render('admin/edit-product', {
-                URL: 'products',
-                product,
-                categoryName: categoryName[0],
-                categories,
-            });
-        } else {
-            console.log('No profile found for the specified user ID.');
+                {
+                    $lookup: {
+                        from: 'categories',
+                        localField: 'categoryId',
+                        foreignField: '_id',
+                        as: 'category',
+                    },
+                },
+            ]);
+            if (categoryName.length > 0) {
+                res.render('admin/edit-product', {
+                    URL: 'products',
+                    product,
+                    categoryName: categoryName[0],
+                    categories,
+                });
+            } else {
+                console.log('No profile found for the specified user ID.');
+            }
+        } catch (error) {
+            console.log(error)
         }
+
     },
 
     //function to edit product and update db
@@ -496,7 +511,7 @@ module.exports = {
                 { new: true }
             );
         } else {
-            // data do not exist in input file
+            //if data do not exist in file input
             const product = await Products.findOneAndUpdate(
                 productId,
                 {
@@ -518,8 +533,10 @@ module.exports = {
         res.redirect('/admin/products');
     },
 
+    //banner page rendering with all the banners from  database
     adminBannerGet: async (req, res) => {
-        const banner = await Banners.find({});
+        const banner = await Banners.find({});//fetching all banners from the database
+
         const message = req.flash('message');
         res.render('admin/admin-banners', { URL: 'banners', message, banner });
     },
@@ -559,17 +576,19 @@ module.exports = {
 
     //Bannner Delete
     adminBannerDelete: async (req, res) => {
-        const bannerId = new ObjectId(req.params.bannerId);
-        const deletedBanner = await Banners.findByIdAndDelete(bannerId);
-        req.flash('message', 'Banner Deleted');
+        const bannerId = new ObjectId(req.params.bannerId);//banner id from req.params
+
+        const deletedBanner = await Banners.findByIdAndDelete(bannerId); //delete the banner from database by the id
+
+        req.flash('message', 'Banner Deleted');//flash message
         res.redirect('/admin/banners');
     },
 
     //Banner Edit page rendering
     adminBannerEdit: async (req, res) => {
-        const bannerId = new ObjectId(req.params.bannerId);
-        const banner = await Banners.findById(bannerId);
-        console.log(banner);
+        const bannerId = new ObjectId(req.params.bannerId); //bannerId from req.params
+
+        const banner = await Banners.findById(bannerId);//fetching  the banner by Id
         message = '';
 
         res.render('admin/edit-banner', { banner, URL: 'banners', message });
@@ -605,6 +624,7 @@ module.exports = {
         res.redirect('/admin/banners');
     },
 
+    //list orders
     adminOrders: async (req, res) => {
 
         //Fetching  Order details
@@ -613,23 +633,143 @@ module.exports = {
         res.render('admin/order-page', { URL: 'orders', totalOrders });
     },
 
-    adminCouponPage: async (req, res) => {
-        // let newDiscountCode = new Coupons({
-        //     code:myDiscountCode,
-        //     isPercent: false,
-        //     amount:100,
-        //     expireDate:'23/03/2024',
-        //     isActive:true
-        // })
-        // const response = await newDiscountCode.save()
-        const message = req.flash('message');
-        const coupons = await Coupons.find({});
+    //render the details page of clicked order
+    orderEditPage: async (req, res) => {
+        const orderId = new ObjectId(req.params.orderId) //order id from params
+        try {
+            //checking if already any order  for this id
+            const orderDetails = await Orders.findOne(
+                { "orders._id": orderId },// Match the document containing the desired order
+                { "orders.$": 1, userId: 1 } // Project only the matched order
+            ).populate({ path: "orders.product", model: 'products' })
 
-        res.render('admin/coupon-page', { URL: 'coupons', message, coupons });
+            //address
+            const addressDetails = await Addresses.findOne(
+                { "addresses._id": orderDetails.orders[0].addressId },
+                { "addresses.$": 1 }
+            )
+
+            res.render('admin/order-details', { address: addressDetails, orderPro: orderDetails.orders[0] })
+        } catch (error) {
+            console.log(error)
+        }
+
     },
 
-    adminCouponEdit: async (req, res) => { },
+    orderEditStatus: async (req, res) => {
+        const status = req.query.status //extract status from req.query
+        console.log(status)
+        const orderId = new ObjectId(req.params.orderId)
 
+        try {
+            //change the status from database
+            await Orders.findOneAndUpdate(
+                { "orders._id": orderId },
+                {
+                    $set: {
+                        "orders.$.status": status,// Set the new status for the matched document
+                        "orders.$.shippedDate": date.now()
+                    }
+                },
+                { new: true }
+            )
+
+            res.redirect('/admin/order/edit-order/' + orderId)
+        } catch (error) {
+            console.log(error)
+        }
+
+
+    },
+
+    //Function for coupon page rendering
+    adminCouponPage: async (req, res) => {
+
+        const couponCode = couponGenerator()//coupon code generated by couponGenerator function
+
+        //pagination
+        const page = req.query.page || 1
+        const limit = 5
+        const skip = (page - 1) * limit
+
+        const message = req.flash('message');
+        const coupons = await Coupons.find({})
+            .skip(skip) // Skip the specified number of documents
+            .limit(limit); // Limit the number of documents returned
+
+        res.render('admin/coupon-page', { URL: 'coupons', message, coupons, couponCode });
+    },
+
+    //function to add coupon by admin
+    addCoupon: async (req, res) => {
+        //extracting datas from req.body
+        let { coupon_code, minOrderAmount, discount, start_date, expire_date } = req.body
+
+        try {
+            //creating an instance of coupon
+            const coupon = new Coupons({
+                coupon_code,
+                minOrderAmount,
+                discount,
+                start_date,
+                expire_date
+            })
+            await coupon.save()
+
+            req.flash('message', 'Coupon Added succesfully')//sending message in flash
+            res.redirect('/admin/coupons')
+        } catch (error) {
+            //catch any error
+            console.log(error)
+        }
+
+    },
+
+    //function to edit coupon
+    adminCouponEdit: async (req, res) => {
+        const couponId = new ObjectId(req.params.couponId)//couponid from req.params
+
+        try {
+
+            //fetch the coupon from db using the couponid
+            const coupon = await Coupons.findById(couponId)
+
+            //render the page with the coupon details
+            res.render('admin/coupon-edit', { coupon })
+        } catch (error) {
+            console.log(error)
+        }
+
+    },
+
+    adminCouponEditPost: async (req, res) => {
+        const couponId = new ObjectId(req.params.couponId)
+
+        //extracting the values from req.body
+        let { minOrderAmount, discount, start_date, expire_date } = req.body
+
+        try {
+            //find one and update the edits in database
+            await Coupons.findOneAndUpdate(
+                { _id: couponId },
+                {
+                    $set: {
+                        minOrderAmount,
+                        discount,
+                        start_date,
+                        expire_date
+                    }
+                }
+            )
+            req.flash('message', 'Coupon Edited Successfully')
+            return res.redirect('/admin/coupons')
+        } catch (error) {
+            console.log(error)
+        }
+
+    },
+
+    //Function to delete coupon  from the database
     adminCouponDelete: async (req, res) => {
         const couponId = new ObjectId(req.params.couponId);
         const couponDelete = await Coupons.findByIdAndDelete(couponId);

@@ -425,14 +425,14 @@
                                 <span class="text-uppercase bg-secondary p-1 text-white" style="font-size: 0.8rem;"><%= addrs.addressType %></span>
                             </div>
                             <div class="col-md-1">
-                                <div class="more-option-click d-flex justify-content-end" >
+                                <div class="more-option-click d-flex justify-content-end" data-index="<%= index %>">
                                     <i class="ri-more-2-line "></i>
                                 </div>                                                                                   
                             </div>
                          
-                            <div class="col-md-2 more-option position-absolute">
+                            <div class="col-md-2 more-option position-absolute" data-index="<%= index %>">
                                 <ul>                                 
-                                    <li class="list-unstyled list-group-item text-capitalize font-weight-bold address-edit">Edit</li>
+                                    <li class="list-unstyled list-group-item text-capitalize font-weight-bold address-edit" data-index="<%= index %>">Edit</li>
 
                                     <a href="/user/account/address/delete-address/<%= addrs._id%>" style="text-decoration: none;">
                                         <li class="list-unstyled list-group-item text-capitalize font-weight-bold address-delete">Delete</li>
@@ -457,8 +457,8 @@
                     </div>
 
                            <!-- Form of Address Edit -->
-                    <div class="col-md-12 p-2 edit-address-form" style=" margin-top: 20px;background-color: rgb(227, 238, 243);display: none; ">
-                        <form action="/user/account/address?nav=Manage Addresses" method="post">
+                    <div class="col-md-12 p-2 edit-address-form" style=" margin-top: 20px;background-color: rgb(227, 238, 243);display: none; "  data-index="<%= index %>">
+                        <form action="/user/account/address/edit/<%= addrs._id%>?nav=Manage Addresses" method="post">
                             <div class="col-md-12 text-left">
                                 <p class="text-primary text-uppercase">Edit Address</p>
                             </div>
@@ -822,9 +822,9 @@
                             <div class="d-flex" style="gap: 10px;">
                         
                                 <div class="col-md-4 mt-3 save-btn">
-                                <button type="submit" class="profile-edit-btn text-uppercase"  style="background: blue; color: white; ">Save</button>
+                                    <button type="submit" classs="profile-edit-btn text-uppercase"  style="background: blue; color: white; ">Save</button>
                                 </div>
-                                <div class="col-md-4 mt-3 edit-cancel-btn">
+                                <div class="col-md-4 mt-3 edit-cancel-btn" data-index="<%= index %>">
                                     
                                     <p class="text-uppercase" style="color: blue;cursor: pointer;  ">Cancel</p>
                                 </div>
@@ -1112,18 +1112,18 @@
     //cancel button of edit address form
     const cancelBtnEdit = document.querySelectorAll('.edit-cancel-btn')
 
-    const moreOptionBtn = document.querySelector('.more-option-click')//more option button
-    const moreOption = document.querySelector('.more-option') //more options div
+    const moreOptionBtns = document.querySelectorAll('.more-option-click')//more option button
+    const moreOption = document.querySelectorAll('.more-option') //more options div
 
-    const editAddressBtn  = document.querySelectorAll('.address-edit') //eidt address button
+    const editAddressBtn  = document.querySelectorAll('.address-edit') //eidt address button 
+    const editAddressForm = document.querySelectorAll('.edit-address-form')//edit address form
 
+    //when click add address btn
     addAddressBtn.addEventListener('click', (event) => {
-        event.preventDefault()
-        // Show the form and hide the button
-        addAddressBtn.style.display='none'
-        addAddressForm.style.display='block'
+        addAddressForm.style.display = 'block'
     })
 
+    //when click on the address add form's cancel button
     cancelBtn.addEventListener('click', (event) => {
         event.preventDefault()
         
@@ -1132,19 +1132,33 @@
         addAddressBtn.style.display='block'
     })
      
-    moreOptionBtn.addEventListener('mouseenter', () => {
-        moreOption.style.display='block'
+
+    //when the mouse enters the more option button in each addresss
+    moreOptionBtns.forEach(button => {
+        
+        button.addEventListener('mouseenter', (event) => {
+            const index = event.target.getAttribute( 'data-index' )
+            moreOption[index].style.display='block'
+        })
     })
 
-    moreOption.addEventListener('mouseleave', () => {
-        moreOption.style.display='none'
+    //when the mouse leaves the more option button in each addresss
+    moreOption.forEach(button => {
+        button.addEventListener('mouseleave', () => {
+            const index = event.target.getAttribute( 'data-index' )
+            moreOption[index].style.display='none'
+        })
+
     })
     
     editAddressBtn.forEach((button, index)=>{
         button.addEventListener("click", function(event){
             event.preventDefault()
+            //Hide all other forms and show only one that is clicked
+          
+            const index = this.getAttribute( 'data-index' )
 
-           const formOfEdit =  this.closest('.address-details').querySelector('.edit-address-form')
+           const formOfEdit =  editAddressForm[index]
 
            formOfEdit.style.display = 'block'
         
@@ -1158,16 +1172,20 @@
     })
     
     cancelBtnEdit.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click',function (event)  {
+        event.preventDefault()
+
+        const index = this.getAttribute( 'data-index' )
+        console.log(index)
 
         // Select the edit address form related to this cancel button
-        var editAddressForm = button.closest('.address-details').querySelector('.edit-address-form');
+        var formOfEdit = editAddressForm[index]
 
         // Display the form
-        editAddressForm.style.display = 'none';
+        formOfEdit.style.display = 'none';
 
         // Select the previous div related to this cancel button
-        const previousDiv = editAddressForm.previousElementSibling;
+        const previousDiv = formOfEdit.previousElementSibling;
         // Display the previous div
         previousDiv.style.display = 'block';
 

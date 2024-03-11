@@ -15,6 +15,7 @@ const order = {
   status: { type: String, default: 'created' }, // created, paid, shipped, delivered
   operator: String,
   location: String,
+  paymentMethod: String,
   start_date: {
     type: String,
   },

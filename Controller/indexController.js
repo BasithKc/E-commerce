@@ -148,33 +148,43 @@ module.exports = {
 
     getOtp: async (req, res) => {
 
-        const { fname, lname, password, to, channel, email } = req.body
+        const { fname, lname, password, to, channel, email } = req.body //req.body
 
-        const numberExist = await Users.findOne({ number: to })
-        if (numberExist) {
+        //checking if number already exist  in the database or not using or operator
+        const userExist = await Users.findOne({ $or: [{ number: to }, { email: to }] });
+
+        if (userExist) {
+            //if number already exist return  an error message
             return res.json({ success: false, message: "Account already Exist" })
         }
 
         try {
 
-            const verification = await sendOtp(to, channel)
-            console.log(verification);
+            const verification = await sendOtp(to, channel) //calling the function for sending otp
             console.log('OTP sent successfully');
             req.session.otpData = {
                 to: to,
                 channel: channel,
             };
 
-            console.log(req.session.otpData);
-            const newUser = new Users({
+            //new instance of user
+            var newUser = new Users({
                 firstName: fname,
                 lastName: lname,
-                number: to,
-                email,
                 password,
+                email: isValidEmail(to) ? to : '',
+                number: isValidEmail(to) ? '' : to,
                 channel
             })
-            await newUser.save()
+
+            function isValidEmail(email) {
+                // Regular expression to validate email addresses
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            await newUser.save();
+
             req.session.userData = newUser
             res.json({ success: true });
 
@@ -203,12 +213,12 @@ module.exports = {
     postOtp: async (req, res) => {
 
         const { otp } = req.body
-        const { to } = req.session.otpData
+        const { to, channel } = req.session.otpData
         try {
 
-            const verification = await checkOtp(to, otp)
-            console.log(verification);
+            const verification = await checkOtp(to, otp, channel)
 
+            //if verification is approved change the field of otp to true , otherwise it will be false for future understanding
             if (verification.status == "approved") {
                 await Users.findByIdAndUpdate(req.session.userData._id, { otp: true })
                 req.session.destroy()

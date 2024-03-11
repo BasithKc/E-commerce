@@ -78,12 +78,26 @@ router
         .get(adminController.adminBannerEdit)
         .post(banner.single('image'), adminController.adminBannerEditPost);
 
-router.route('/admin/orders').get(adminController.adminOrders);
+//End point for orders listing 
+router.route('/admin/orders')
+        .get(adminController.adminOrders)
 
-router.route('/admin/coupons').get(adminController.adminCouponPage);
+//end point for details of a order when clicked on the eidt buttton
+router.route('/admin/order/edit-order/:orderId')
+        .get(adminController.orderEditPage)
+
+//End point for order status edit
+router.route('/order/order-details/edit/:orderId')
+        .get(adminController.orderEditStatus)
+
+//Endpoint to handle Coupons
+router.route('/admin/coupons')
+        .get(adminController.adminCouponPage)
+        .post(adminController.addCoupon)
 router
         .route('/admin/coupons/edit-coupon/:couponId')
-        .get(adminController.adminCouponEdit);
+        .get(adminController.adminCouponEdit) //edit coupon page rendering endpointt
+        .post(adminController.adminCouponEditPost) //edit coupon and submit
 router
         .route('/admin/coupons/delete-coupon/:couponId')
         .get(adminController.adminCouponDelete);

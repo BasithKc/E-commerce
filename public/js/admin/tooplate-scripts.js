@@ -1,6 +1,5 @@
 const width_threshold = 480;
 
-
 function drawLineChart() {
   if ($("#lineChart").length) {
     ctxLine = document.getElementById("lineChart").getContext("2d");
@@ -36,7 +35,7 @@ function drawLineChart() {
         datasets: [
           {
             label: "User Signups -2024",
-            data: [0, graphDataDataUser, 0],
+            data: [0, ...signupData, ...Array(7 - graphDataDataUser.length).fill(0)],
             fill: false,
             borderColor: "rgb(75, 192, 192)",
             cubicInterpolationMode: "monotone",
@@ -98,9 +97,9 @@ function drawBarChart() {
             data: orderColorCount,
             backgroundColor: [
               "black",
-              "white",
               "green",
-              "#D7D768",
+              "white",
+              "#3889FC",
               "#9D66CC",
               "#DB9C3F",
               "#3889FC"

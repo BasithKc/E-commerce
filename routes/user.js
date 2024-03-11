@@ -18,6 +18,9 @@ router.get('/user/account/address', userHomeController.getUserAddress)
 //user Account adddress add posting
 router.post('/user/account/address', userHomeController.addAddressPost)
 
+//user  adddress Edit posting
+router.post('/user/account/address/edit/:addressId', userHomeController.editAddressPost)
+
 //user delelte address
 router.get('/user/account/address/delete-address/:addressId', userHomeController.deleteAddress)
 

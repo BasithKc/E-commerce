@@ -15,7 +15,7 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                 <div class="tm-bg-primary-dark tm-block">
-                    <h2 class="tm-block-title">Performance</h2>
+                    <h2 class="tm-block-title">Top Hits</h2>
                     <canvas id="barChart"></canvas>
                 </div>
             </div>
@@ -81,8 +81,8 @@
         })
 
         // Accessing the graphData passed from the server
-        var graphDataLabelUser =  '<%= graphDataUser.label %>'
-        var graphDataDataUser = '<%= graphDataUser.data%>'
+        const graphDataDataUser =  '<%= JSON.stringify(graphDataUser.data) %>'
+        var signupData = JSON.parse(graphDataDataUser);
   
         // Extract labels and data
         var categoryLabels = [];

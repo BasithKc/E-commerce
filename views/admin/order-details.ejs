@@ -1,0 +1,150 @@
+<%- include('partials/header.ejs') %>
+</div>
+<section class="h-100" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-12">
+        <div class="card border-top border-bottom border-3" >
+          <div class="card-body p-5">
+
+            <p class="lead fw-bold mb-5" style="color: #f37a27;">Delivery Addresss</p>
+
+            <div class="row">
+              <div class="col mb-5">
+                <p class="small text-muted mb-1"><%= address.addresses[0].name%></p>
+                <p><%= address.addresses[0].address%>, <%= address.addresses[0].post%></p>
+                <p><%= address.addresses[0].zip_code%>, <%= address.addresses[0].state%>, <%= address.addresses[0].country%></p>
+                <p class="small text-muted mb-1"><%= address.addresses[0].number%></p>
+              </div>
+              <div class="col mb-5">
+                <p class="small text-muted mb-1">Order No.</p>
+                <p><%= orderPro.orderId%></p>
+              </div>
+              <% if(orderPro.status !== 'Cancelled' && orderPro.status !== 'delivered'){%>
+              <div class="col mb-2">
+               <a href="/user/account/orders/cancel-order/<%= orderPro.orderId%>?product=<%=orderPro.product._id%>">
+                <p class=" text-muted mb-1"><i class="ri-close-line"></i>Cancel Order</p>
+               </a> 
+              </div>
+              <%}%>
+            </div>
+
+            <div class="mx-n5 px-5 py-4" style="background-color: #f2f2f2;">
+              <div class="row d-flex align-items-center">
+                <div class="col-md-8 col-lg-3">
+                  <img src="/assets/images/products/<%= orderPro.product.image[0]%>" alt="" style="width: 150px;height: 150px;">
+                </div>
+                <div class="col-md-8 col-lg-6">
+                  <p><%=orderPro.product.name%></p>
+                  <small>Color:<%= orderPro.product.color %></small>
+                  <small>size:<%= orderPro.product.size %></small><br>
+                  <small>Quantity:<%= orderPro.quantity %></small>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                  <p>£<%= (orderPro.product.price * orderPro.quantity).toFixed(2)%></p>
+                </div>
+              </div>
+            </div>
+
+
+            <p class="lead fw-bold mb-4 pb-2 mt-4" style="color: #f37a27;">Tracking Order</p>
+
+            <%if (orderPro.status === 'Cancelled'){%> 
+              <div class="row">
+                <div class="col-lg-6 ">
+                  <div class="horizontal-timeline">
+                    <ul class="list-inline items d-flex justify-content-between">
+                      <li class="list-inline-item items-list">
+                        <p class="py-1 px-2 rounded <%= orderPro.status === 'Cancelled' ? 'text-white' : '' %>" style="background-color: <%= ( orderPro.status === 'Cancelled') ? '#f37a27' : '' %>">Ordered</p>
+                      </li>
+                   
+                   
+                      <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                        <p style="margin-right: -8px; color: red;" > Cancelled</p>
+                      </li>
+                    </ul>
+                  </div>
+                  <p>Delivery has been cancelled as per User's request on <%= orderPro.cancelledDate%> </p>
+                </div>
+              </div>
+              <%} else if(orderPro.status === 'delivered') { %>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="horizontal-timeline">
+                      <ul class="list-inline items d-flex justify-content-between">
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color: <%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
+                        </li>
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Shipped</p>
+                        </li>
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">On the Way</p>
+                        </li>
+                        <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                          <p  class="py-1 px-2 rounded <%= ( orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= ( orderPro.status === 'delivered') ? '#f37a27' : '' %>"><i class="ri-check-line" style=" background-color: green;border-radius: 50%;"></i>Delivered</p>
+                        </li>
+                      </ul>
+                    </div>
+                    <p><i style="color: green;font-weight: bold;font-size: 0.9rem;" class="ri-circle-fill"></i> Order has benn delivered on <%= orderPro.estDeliverydue  %></p>
+                   
+                  </div>
+                </div>
+              <%}else  {%>
+                
+                
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="horizontal-timeline">
+                      <ul class="list-inline items d-flex justify-content-between">
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded <%= orderPro.status === 'created' ? 'text-white' : '' %>" style="background-color: <%= (orderPro.status === 'created' || orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Ordered</p>
+                          
+                        </li>
+                        <a href="/order/order-details/edit/<%= orderPro._id %>?status=shipped">
+
+                          <li class="list-inline-item items-list">
+                            <p class="py-1 px-2 rounded <%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'shipped' || orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">Shipped</p>
+                          </li>
+                        </a>
+
+                        <a href="/order/order-details/edit/<%= orderPro._id %>?status=on the way">
+
+                          <li class="list-inline-item items-list">
+                            <p class="py-1 px-2 rounded <%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? 'text-white' : '' %>" style="background-color:<%= (orderPro.status === 'on the way' || orderPro.status === 'delivered') ? '#f37a27' : '' %>">On the Way</p>
+                          </li>
+                        </a>
+
+                        <a href="/order/order-details/edit/<%= orderPro._id %>?status=delivered">
+                          <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                            <p style="margin-right: -8px; <%= orderPro.status === 'delivered' ? 'color: #fff;' : '' %>">Delivered</p>
+                          </li>
+                          
+                        </a>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+              <%}%>       
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <footer class="tm-footer row tm-mt-small " style="margin-top: 130px;">
+    <div class="col-12 font-weight-light">
+      <p class="text-center text-white mb-0 px-4 small">
+        Copyright &copy; <b>2018</b> All rights reserved.
+
+        Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+      </p>
+    </div>
+  </footer>
+  </body>
+
+  </html>

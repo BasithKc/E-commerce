@@ -11,7 +11,7 @@
             <!-- Cart Items -->
             <div class="col-12 col-lg-6 col-xl-7">
                 <div class="table-responsive">
-                    <% if(carts) {%>
+                    <% if(carts.length > 0) {%>
                     <table class="table">
                         <thead>
                             <tr>
@@ -140,7 +140,7 @@
                 
                     <!-- Checkout Button-->
                     <a href="/user/checkout" class="btn btn-white w-100 text-center mt-3"
-                        role="button"><i class="ri-secure-payment-line align-bottom"></i> Proceed to checkout</a>
+                        role="button" style="<%= !carts.length > 0 ? 'pointer-events: none' : '';%>"><i class="ri-secure-payment-line align-bottom"></i> Proceed to checkout</a>
                     <!-- Checkout Button-->
                 </div>
                 

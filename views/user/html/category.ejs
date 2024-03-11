@@ -260,33 +260,33 @@
                                           
                                          
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-success">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-1">
-                                                    <label class="form-check-label" for="filter-colours-1"></label>
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-green">
+                                                    <label class="form-check-label" for="filter-colours-green"></label>
                                                 </div> 
                                                  
                                        
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-danger">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-2">
-                                                    <label class="form-check-label" for="filter-colours-2"></label>
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-red">
+                                                    <label class="form-check-label" for="filter-colours-red"></label>
                                                 </div>   
                                          
                                    
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-info">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-3">
-                                                    <label class="form-check-label" for="filter-colours-3"></label>
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-blue">
+                                                    <label class="form-check-label" for="filter-colours-blue"></label>
                                                 </div>
                                                    
                                                                  
                                        
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-dark">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-5">
-                                                    <label class="form-check-label" for="filter-colours-5"></label>
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-black">
+                                                    <label class="form-check-label" for="filter-colours-black"></label>
                                                 </div>  
                        
                                
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-secondary">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-6">
-                                                    <label class="form-check-label" for="filter-colours-6"></label>
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-white">
+                                                    <label class="form-check-label" for="filter-colours-white"></label>
                                                 </div>                       
                                                                     
                                                              
@@ -444,15 +444,15 @@
                     <!-- Pagination-->
                     <nav class="border-top mt-5 pt-5 d-flex justify-content-between align-items-center" aria-label="Category Pagination">
                       <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="/user/category?category=<%=category%>&page=<%= page-1%>"><i class="ri-arrow-left-line align-bottom"></i> Prev</a></li>
+                        <li class="page-item"><a class="page-link" href="/user/category?category=<%=category%>&page=<%= page-1%>&sort=<%= sort ? sort:'' %>"><i class="ri-arrow-left-line align-bottom"></i> Prev</a></li>
                       </ul>
                       <ul class="pagination">
-                        <li class="page-item  mx-1 <%= page === 1 ? 'active':'' %>"><a class="page-link" href="/user/category?category=<%=category%>&page=1">1</a></li>
-                        <li class="page-item mx-1 <%= page === 2 ? 'active':'' %>"><a class="page-link" href="/user/category?category=<%=category%>&page=2">2</a></li>
-                        <li class="page-item mx-1 <%= page === 3 ? 'active':'' %>"><a class="page-link" href="/user/category?category=<%=category%>&page=3">3</a></li>
+                        <li class="page-item  mx-1 <%= page === 1 ? 'active':'' %>"><a class="page-link" href="/user/category?category=<%=category%>&page=1&sort=<%= sort ? sort:'' %>">1</a></li>
+                        <li class="page-item mx-1 <%= page === 2 ? 'active':'' %>"><a class="page-link" href="/user/category?category=<%=category%>&page=2&sort=<%= sort ? sort:'' %>">2</a></li>
+                        <li class="page-item mx-1 <%= page === 3 ? 'active':'' %>"><a class="page-link" href="/user/category?category=<%=category%>&page=3&sort=<%= sort ? sort:'' %>">3</a></li>
                       </ul>
                       <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="/user/category?category=<%=category%>&page=<%= page+1%>">Next <i class="ri-arrow-right-line align-bottom"></i></a></li>
+                        <li class="page-item"><a class="page-link" href="/user/category?category=<%=category%>&page=<%= page+1%>&sort=<%= sort ? sort:'' %>">Next <i class="ri-arrow-right-line align-bottom"></i></a></li>
                       </ul>
                     </nav>                    <!-- / Pagination-->
 

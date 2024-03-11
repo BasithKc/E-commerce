@@ -28,7 +28,7 @@
 
 	<body>
 		
-		<div class="wrapper" style="background-image: url('/assets/bg-registration-form-2.jpg');">
+		<div class="wrapper" style="background-image: url('/assets/bg-registration-form-2.jpg');padding: 50px;">
 			<div class="inner">
 				
 				<form id="send-code" >
@@ -65,27 +65,7 @@
 					<label for="channel-email">Email</label>
 					</div>
 
-					<div>
-						<input
-						  type="radio"
-						  name="channel"
-						  id="channel-whatsapp"
-						  value="whatsapp"
-						/>
-						<label for="channel-whatsapp">WhatsApp</label>
-					  </div>
-
-					<div>
-						<input
-							type="radio"
-							name="channel"
-							id="channel-call"
-							value="call"
-						/>
-						<label for="channel-call">Call</label>
-					</div>
-
-					<div class="form-wrapper email-input" >
+					<div class="form-wrapper email-input" style="display: none;">
 						<label for="email">Email</label>
 						<input name="email"
 						type="text"  id="email" class="form-control" >

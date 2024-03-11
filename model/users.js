@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please provide your Last Name'],
   },
   email: String,
+
   gender: String,
 
   number: {
@@ -60,7 +61,6 @@ userSchema.pre('save', function (next) {
       if (err) return next(err);
       // Store hash in your password field
       user.password = hash;
-      console.log('User Password is ' + user.password);
       next();
     });
   });
@@ -78,7 +78,6 @@ userSchema.pre('update', function (next) {
       if (err) return next(err);
       // Store hash in your password field
       user.password = hash;
-      console.log('User Password is ' + user.password);
       next();
     });
   });

@@ -120,9 +120,10 @@
             <div class="row">
                 
                 <div class="col-12 order-list">
-                <% orders.forEach(order => {%>
+                 <% if(orders) {%>   
+                    <% orders.forEach(order => {%>
                     
-                        <a href="/user/account/orders/order-details/<%=order.orderId%>?product=<%= order.product._id%>" class="product-card">
+                        <a href="/user/account/orders/order-details/<%=order._id%>?product=<%= order.product._id%>" class="product-card">
                             <div class="col-12 border border-3 d-flex bg-white align-items-center order-product" style="padding: 20px 50px;">
                                 <div class="col-md-2">
                                     <img src="/assets/images/products/<%= order.product.image[0] %>" alt="" style="width: 120px;height: 120px;">
@@ -161,6 +162,9 @@
                         </a>
                                      
                     <%})%>
+                <%} else {%> 
+                    <h2 class="text-center">No Orders!</h2>
+                    <%} %> 
                 </div>
             </div>
             <!-- / Orders-->

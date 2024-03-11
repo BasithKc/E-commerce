@@ -1,20 +1,35 @@
 const mongoose = require('mongoose')
 
+//coupon schema
 const couponSchema = new mongoose.Schema({
-  code: { type: String, require: true, unique: true, uppercase:true },
-  isPercent: { type: Boolean, require: true, default: true },
-  amount: { type:[Number] , required: true } ,
-  expireDate: { type: String, require: true, default: '' },
-  isActive: { type: Boolean, require: true, default: true }
+  coupon_code: {
+    type: String,
+    require: true,
+    unique: true,
+    uppercase: true
+  },
+
+  minOrderAmount: {
+    type: Number,
+    require: true,
+    default: true
+  },
+
+  discount: {
+    type: Number,
+    required: true
+  },
+
+  start_date: {
+    type: String, require: true,
+  },
+
+  expire_date: {
+    type: String,
+    require: true,
+  }
 })
 
-couponSchema.pre('save', function (next){
-  const currentDate = new Date()
-  this.updated_at = currentDate
-  if (!this.created_at) {
-    this.created_at = currentDate;
-    }
-    next()
-})
+
 var Coupons = mongoose.model('coupons', couponSchema);
 module.exports = Coupons;

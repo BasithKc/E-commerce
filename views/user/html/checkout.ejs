@@ -70,9 +70,16 @@
                               </div>
                           </div>
       
+                           <!-- Radio Button for Address Selection -->
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="selectedAddress" id="address<%= index %>" value="<%= addrs._id %>" <%= index === 0 ? 'checked' : '' %>>
+                            <label class="form-check-label" for="address<%= index %>">
+                                Select Address
+                            </label>
+                        </div>
                                  <!-- Form of Address Edit -->
                           <div class="col-md-12 p-2 edit-address-form" style=" margin-top: 20px;background-color: rgb(227, 238, 243);display: none; ">
-                              <form action="/user/account/address?nav=Manage Addresses" method="post">
+                              <form action="/user/account/address/edit/<%=addrs._id%>?nav=Manage Addresses" method="post">
                                   <div class="col-md-12 text-left">
                                       <p class="text-primary text-uppercase">Edit Address</p>
                                   </div>
@@ -601,7 +608,7 @@
                         <!-- Payment Option-->
                         <div class="col-12">
                           <div class="form-check form-group form-check-custom form-radio-custom mb-3">
-                            <input class="form-check-input" type="radio" name="checkoutPaymentMethod" id="checkoutPaymentPaypal" checked>
+                            <input class="form-check-input" type="radio" name="checkoutPaymentMethod" id="checkoutPaymentPaypal" value="razorpay" checked>
                             <label class="form-check-label" for="checkoutPaymentPaypal">
                               <span class="d-flex justify-content-between align-items-start">
                                 <span>
@@ -615,7 +622,7 @@
 
                         <div class="col-12">
                           <div class="form-check form-group form-check-custom form-radio-custom mb-3">
-                            <input class="form-check-input" type="radio" name="checkoutPaymentMethod" id="checkoutPaymentCashonDelivery" >
+                            <input class="form-check-input" type="radio" name="checkoutPaymentMethod" id="checkoutPaymentCashonDelivery" value="cash-on-delivery" >
                             <label class="form-check-label" for="checkoutPaymentCashonDelivery">
                               <span class="d-flex justify-content-between align-items-start">
                                 <span>
@@ -720,6 +727,12 @@
                                 <p class="m-0 fw-bolder fs-6">Shipping</p>
                                 <p class="m-0 fs-6 fw-bolder">$8.95</p>
                             </div>
+                            <% if(coupon) {%> 
+                            <div class="d-flex justify-content-between align-items-center ">
+                              <p class="m-0 fw-bolder fs-6">Coupon: <%= coupon.coupon_code%></p>
+                              <p class="m-0 fw-bolder fs-6">discount:<%= coupon.discount%>%</p>
+                            </div>
+                          <%} %>
                         </div>
                         <div class="py-3 border-bottom">
                             <div class="d-flex justify-content-between align-items-center">
@@ -727,7 +740,11 @@
                                     <p class="m-0 fw-bold fs-5">Grand Total</p>
                                     
                                 </div>
-                                <p class="m-0 fs-5 fw-bold grand-total">$<%= (totalPrice + 8.95).toFixed(2) %></p>
+                                <p class="m-0 fs-5 fw-bold grand-total">
+                                  $<%= coupon? ((totalPrice + 8.95) * (1 - coupon.discount / 100)).toFixed(2) :(totalPrice + 8.95).toFixed(2) %>
+                                  
+                              </p>
+                              
                             </div>
                         </div>
                         <div class="py-3 border-bottom">
@@ -1300,7 +1317,13 @@
       <!-- Razorpay -->
       <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+      <!-- sweet alert -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
   <script>
+
+
 
   // Initialize an empty array to store product IDs
   var products = [];
@@ -1309,8 +1332,8 @@
 <% carts?.forEach(cart => { %>
     // Push the _id of each product into the productIds array
     products.push({
-      productId: '<%= cart.product?._id %>',
-      quantity:'<%= cart.quantity  %>'
+      productId: '<%= cart.product?._id || cart._id%>',
+      quantity:'<%= cart.quantity || 1  %>'
     })
 <% }); %>
 
@@ -1328,6 +1351,7 @@ let post = document.getElementById('post')
         card.classList.add('d-none')
       }
     }
+    
     const totalPrice = document.querySelector('.grand-total').innerText.slice(1).replace("$","")//total 
     console.log(totalPrice)   
     const totalPriceContainer = document.querySelector('.grand-total')
@@ -1349,23 +1373,31 @@ let post = document.getElementById('post')
       }
     }
     
+ 
 
 
-    const createOrder = document.getElementById('CreateOrderButton')
+    const createOrder = document.getElementById('CreateOrderButton')//create order button
 
 
     createOrder.addEventListener('click',async (event) => {
       event.preventDefault()
 
-      const formData= new URLSearchParams()
-   
-
       
-     const totalPriceToOrder = document.querySelector('.grand-total').innerText.slice(1).replace("$","")//total 
+      //payment method select
+      const paymentMethod = document.querySelector("input[name=checkoutPaymentMethod]:checked").value
+      
+      const addressId = document.querySelector("input[name='selectedAddress']:checked").value //address id selected
+      
+      const totalPriceToOrder = document.querySelector('.grand-total').innerText.slice(1).replace("$","")//total price
+
+      const formData= new URLSearchParams() //formdata 
+      
+      formData.append('addressId', addressId)
       formData.append('totalPrice', totalPriceToOrder)
-  
 
       try {
+        if(paymentMethod === 'razorpay'){
+          
         const response = await axios.post(`/user/create-order`,formData)
          // Pass response.data and productIds as separate variables to the second Axios request
          const responseData = response.data;
@@ -1382,9 +1414,11 @@ let post = document.getElementById('post')
            
               const data = await axios.post(`/user/complete-order`,{
                 responseData ,
-                products:products
+                products:products,
+                type:'razorpay'
               })
               if(data.status === 200) {
+                window.history.replaceState(null, null, window.location.pathname);
 
                 window.location.href='/userhome'
               }
@@ -1396,8 +1430,32 @@ let post = document.getElementById('post')
             }
         };
 
-        const rzp = new Razorpay(options)
-        rzp.open()
+          const rzp = new Razorpay(options)
+          rzp.open()
+
+        } else if(paymentMethod === 'cash-on-delivery'){
+          orderID = generateCashOnDeliveryOrderID();
+          const data = await axios.post('/user/complete-order',{
+            addressId,
+            products,
+            type:'cod',
+            orderID})
+
+          if(data.status === 200){
+              // Trigger SweetAlert
+              Swal.fire({
+                  title: 'Order Completed!',
+                  text: 'Thank you for your purchase!',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+              });
+            setTimeout(()=> {
+
+              window.location.href='/userhome'
+            },5000)
+          }
+        }
+          
  
       } catch (error) {
         console.log(error)
@@ -1405,6 +1463,12 @@ let post = document.getElementById('post')
 
     }) 
 
+    function generateCashOnDeliveryOrderID() {
+    // You can generate a unique order ID using any method you prefer
+    const orderID = `COD_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+    return orderID;
+}
 
 
     

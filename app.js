@@ -24,9 +24,9 @@ db.once('open', () => {
 //Using middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')))
-app.use(flash())
-app.use(session({
+app.use(express.static(path.join(__dirname, 'public'))) //static
+app.use(flash())//flash
+app.use(session({//session
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,

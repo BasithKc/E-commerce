@@ -1,0 +1,72 @@
+<%- include('partials/header.ejs') %>
+
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class=" col-xl-5 col-lg-7 col-md-7 col-sm-12 mx-auto" >
+        <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+
+          <div class="row tm-edit-product-row">
+            <div class="col-xl-12 col-lg-7 col-md-12">
+              <h2 class="text-white text-center text-uppercase">Coupon Edit</h2>
+              <form action="/admin/coupons/edit-coupon/<%= coupon._id %>" method="post">
+                <div class="form-group mb-3 mt-3">
+                  <label for="coupon_code">Coupon Code
+                  </label>
+                  <input id="coupon_code" name="coupon_code" type="text" class="form-control validate" value="<%= coupon.coupon_code %>" readonly   style="color: black;"/>
+                </div>
+                <div class="form-group mb-3">
+                  <label for="minOrderAmount">Min Order Amount
+                  </label>
+                  <input id="minOrderAmount" name="minOrderAmount" type="number"value="<%= coupon.minOrderAmount %>" class="form-control validate"  />
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="discount">Discount</label>
+                  <input class="form-control validate" type="number" name="discount" value="<%= coupon.discount %>" id="discount" required/>
+                </div>
+
+                <div class="form-group mb-3 ">
+                  <label for="start_date">Start Date
+                  </label>
+                  <input id="start_date" name="start_date" type="date" value="<%= coupon.start_date %>" class="form-control validate"
+                   />
+                </div>
+
+                <div class="form-group mb-3 ">
+                  <label for="expire_date">Expire Date
+                  </label>
+                  <input id="expire_date" name="expire_date" type="date" value="<%= coupon.expire_date %>" class="form-control validate"
+                     />
+                </div>
+            </div>
+            
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Coupon</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay"></div>
+
+  <footer class="tm-footer row tm-mt-small">
+    <div class="col-12 font-weight-light">
+      <p class="text-center text-white mb-0 px-4 small">
+        Copyright &copy; <b>2018</b> All rights reserved.
+
+        Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template
+          Mo</a>
+      </p>
+    </div>
+  </footer>
+  </div>
+  <script>
+
+  </script>
+  </body>
+
+  </html>

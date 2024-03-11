@@ -11,6 +11,7 @@ const Users = require('../model/users')
 const Addresses = require('../model/address')
 const Orders = require('../model/order')
 const Reviews = require('../model/reviews')
+const Coupons = require('../model/coupon')
 
 
 //ObjectID
@@ -202,7 +203,6 @@ module.exports = {
         const userId = new ObjectId(req.session.userId)
         //req.body
         const { name, number, zip_code, post, address, country, state, addressType } = req.body
-        console.log(req.body)
         const addresstoAdd = {
             name,
             number,
@@ -227,6 +227,7 @@ module.exports = {
             await addressExist.save()
         }
         else {
+            //if address already exist for an user push the new address to the addresses field
             await Addresses.findOneAndUpdate(
                 { userId },
                 { $push: { addresses: addresstoAdd } },
@@ -237,19 +238,51 @@ module.exports = {
         res.redirect('/user/account/address?nav=Manage Addresses');
     },
 
+    //Address Editing
+    editAddressPost: async (req, res) => {
+        //Userid
+        const userId = new ObjectId(req.session.userId)
+        //req.body
+        const { name, number, zip_code, post, address, country, state, addressType } = req.body
+
+        const addresstoUpdate = {
+            name,
+            number,
+            address,
+            country,
+            state,
+            post,
+            zip_code,
+            addressType
+        }
+
+        const addressId = new ObjectId(req.params.addressId)//addressId
+
+        await Addresses.findOneAndUpdate(
+            { userId, "addresses._id": addressId },
+            {
+                $set: {
+                    "addresses.$": addresstoUpdate
+                }
+            }
+        )
+        res.redirect('/user/account/address?nav=Manage Addresses');
+
+    },
+
     //Address deleting
     deleteAddress: async (req, res) => {
 
         const userId = new ObjectId(req.session.userId)
 
         //addressid from req.params
-        const addressId = req.params.addressId
+        const addressId = new ObjectId(req.params.addressId)
 
         try {
             //Find by userid and delete the selected address  from array of addresses
-            await Addresses.findOneAndDelete(
+            await Addresses.findOneAndUpdate(
                 { userId },
-                { addresses: { $pull: { _id: addressId } } },
+                { $pull: { addresses: { _id: addressId } } },
                 { new: true }
             )
             res.redirect('/user/account/address?nav=Manage Addresses')
@@ -277,7 +310,7 @@ module.exports = {
                 }
             })
 
-            res.render('user/html/orders', { orders: orders.orders })
+            res.render('user/html/orders', { orders: orders?.orders || '' })
         } catch (error) {
             console.log(error)
         }
@@ -289,30 +322,28 @@ module.exports = {
     OrderDetailsPage: async (req, res) => {
         const userId = new ObjectId(req.session.userId)
         //Order id from params
-        const orderId = req.params.orderId;
-
-        const orders = await Orders.aggregate([
-            { $match: { userId } },
-            { $match: { "orders.orderId": orderId } }
-        ]);
+        const orderId = new ObjectId(req.params.orderId);
 
 
-        const productId = new ObjectId(req.query.product) //productId from query
+        const orders = await Orders.findOne(
+            { "orders._id": orderId },// Match the document containing the desired order
+            { "orders.$": 1 }// Project only the matched order
+        )
 
+        console.log(orders)
 
-        let orderPro;
+        let orderPro = orders.orders[0];
 
-        orders[0].orders.map(order => {
-            // Find the product within the order's products array
-            if (order.product.toString() === productId.toString()) {
-                orderPro = order
+        const address = await Addresses.findOne(
+            {
+                userId,
+                "addresses._id": orderPro.addressId // Match the document containing the desired address ID
+            },
+            { "addresses.$": 1 } // Project only the matched address
+        );
 
-            }
-
-        });
-
-        const address = await Addresses.findOne({ userId, addresses: { $elemMatch: { _id: orderPro.addressId } } });
         //fetching address
+        console.log(address)
 
         const productDetails = await Products.findOne({ _id: orderPro.product })
 
@@ -351,6 +382,7 @@ module.exports = {
 
         res.redirect('/user/account/orders/order-details/' + orderId + '?product=' + productId.toString());
     },
+
     //Fuction to show product Details
     getProductDetails: async (req, res) => {
 
@@ -533,7 +565,7 @@ module.exports = {
 
 
             //Render mens category page along with products
-            res.render('user/html/category', { products: mensProducts || womensProducts || hoodies, banners, page, category });
+            res.render('user/html/category', { products: mensProducts || womensProducts || hoodies, banners, page, category, sort });
 
         }
         catch (error) {
@@ -843,6 +875,11 @@ module.exports = {
     //checkout Page Rendering
     checkoutPage: async (req, res) => {
 
+        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.header("Pragma", "no-cache");
+        res.header("Expires", "0");
+
+
         const userId = new ObjectId(req.session.userId)
 
         const user = await Users.findById(userId);
@@ -879,25 +916,24 @@ module.exports = {
 
                     totalPrice += Number(cart.product.price) * Number(cart.quantity);
                 })
+                var coupon = await Coupons.findOne({ minOrderAmount: { $lte: totalPrice } })
+                console.log(coupon)
             }
         } else {
-            const productId = new ObjectId(req.params.productId)
+            const productId = new ObjectId(req.query.productId)
 
             var product = await Products.find({ _id: productId })
-            console.log(product)
 
             totalPrice = product[0].price
         }
-
-
-
 
         //rendering user's home page along with banners and products to display
         res.render('user/html/checkout', {
             carts: populatedCarts || product,
             totalPrice: totalPrice || 0,
             user,
-            address: addressExist?.addresses
+            address: addressExist?.addresses,
+            coupon
         })
     },
 
@@ -909,19 +945,19 @@ module.exports = {
             const userId = new ObjectId(req.session.userId)
             const user = await Users.findOne({ _id: userId })
 
-
             const { totalPrice } = req.body //req.body of axios
-
+            const addressId = new ObjectId(req.body.addressId)
             const options = {
                 amount: totalPrice * 100,
                 currency: 'INR',
             }
 
 
-            //checking if already any address is creted for this user
-            let addressExist = await Addresses.findOne({ userId })
-
-
+            //checking if already any address  for this id
+            let addressExist = await Addresses.findOne(
+                { "addresses._id": addressId },// Match the document containing the desired address
+                { "addresses.$": 1 } // Project only the matched address
+            )
 
             const order = await razorpay.orders.create(options)
 
@@ -936,28 +972,44 @@ module.exports = {
     //complete order
     completeOrder: async (req, res) => {
 
-        const { responseData, products } = req.body
-        //Order Id
-        const orderId = responseData.order.id
-
-        //Admin for Operator
-        const admin = await Users.findOne({ role: 'admin' })
-
-        //delivery location
-        const address = responseData.address.addresses[0]
-        //User Id
-        const userId = new ObjectId(req.session.userId)
-
-        //date
-        const currentDate = new Date()
-
-        const startDate = dateConvert(currentDate) //Start Date
-
-        const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-        const dueDate = dateConvert(estimatedDate)//End date
+        const { products } = req.body
 
         try {
+            //Admin for Operator
+            const admin = await Users.findOne({ role: 'admin' })
+
+            if (req.body.type === 'razorpay') {
+                var responseData = req.body.responseData
+                //Order Id
+                var orderId = responseData.order.id
+
+                //delivery location
+                var address = responseData.address.addresses[0]
+            } else if (req.body.type === 'cod') {
+
+                const addressId = new ObjectId(req.body.addressId)
+
+                //checking if already any address  for this id
+                address = await Addresses.findOne(
+                    { "addresses._id": addressId },// Match the document containing the desired address
+                    { "addresses.$": 1 } // Project only the matched address
+                )
+                address = address.addresses[0]
+
+                orderId = req.body.orderID
+            }
+            //User Id
+            const userId = new ObjectId(req.session.userId)
+
+            //date
+            const currentDate = new Date()
+
+            const startDate = dateConvert(currentDate) //Start Date
+
+            const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+            const dueDate = dateConvert(estimatedDate)//End date
+
 
             //Find if user already have a orders
             let orderExist = await Orders.findOne({ userId })
@@ -970,6 +1022,7 @@ module.exports = {
                     orders: []
                 })
 
+                //Create order for each product
                 products.forEach(async (product) => {
                     orderExist.orders.push({
 
@@ -980,6 +1033,7 @@ module.exports = {
                         location: `${address.post}, ${address.state}`,
                         operator: admin.firstName + ' ' + admin.lastName,
                         location: address.post,
+                        paymentMethod: req.body.type,
                         start_date: startDate,
                         estDeliverydue: dueDate
 
@@ -1040,9 +1094,9 @@ module.exports = {
             const banners = await Banners.find({ charecterist: 'Category' })
 
 
-            res.render('user/html/category', { products, banners, page, category: '' })
+            res.render('user/html/category', { products, banners, page: 1, category: '', sort: '' })
         } catch (error) {
-            console.error(err);
+            console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },

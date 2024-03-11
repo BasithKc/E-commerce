@@ -1,3 +1,4 @@
+//cdn of country code
 const phoneInputField = document.getElementById('numb');
 const phoneInput = window.intlTelInput(phoneInputField, {
   prefferredCountries: ['in'],
@@ -6,41 +7,45 @@ const phoneInput = window.intlTelInput(phoneInputField, {
     'https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.13/build/js/utils.js',
 });
 
+//function for gettting the value of selected channel
 function selectedChannel() {
   const checked = "input[name='channel']:checked";
-  return document.querySelector(checked).value;
+  return document.querySelector(checked).value; //return the value
 }
 
+//input div of phone number
 const phoneInputDiv = document.querySelector('.phone-input');
+//input div of email
 const emailInputDiv = document.querySelector('.email-input');
 
+//function for showing email input field
 function showEmailInput() {
   phoneInputDiv.style.display = 'none';
   emailInputDiv.style.display = 'block';
 }
 
+//function for showing phone number input field
 function showPhoneNumberInput() {
   phoneInputDiv.style.display = 'block';
   emailInputDiv.style.display = 'none';
 }
 
+//function for sending otp
 async function sendOtp(event) {
   event.preventDefault();
 
+  //get the details of users
   const lname = document.getElementById('lname').value;
   const fname = document.getElementById('fname').value;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  console.log(phoneInput);
-  console.log(lname);
+  //selected channel by user
   const channel = selectedChannel();
   const to =
     channel === 'email'
       ? document.getElementById('email').value
       : phoneInput.getNumber();
-
-  console.log(to);
 
   const data = new URLSearchParams();
 
@@ -60,9 +65,16 @@ async function sendOtp(event) {
   });
   const json = await response.json();
   if (json.success) {
-    const lastThreeDigit = to.slice(-3);
-    const maskedNumber = 'xxxxxxx' + lastThreeDigit;
-    const message = `Otp number has been sent to ${maskedNumber}`;
+
+    // Check if 'to' is a valid email address
+    if (isValidEmail(to)) {
+      var message = `Otp number has been sent to ${to}`;
+    } else {
+      const lastThreeDigit = to.slice(-3);
+      const maskedNumber = 'xxxxxxx' + lastThreeDigit;
+      var message = `Otp number has been sent to ${maskedNumber}`;
+    }
+
     window.location.href = '/send-otp?message=' + encodeURIComponent(message);
   } else {
     console.log('error');
@@ -119,3 +131,10 @@ window.onclick = function (event) {
       break;
   }
 };
+
+
+function isValidEmail(email) {
+  // Regular expression to validate email addresses
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}

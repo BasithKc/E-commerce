@@ -2,8 +2,8 @@
   <div class="container mt-5">
     <div class="row tm-content-row">
       <div class="col-12 tm-block-col">
-        <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
-          <h2 class="tm-block-title">Orders List</h2>
+        <div class="tm-bg-primary-dark p-3 tm-block-taller tm-block-scroll">
+          <h2 class="tm-block-title text-center">Orders List</h2>
           <table class="table">
             <thead>
               <tr>
@@ -13,6 +13,8 @@
                 <th scope="col">LOCATION</th>
                 <th scope="col">START DATE</th>
                 <th scope="col">EST DELIVERY DUE</th>
+                <th scope="col">&nbsp;</th>
+
               </tr>
             </thead>
             <tbody>
@@ -34,6 +36,11 @@
                 <td><b><%= order.location %></b></td>              
                 <td><%= order.start_date %></td>
                 <td><%= order.estDeliverydue %></td>
+                <td>
+                  <a href="/admin/order/edit-order/<%= order._id%> %>" class="tm-product-edit-link">
+                    <i class="far fa-solid fa-pen-to-square "></i>
+                  </a>
+                </td>
               </tr>
 
               <% })%>
