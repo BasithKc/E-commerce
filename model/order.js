@@ -20,7 +20,10 @@ const order = {
     type: String,
   },
   estDeliverydue: String,
-  cancelledDate: String
+  cancelledDate: String,
+  shippedDate: String,
+  onTheWayDate: String,
+  deliveredDate: String
 
 }
 
@@ -32,5 +35,7 @@ const orderSchema = new mongoose.Schema({
   },
   orders: [order],
 })
+
+orderSchema.index({ "orders.orderId": "text" });
 
 module.exports = mongoose.model('orders', orderSchema)

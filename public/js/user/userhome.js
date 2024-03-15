@@ -244,7 +244,7 @@ addtoCartButtons.forEach(button => {
 
     //get the quantity which was selected by user
     const quantitySelect = this.closest('.card').querySelector('select[name="quantity"]');
-    const quantity = quantitySelect.value || 1
+    const quantity = quantitySelect?.value || 1
 
     //Get the productID
     const productId = this.dataset.productId

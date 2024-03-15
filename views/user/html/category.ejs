@@ -211,34 +211,34 @@
                                         <div class="filter-options mt-3">
                                             <div class="form-group d-inline-block mr-2 mb-2 form-check-bg form-check-custom">
                                             
-                                                <input type="checkbox" class="form-check-bg-input" id="filter-sizes-0">
+                                                <input type="checkbox" class="form-check-bg-input" id="filter-sizes-0" value="Extra Large" <%= sf==='Extra Large' ? 'checked': '' %>>
                                                 <label class="form-check-label fw-normal" for="filter-sizes-0">XL</label>
                                             </div>                                             
                                                    
                                             <div class="form-group d-inline-block mr-2 mb-2 form-check-bg form-check-custom">
                                         
-                                                <input type="checkbox" class="form-check-bg-input" id="filter-sizes-1">
+                                                <input type="checkbox" class="form-check-bg-input" id="filter-sizes-1" value="Large" <%= sf==='Large' ? 'checked': '' %>>
                                                 <label class="form-check-label fw-normal" for="filter-sizes-1">L</label>
                                                                      
                                             </div>
                                                  
                                             <div class="form-group d-inline-block mr-2 mb-2 form-check-bg form-check-custom">
                                                
-                                                <input type="checkbox" class="form-check-bg-input" id="filter-sizes-2">
+                                                <input type="checkbox" class="form-check-bg-input" id="filter-sizes-2" value="Medium" <%= sf==='Medium' ? 'checked': '' %>>
                                                 <label class="form-check-label fw-normal" for="filter-sizes-2">M</label>
                                                                     
                                             </div>
                                                 
                                             <div class="form-group d-inline-block mr-2 mb-2 form-check-bg form-check-custom">
                                               
-                                                    <input type="checkbox" class="form-check-bg-input" id="filter-sizes-3">
+                                                    <input type="checkbox" class="form-check-bg-input" id="filter-sizes-3" value="Small" <%= sf==='Small' ? 'checked': '' %>>
                                                     <label class="form-check-label fw-normal" for="filter-sizes-3">S</label>
                                                                      
                                             </div>
                                                 
                                             <div class="form-group d-inline-block mr-2 mb-2 form-check-bg form-check-custom">
                                                    
-                                                        <input type="checkbox" class="form-check-bg-input" id="filter-sizes-4">
+                                                        <input type="checkbox" class="form-check-bg-input" id="filter-sizes-4" value="Extra Small"  <%= sf==='Extra Small' ? 'checked': '' %>>
                                                         <label class="form-check-label fw-normal" for="filter-sizes-4">XS</label>
                                                     
                                             </div>
@@ -260,32 +260,32 @@
                                           
                                          
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-success">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-green">
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-green" value="green" <%= cf==='green' ? 'checked': '' %>>
                                                     <label class="form-check-label" for="filter-colours-green"></label>
                                                 </div> 
                                                  
                                        
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-danger">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-red">
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-red" value="red" <%= cf==='red' ? 'checked': '' %>>
                                                     <label class="form-check-label" for="filter-colours-red"></label>
                                                 </div>   
                                          
                                    
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-info">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-blue">
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-blue" value="blue" <%= cf==='blue' ? 'checked': '' %>>
                                                     <label class="form-check-label" for="filter-colours-blue"></label>
                                                 </div>
                                                    
                                                                  
                                        
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-dark">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-black">
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-black" value="black" <%= cf==='black' ? 'checked': '' %>>
                                                     <label class="form-check-label" for="filter-colours-black"></label>
                                                 </div>  
                        
                                
                                                 <div class="form-group d-inline-block mr-1 mb-1 form-check-solid-bg-checkmark form-check-custom form-check-secondary">
-                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-white">
+                                                    <input type="checkbox" class="form-check-color-input" id="filter-colours-white" value="white" <%= cf==='white' ? 'checked': '' %>>
                                                     <label class="form-check-label" for="filter-colours-white"></label>
                                                 </div>                       
                                                                     
@@ -309,7 +309,7 @@
                         <div class="d-flex justify-content-start align-items-center flex-grow-1 mb-4 mb-md-0">
                             <small class="d-inline-block fw-bolder">Filtered by:</small>
                             <ul class="list-unstyled d-inline-block mb-0 ms-2">
-                                <li class="bg-light py-1 fw-bolder px-2 cursor-pointer d-inline-block me-1 small">Type: Slip On 
+                                <li class="bg-light py-1 fw-bolder px-2 cursor-pointer d-inline-block me-1 small"><%= cf? 'Type:COLOR:'+cf:'' %> <%= sf? 'Type:SIZE': '' %>
                                     <i class="ri-close-circle-line align-bottom ms-1"></i></li>
                             </ul>
                             <a href="/user/category?category=<%= category%>">
@@ -1035,6 +1035,15 @@
     <script src="/js/user/theme.bundle.js"></script>
 
     <script src="/js/user/userhome.js"></script>
+
+    <script src="/js/user/filter.js"></script>
+
+    <script>
+       var category='<%=category%>'
+       var page = '<%=page%>' || 1;  // Page number to show
+       var sf = '<%= sf %>'//size filter
+       var cf = '<%= cf %>' //color filter
+    </script>
 </body>
 
 </html>

@@ -1,29 +1,17 @@
-//Third party modules
-const Razorpay = require('razorpay')
+
 
 //Importing models
 const Products = require('../model/product')
-const Categories = require('../model/category')
 const Banners = require('../model/banner')
-const Wishlist = require('../model/wishlist')
 const Cart = require('../model/cart')
 const Users = require('../model/users')
 const Addresses = require('../model/address')
-const Orders = require('../model/order')
 const Reviews = require('../model/reviews')
 const Coupons = require('../model/coupon')
 
 
 //ObjectID
 const { ObjectId } = require('mongodb');
-
-//Middlewares
-const dateConvert = require('../middlewares/dateConvert')
-
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_ID_KEY,
-    key_secret: process.env.RAZORPAY_SECRET_KEY
-})
 
 module.exports = {
     getUserHome: async (req, res) => {
@@ -180,209 +168,6 @@ module.exports = {
         res.redirect('/user/account')
     },
 
-    //address listing page
-    getUserAddress: async (req, res) => {
-
-        //nav
-        const nav = req.query.nav
-        //UserId
-        const userId = new ObjectId(req.session.userId)
-
-        //User
-        const user = await Users.findById(userId)
-
-        //Addressess fetching
-        const address = await Addresses.findOne({ userId })
-
-        res.render('user/html/account-addres', { address: address?.addresses, nav, user })
-    },
-
-    //Address adding
-    addAddressPost: async (req, res) => {
-        //Userid
-        const userId = new ObjectId(req.session.userId)
-        //req.body
-        const { name, number, zip_code, post, address, country, state, addressType } = req.body
-        const addresstoAdd = {
-            name,
-            number,
-            address,
-            country,
-            state,
-            post,
-            zip_code,
-            addressType
-        }
-
-        //checking if already any address is creted for this user
-        let addressExist = await Addresses.findOne({ userId })
-
-        if (!addressExist) {
-
-            //new instance creation for address
-            addressExist = new Addresses({
-                userId,
-                addresses: [addresstoAdd]
-            })
-            await addressExist.save()
-        }
-        else {
-            //if address already exist for an user push the new address to the addresses field
-            await Addresses.findOneAndUpdate(
-                { userId },
-                { $push: { addresses: addresstoAdd } },
-                { new: true }
-            )
-        }
-
-        res.redirect('/user/account/address?nav=Manage Addresses');
-    },
-
-    //Address Editing
-    editAddressPost: async (req, res) => {
-        //Userid
-        const userId = new ObjectId(req.session.userId)
-        //req.body
-        const { name, number, zip_code, post, address, country, state, addressType } = req.body
-
-        const addresstoUpdate = {
-            name,
-            number,
-            address,
-            country,
-            state,
-            post,
-            zip_code,
-            addressType
-        }
-
-        const addressId = new ObjectId(req.params.addressId)//addressId
-
-        await Addresses.findOneAndUpdate(
-            { userId, "addresses._id": addressId },
-            {
-                $set: {
-                    "addresses.$": addresstoUpdate
-                }
-            }
-        )
-        res.redirect('/user/account/address?nav=Manage Addresses');
-
-    },
-
-    //Address deleting
-    deleteAddress: async (req, res) => {
-
-        const userId = new ObjectId(req.session.userId)
-
-        //addressid from req.params
-        const addressId = new ObjectId(req.params.addressId)
-
-        try {
-            //Find by userid and delete the selected address  from array of addresses
-            await Addresses.findOneAndUpdate(
-                { userId },
-                { $pull: { addresses: { _id: addressId } } },
-                { new: true }
-            )
-            res.redirect('/user/account/address?nav=Manage Addresses')
-
-        } catch (error) {
-            console.log(error)
-        }
-
-
-    },
-
-    //Order listing 
-    getOrdersList: async (req, res) => {
-
-        try {
-            //userId
-            const userId = new ObjectId(req.session.userId)
-
-            // Find the user document by userId
-            const orders = await Orders.findOne({ userId }).populate({
-                path: 'orders',
-                populate: {
-                    path: 'product',
-                    model: 'products'
-                }
-            })
-
-            res.render('user/html/orders', { orders: orders?.orders || '' })
-        } catch (error) {
-            console.log(error)
-        }
-
-
-    },
-
-    //function to show details of product
-    OrderDetailsPage: async (req, res) => {
-        const userId = new ObjectId(req.session.userId)
-        //Order id from params
-        const orderId = new ObjectId(req.params.orderId);
-
-
-        const orders = await Orders.findOne(
-            { "orders._id": orderId },// Match the document containing the desired order
-            { "orders.$": 1 }// Project only the matched order
-        )
-
-        console.log(orders)
-
-        let orderPro = orders.orders[0];
-
-        const address = await Addresses.findOne(
-            {
-                userId,
-                "addresses._id": orderPro.addressId // Match the document containing the desired address ID
-            },
-            { "addresses.$": 1 } // Project only the matched address
-        );
-
-        //fetching address
-        console.log(address)
-
-        const productDetails = await Products.findOne({ _id: orderPro.product })
-
-
-        res.render('user/html/order-details', {
-            product: productDetails,
-            address,
-            orderPro,
-        })
-    },
-
-    orderCancel: async (req, res) => {
-        const userId = new ObjectId(req.session.userId)
-
-        const orderId = req.params.orderId //orderId
-        const productId = new ObjectId(req.query.product)//product id
-        console.log(productId)
-
-        // Find the orders that match the specified userId and orderId
-        const orders = await Orders.findOne({ userId, "orders.orderId": orderId });
-
-        const currentDate = new Date()
-
-        const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-        const cancellDate = dateConvert(estimatedDate)//End date
-        console.log(cancellDate)
-        // Update the status of the specific order
-        orders.orders.forEach(order => {
-            if (order.product.toString() === productId.toString()) {
-                order.status = 'Cancelled';
-                order.cancelledDate = cancellDate
-            }
-        });
-        await orders.save()
-
-        res.redirect('/user/account/orders/order-details/' + orderId + '?product=' + productId.toString());
-    },
-
     //Fuction to show product Details
     getProductDetails: async (req, res) => {
 
@@ -485,6 +270,14 @@ module.exports = {
                         $limit: limit // Limit the number of documents returned per page
                     }
                 ];
+                //adding size vise filter
+                if (req.query.sf) {
+                    pipeline.splice(2, 0, { $match: { size: req.query.sf } })
+                }
+                //adding color filter
+                if (req.query.cf) {
+                    pipeline.splice(2, 0, { $match: { color: req.query.cf } })
+                }
 
                 // Adjust the pipeline based on the value of the 'sort' variable
                 if (sort === 'LowHi') {
@@ -522,6 +315,14 @@ module.exports = {
                         $limit: limit // Limit the number of documents returned per page
                     }
                 ];
+                //adding size vise filter
+                if (req.query.sf) {
+                    pipeline.splice(2, 0, { $match: { size: req.query.sf } })
+                }
+
+                if (req.query.cf) {
+                    pipeline.splice(2, 0, { $match: { color: req.query.cf } })
+                }
 
                 // Adjust the pipeline based on the value of the 'sort' variable
                 if (sort === 'LowHi') {
@@ -531,7 +332,7 @@ module.exports = {
                 }
 
                 // Execute the aggregation pipeline
-                var mensProducts = await Products.aggregate(pipeline);
+                var womensProducts = await Products.aggregate(pipeline);
 
             } else if (category === 'Hoodies') {
 
@@ -549,7 +350,13 @@ module.exports = {
                     }
 
                 ];
-
+                //adding size vise filter
+                if (req.query.sf) {
+                    pipeline.splice(2, 0, { $match: { size: req.query.sf } })
+                }
+                if (req.query.cf) {
+                    pipeline.splice(2, 0, { $match: { color: req.query.cf } })
+                }
                 // Adjust the pipeline based on the value of the 'sort' variable
                 if (sort === 'LowHi') {
                     pipeline.splice(2, 0, { $sort: { price: 1 } }); // Insert $sort stage at index 2 for ascending price
@@ -563,9 +370,8 @@ module.exports = {
             //Banner 
             const banners = await Banners.find({ charecterist: 'Category' })
 
-
             //Render mens category page along with products
-            res.render('user/html/category', { products: mensProducts || womensProducts || hoodies, banners, page, category, sort });
+            res.render('user/html/category', { products: mensProducts || womensProducts || hoodies, banners, page, category, sort, cf: req.query.cf || '', sf: req.query.sf || '' });
 
         }
         catch (error) {
@@ -575,302 +381,6 @@ module.exports = {
 
     },
 
-
-    //Render Wishlist page along with favorite products
-    getWishlistPage: async (req, res) => {
-        try {
-
-            //userid
-            const userId = new ObjectId(req.session.userId)
-
-            //Fetching favorite products from db
-            // Fetch the wishlist document based on the user ID
-            const wishlistProduct = await Wishlist.findOne({ userId }).populate('products');
-            if (wishlistProduct) {
-                res.render('user/html/wishlist', { products: wishlistProduct.products })
-            }
-
-        } catch (error) {
-            console.log(error)
-        }
-
-    },
-
-    //Function to add to wishlist
-    addToWishList: async (req, res) => {
-
-        //Getting userid from session.userId
-        let userId = req.session.userId
-
-        if (!userId) {
-            return res.json({ success: false })
-        }
-        userId = new ObjectId(req.session.userId)
-        //Getting productId from req.body
-        const productId = new ObjectId(req.body.productId)
-
-        console.log('productid', productId)
-        try {
-
-            //Checking if user already has a wishlist with products
-            let userWishlist = await Wishlist.findOne({ userId });
-
-            // If the user doesn't have a wishlist, create a new one
-            if (!userWishlist) {
-                userWishlist = new Wishlist({ userId, products: [] });
-                await userWishlist.save();
-            }
-
-            //Checking if the product is already in the user's Wishlist
-            // Use aggregation to find the index of the product
-            const aggregationResult = await Wishlist.aggregate([
-                {
-                    $match: { userId: userId }
-                },
-                {
-                    $project: {
-                        index: {
-                            $indexOfArray: ["$products", productId]
-                        }
-                    }
-                }
-            ]);
-            // Extract the index from the aggregation result
-            const productIndex = aggregationResult.length > 0 ? aggregationResult[0].index : -1;
-
-            console.log('Product Index:', productIndex);
-
-            if (productIndex === -1) {
-                // Product does not exist in the wishlist, add it
-                await Wishlist.findOneAndUpdate(
-                    { userId: userId },
-                    { $push: { products: productId } },
-                    { new: true }
-                );
-                console.log('Product added to wishlist');
-                return res.json({ success: true })
-            } else {
-                console.log('Product already exists in the wishlist');
-                res.json({ success: true })
-            }
-            //redirecting to the same page
-
-        } catch (error) {
-
-            //Catching if any erro occurs
-            console.log(error)
-            res.json({ success: false })
-        }
-
-
-    },
-
-    //function remove from wishlist
-    removeFromWishList: async (req, res) => {
-
-        //PRoduct id
-        const productId = req.params.productId
-        //User Id
-        const userId = req.session.userId
-
-        try {
-
-            //Use userId to match the wishlist belonging to the specific user and find that document 
-            const wishlist = await Wishlist.findOneAndUpdate(
-                { userId },
-                { $pull: { products: productId } },
-                { new: true }
-            )
-            //If userid not working
-            if (!wishlist) {
-                return res.status(404).json({ message: 'Wishlist not found for the user' });
-            }
-
-            //I have request coming both from frontend and backend , so i have to handle both like this
-            if (req.query.source === 'axios') {
-                //return json object
-                res.status(200).json({ message: 'Product removed from wishlist successfully' });
-            } else {
-                //redirect to wishlist page again if the request is coming from backend
-                res.redirect('/user/wishlist')
-
-            }
-        } catch (error) {
-            //Catch the error
-            console.log(error)
-            res.status(500).json({ message: 'Internal Server Error' });
-        }
-    },
-
-    //Fetch wishlist on page loading
-    fetchWishlist: async (req, res) => {
-        try {
-
-            //UserId
-            const userId = new ObjectId(req.session.userId)
-
-            let wishlist = await Wishlist.findOne({ userId })
-            if (!wishlist) {
-                wishlist = new Wishlist({
-                    userId,
-                    products: []
-                })
-                await wishlist.save()
-            }
-            // Return the wishlist array from the user document
-            res.status(200).json({ wishlist: wishlist.products });
-
-        } catch (error) {
-            console.log(error)
-        }
-
-    },
-
-    //getCart page
-    getCartPage: async (req, res) => {
-        const userId = new ObjectId(req.session.userId)
-        try {
-            //Cart products Bringing
-            const carts = await Cart.findOne({ userId })
-
-            if (carts) {
-                const productIds = carts.products.map(product => product.productId)//Extracting the product id in an array
-
-                // Fetching products based on productIds
-                const cartProducts = await Products.find({ _id: { $in: productIds } })
-
-                // Creating a map to quickly look up products by their ID
-                const productMap = new Map(cartProducts.map(product => [(product._id).toString(), product]))
-
-                //Now populate the cart with product details
-                var populatedCarts = [];
-                carts.products.forEach(product => {
-                    populatedCarts.push({
-                        product: productMap.get((product.productId).toString()),
-                        quantity: product.quantity
-                    });
-
-                });
-
-                var totalPrice = 0;
-                populatedCarts.forEach(cart => {
-
-                    totalPrice += Number(cart.product.price) * Number(cart.quantity);
-                })
-            }
-
-            //rendering user's home page along with banners and products to display
-            res.render('user/html/cart', { carts: populatedCarts, totalPrice: totalPrice || 0 })
-        } catch (error) {
-            console.log(error)
-        }
-    },
-
-    removeFromCart: async (req, res) => {
-        //PRoduct id from params
-        const productId = new ObjectId(req.params.productId)
-
-        const userId = new ObjectId(req.session.userId);
-
-        const deleteFromCart = await Cart.findOneAndUpdate(
-            { userId },
-            { $pull: { products: { productId: productId } } },
-            { new: true }
-        )
-        res.redirect('/user/cart-page')
-
-    },
-    //Fetch cart on page loading
-    fetchCart: async (req, res) => {
-        try {
-
-            //UserId
-            const userId = new ObjectId(req.session.userId)
-
-            let userCart = await Cart.findOne({ userId })
-
-            if (!userCart) {
-                userCart = new Cart(
-                    {
-                        userId,
-                        products: []
-                    });
-                await userCart.save()
-            }
-            // Return the wishlist array from the user document
-            res.status(200).json({ cart: userCart.products });
-
-        } catch (error) {
-            console.log(error)
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-    },
-
-    //Function to add to cart
-    addtoCart: async (req, res) => {
-        try {
-
-            //Getting userid from session.userId
-            let userId = req.session.userId
-
-            //quantity
-            const quantity = parseInt(req.query.quantity) || 1;
-
-            if (!userId) {
-                return res.status(400).json({ success: false, message: "User ID not found" });
-            }
-
-            //Getting productId from req.body
-            const productId = new ObjectId(req.params.productId)
-
-            //Checking if user already has a cart with products
-            let userCart = await Cart.findOne({ userId });
-
-            if (!userCart) {
-                userCart = new Cart({
-                    userId,
-                    products: []
-                })
-                await userCart.save();
-            }
-
-            // Find if the product already exists in the cart
-            const existingProductIndex = userCart.products.findIndex(product => product.productId.equals(productId));
-
-            if (existingProductIndex !== -1) {
-                // If the product exists, update its quantity 
-                userCart.products[existingProductIndex].quantity = quantity;
-
-                await userCart.save();
-
-            } else {
-
-                //If the product does not exist, push the product and quantity to the products array of cart
-                const userCartProduct = await Cart.findOneAndUpdate(
-                    { userId },
-                    {
-                        $push: {
-                            products: {
-                                productId,
-                                quantity
-                            }
-                        },
-                    },
-                    { new: true }
-
-                )
-                console.log(userCartProduct)
-            }
-            return res.status(200).json({ success: true })    //return success
-
-        } catch (error) {
-
-            //Catching if any erro occurs
-            console.log(error)
-            res.status(500).json({ success: false })
-        }
-    },
 
     //checkout Page Rendering
     checkoutPage: async (req, res) => {
@@ -937,151 +447,6 @@ module.exports = {
         })
     },
 
-    //create Order 
-    createOrder: async (req, res) => {
-
-        try {
-            //Session userId
-            const userId = new ObjectId(req.session.userId)
-            const user = await Users.findOne({ _id: userId })
-
-            const { totalPrice } = req.body //req.body of axios
-            const addressId = new ObjectId(req.body.addressId)
-            const options = {
-                amount: totalPrice * 100,
-                currency: 'INR',
-            }
-
-
-            //checking if already any address  for this id
-            let addressExist = await Addresses.findOne(
-                { "addresses._id": addressId },// Match the document containing the desired address
-                { "addresses.$": 1 } // Project only the matched address
-            )
-
-            const order = await razorpay.orders.create(options)
-
-            res.json({ order, key_id: process.env.RAZORPAY_ID_KEY, user, address: addressExist, totalPrice })
-
-        } catch (error) {
-            console.log(error)
-        }
-
-    },
-
-    //complete order
-    completeOrder: async (req, res) => {
-
-        const { products } = req.body
-
-        try {
-            //Admin for Operator
-            const admin = await Users.findOne({ role: 'admin' })
-
-            if (req.body.type === 'razorpay') {
-                var responseData = req.body.responseData
-                //Order Id
-                var orderId = responseData.order.id
-
-                //delivery location
-                var address = responseData.address.addresses[0]
-            } else if (req.body.type === 'cod') {
-
-                const addressId = new ObjectId(req.body.addressId)
-
-                //checking if already any address  for this id
-                address = await Addresses.findOne(
-                    { "addresses._id": addressId },// Match the document containing the desired address
-                    { "addresses.$": 1 } // Project only the matched address
-                )
-                address = address.addresses[0]
-
-                orderId = req.body.orderID
-            }
-            //User Id
-            const userId = new ObjectId(req.session.userId)
-
-            //date
-            const currentDate = new Date()
-
-            const startDate = dateConvert(currentDate) //Start Date
-
-            const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-            const dueDate = dateConvert(estimatedDate)//End date
-
-
-            //Find if user already have a orders
-            let orderExist = await Orders.findOne({ userId })
-
-            //User doesn't have already an order
-            if (!orderExist) {
-
-                orderExist = new Orders({
-                    userId,
-                    orders: []
-                })
-
-                //Create order for each product
-                products.forEach(async (product) => {
-                    orderExist.orders.push({
-
-                        orderId,
-                        addressId: address._id,
-                        product: product.productId,
-                        quantity: product.quantity,
-                        location: `${address.post}, ${address.state}`,
-                        operator: admin.firstName + ' ' + admin.lastName,
-                        location: address.post,
-                        paymentMethod: req.body.type,
-                        start_date: startDate,
-                        estDeliverydue: dueDate
-
-                    })
-                })
-                await orderExist.save()
-
-            } else {
-                //If order exist push the order details to orders
-                products.forEach(async (product) => {
-                    orderExist.orders.push({
-
-                        orderId,
-                        addressId: address._id,
-                        product: product.productId,
-                        quantity: product.quantity,
-                        location: `${address.post, address.state}`,
-                        operator: admin.firstName + ' ' + admin.lastName,
-                        location: address.post,
-                        start_date: startDate,
-                        estDeliverydue: dueDate
-
-                    })
-                })
-                await orderExist.save()
-            }
-
-
-            //Delete the products from cart
-            const productIds = products.map(product => product.productId);
-
-            await Cart.findOneAndUpdate(
-                { userId: userId },
-                {
-                    $pull: {
-                        products: { productId: { $in: productIds } }
-                    }
-                }
-            )
-
-            res.status(200).json({ success: true })
-
-        } catch (error) {
-
-            console.log(error)//catching the error
-        }
-
-    },
 
     //search
     searchProducts: async (req, res) => {
@@ -1099,189 +464,6 @@ module.exports = {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
-    },
-
-
-    reviewProductPage: async (req, res) => {
-
-        const message = req.query.message
-        const productId = new ObjectId(req.params.productId)
-
-        const product = await Products.findById(productId)//fetch product from db
-
-        res.render('user/html/review', {
-            product,
-            message,
-        })
-    },
-
-    //function to render the page to edit a review
-    reviewProductEdit: async (req, res) => {
-        const message = req.query.message
-        const productId = new ObjectId(req.params.productId)
-
-        //if user clicks on edit button of a review which has has submitted
-        if (req.query.revId) {
-            const reviewId = new ObjectId(req.query.revId);
-
-            //review
-            var review = await Reviews.findOne({ "reviews._id": reviewId })
-            console.log(review)
-        }
-        const product = await Products.findById(productId)//fetch product from db
-
-        res.render('user/html/review-edit', {
-            product,
-            message,
-            review: review || ''
-        })
-    },
-
-    //function to edit a review posting
-    reveiwEditPost: async (req, res) => {
-        let { rating, review } = req.body;
-        console.log(req.body)
-
-        //reviewId
-        const reviewId = new ObjectId(req.body.reviewId)
-
-        console.log(reviewId)
-
-        //manipulating the rating  and review to make them safe for database
-        if (rating === 'Very Bad') {
-            rating = 1
-        } else if (rating === 'Bad') {
-            rating = 2
-        } else if (rating === 'Good') {
-            rating = 3
-        } else if (rating === 'Very Good') {
-            rating = 4
-        } else if (rating === 'Excellent') {
-            rating = 5
-        }
-
-        const date = new Date(); // Your date object
-
-        const day = date.getDate();
-        const month = date.getMonth() + 1; // Adding 1 because getMonth() returns 0-based index
-        const year = date.getFullYear();
-
-        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
-
-        try {
-            let reviews = await Reviews.findOneAndUpdate(
-                {
-                    "reviews._id": reviewId
-                },
-                {
-                    $set: {
-
-                        "reviews.$.review": review,
-                        "reviews.$.rating": rating,
-                        "reviews.$.time": formattedDate
-                    }
-                },
-                {
-                    new: true, // return updated document instead of original one
-                }
-            )
-
-            res.status(200).json({ success: true })
-        } catch (error) {
-            console.log(error)
-        }
-    },
-
-    deleteReview: async (req, res) => {
-        const reviewId = new ObjectId(req.params.reviewId)
-
-        try {
-            await Reviews.findOneAndDelete({ "reviews._id": reviewId })
-            res.redirect('/user/review-preview')
-        } catch (error) {
-            console.log(error)
-        }
-    },
-
-    submitReview: async (req, res) => {
-        let { rating, review, productId } = req.body;
-        const userId = new ObjectId(req.session.userId);
-
-
-        //manipulating the rating  and review to make them safe for database
-        if (rating === 'Very Bad') {
-            rating = 1
-        } else if (rating === 'Bad') {
-            rating = 2
-        } else if (rating === 'Good') {
-            rating = 3
-        } else if (rating === 'Very Good') {
-            rating = 4
-        } else if (rating === 'Excellent') {
-            rating = 5
-        }
-
-        const date = new Date(); // Your date object
-
-        const day = date.getDate();
-        const month = date.getMonth() + 1; // Adding 1 because getMonth() returns 0-based index
-        const year = date.getFullYear();
-
-        const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
-
-        try {
-            let reviews = await Reviews.findOne({ productId })
-
-            if (!reviews) {
-
-                reviews = new Reviews({
-                    productId: new ObjectId(productId),
-                    reviews: [{
-                        userId,
-                        review,
-                        rating,
-                        time: formattedDate
-                    }]
-                })
-                await reviews.save()
-            } else {
-                reviews.reviews.push({
-                    userId,
-                    review,
-                    rating,
-                    time: formattedDate
-                })
-                await reviews.save()
-
-            }
-            res.status(200).json({ success: true })
-        } catch (error) {
-            console.log(error)
-        }
-
-    },
-
-    //review Preview
-    reviewPagePreview: async (req, res) => {
-        const userId = req.session.userId
-
-        const nav = req.query.nav//nav
-
-        //user
-        const user = await Users.findById(userId)
-
-        //fetching review for each userId
-        const reviews = await Reviews.find({ "reviews.userId": userId }).populate('productId',).populate({
-            path: 'reviews.userId',
-            model: 'User'
-        });
-
-        res.render('user/html/review-preview-page', {
-            user,
-            reviews,
-            nav,
-            reviews
-        })
     },
 
     //Logout function

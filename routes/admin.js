@@ -1,29 +1,45 @@
+//third party modules
 const express = require('express');
-const router = express.Router();
-const adminController = require('../Controller/adminhomeController');
-const { upload, userProfile, banner } = require('../middlewares/multer');
 
+const router = express.Router();
+
+//Importing controllers
+const adminController = require('../Controller/adminhomeController');
+const adminCouponController = require('../Controller/adminCouponController')
+
+const { upload, userProfile, banner } = require('../utilities/multer');//multer function Importing
+
+//Endpoint for admin home page rendering (dashboard)
 router.route('/adminhome').get(adminController.getAdminHome);
 
+//Endpoint for admin logout
 router.route('/admin/logout').get(adminController.adminLogout);
 
+
+//Endpoint for listing all users 
 router.route('/admin/users').get(adminController.adminUserList);
 
+//Edit user
 router
         .route('/admin/users/edit-user/:userId')
         .get(adminController.adminUserListEditPage);
+
+//Delete user
 router
         .route('/admin/users/delete-user/:userId')
         .get(adminController.adminUserDelete);
+//Block user
 router
         .route('/admin/users/block-user/:userId')
         .post(adminController.adminUserBlockpost);
+
+//Unblock User
 router
         .route('/admin/users/unblock-user/:userId')
         .post(adminController.adminUserUnblockPost);
 
-router.route('/admin/products').get(adminController.adminProduct);
 
+//Endpoint for edit admin profile
 router
         .route('/admin/accounts/update-profile/:userId')
         .post(userProfile.single('avatar'), adminController.adminAccountUpdate);
@@ -38,6 +54,9 @@ router
         .route('/admin/accounts/reset-password')
         .get(adminController.adminResetPasswordGet)
         .post(adminController.adminResetPasswordPost);
+
+//product listing
+router.route('/admin/products').get(adminController.adminProduct);
 
 router
         .route('/admin/product/add-product')
@@ -66,40 +85,52 @@ router
         .get(adminController.editProductGet)
         .post(upload.array('image', 10), adminController.editProductPost);
 
+//Endpoint for listing banners  and adding new one
 router
         .route('/admin/banners')
-        .get(adminController.adminBannerGet)
-        .post(banner.single('image'), adminController.adminBannerPost);
+        .get(adminController.adminBannerGet) //render banner page
+        .post(banner.single('image'), adminController.adminBannerPost);//posting banner
+
+//Delete banner
 router
         .route('/admin/banners/delete-banner/:bannerId')
         .get(adminController.adminBannerDelete);
+//Edit banner page and submit
 router
         .route('/admin/banners/edit-banner/:bannerId')
-        .get(adminController.adminBannerEdit)
-        .post(banner.single('image'), adminController.adminBannerEditPost);
+        .get(adminController.adminBannerEdit)//render banner edit page
+        .post(banner.single('image'), adminController.adminBannerEditPost);//endpoint after submit banner page
 
 //End point for orders listing 
 router.route('/admin/orders')
         .get(adminController.adminOrders)
+        .post(adminController.adminOrders)
 
 //end point for details of a order when clicked on the eidt buttton
 router.route('/admin/order/edit-order/:orderId')
         .get(adminController.orderEditPage)
 
-//End point for order status edit
+//End point for post  order status edit
 router.route('/order/order-details/edit/:orderId')
         .get(adminController.orderEditStatus)
 
+//Endpoint for cancelling an order
+router.route('/admin/orders/cancel-order/:orderId')
+        .get(adminController.orderCancel)
+
 //Endpoint to handle Coupons
 router.route('/admin/coupons')
-        .get(adminController.adminCouponPage)
-        .post(adminController.addCoupon)
+        .get(adminCouponController.adminCouponPage)//get coupon page
+        .post(adminCouponController.addCoupon)//Add coupon
 router
         .route('/admin/coupons/edit-coupon/:couponId')
-        .get(adminController.adminCouponEdit) //edit coupon page rendering endpointt
-        .post(adminController.adminCouponEditPost) //edit coupon and submit
+        .get(adminCouponController.adminCouponEdit) //edit coupon page rendering endpointt
+        .post(adminCouponController.adminCouponEditPost) //edit coupon and submit
+
 router
         .route('/admin/coupons/delete-coupon/:couponId')
-        .get(adminController.adminCouponDelete);
+        .get(adminCouponController.adminCouponDelete); //Endpoint for deleting coupon
+
+
 
 module.exports = router;

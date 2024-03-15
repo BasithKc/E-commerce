@@ -1,7 +1,7 @@
 const Users = require('../model/users')
 require('dotenv').config()
 const bcrypt = require('bcrypt')
-const { sendOtp, checkOtp } = require('../middlewares/otp');
+const { sendOtp, checkOtp } = require('../utilities/otp');
 
 
 

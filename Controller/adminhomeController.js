@@ -1,20 +1,21 @@
+//third party module
+const bcrypt = require('bcrypt');
+//Objectid
+const { ObjectId } = require('mongodb');
+
 //importing models
 const Products = require('../model/product');
 const Categories = require('../model/category');
 const Users = require('../model/users');
 const Banners = require('../model/banner');
-const Coupons = require('../model/coupon');
 const Orders = require('../model/order')
 const Addresses = require('../model/address')
 
-//coupon Generator
-const couponGenerator = require('../middlewares/coupongenerator')
+//formatDataForGraph
+const formatDataForGraph = require('../utilities/graphDataUser')
 
-//Objectid
-const { ObjectId } = require('mongodb');
-
-//third party module
-const bcrypt = require('bcrypt');
+//date convert function 
+const dateConvert = require('../utilities/dateConvert')
 
 module.exports = {
     //admin dashboard
@@ -161,6 +162,7 @@ module.exports = {
         const deleteUser = await Users.findByIdAndDelete(userId);//find by id and delete the whole document
     },
 
+    //function for blocking user
     adminUserBlockpost: async (req, res) => {
         const userId = new ObjectId(req.params.userId);
         const { blockTime } = req.body;
@@ -180,6 +182,7 @@ module.exports = {
         res.redirect('/admin/users');
     },
 
+    //Function for unblocking user
     adminUserUnblockPost: async (req, res) => {
         const { userId } = req.params;
 
@@ -194,11 +197,13 @@ module.exports = {
         res.redirect('/admin/users');
     },
 
+    //fuction for get the add a new product page
     adminAddProductGet: (req, res) => {
         const message = req.flash('message');
         res.render('admin/addproduct', { URL: 'products', message });
     },
 
+    //function for post a new product
     adminAddProductPost: async (req, res) => {
 
         //Destrucring the data from formbdody
@@ -268,150 +273,12 @@ module.exports = {
         }
     },
 
-    adminAccount: async (req, res) => {
-        let message = req.query.message;
-        message1 = req.flash('message');
-        console.log(message1);
-        const admin = await Users.findOne({ _id: req.session.adminId });
-        res.render('admin/account', {
-            URL: 'accounts',
-            adminData: admin,
-            message,
-            message1,
-        });
-    },
-
-    adminAccountUpdate: async (req, res) => {
-        try {
-            const userId = new ObjectId(req.params.userId);
-            const { firstName, lastName, email, number } = req.body;
-            const avatar = req.file.filename;
-            const user = await Users.findByIdAndUpdate(
-                userId,
-                {
-                    $set: {
-                        firstName,
-                        lastName,
-                        email,
-                        number,
-                        profile: avatar,
-                    },
-                },
-                { new: true }
-            );
-            console.log(user);
-            if (!user) {
-                return res
-                    .status(404)
-                    .json({ success: false, message: 'User not found' });
-            }
-            res.json({
-                success: true,
-                message: 'User profile updated successfully',
-                user,
-            });
-        } catch (error) {
-            console.error('Error updating user profile:', error);
-            res
-                .status(500)
-                .json({ success: false, message: 'Internal server error' });
-        }
-    },
-
-    adminDeleteAccount: async (req, res) => {
-        const userId = new ObjectId(req.params.userId);
-        const deleteAcc = await Users.findOneAndDelete(userId);
-    },
-
-    adminResetPasswordGet: (req, res) => {
-        const error = req.flash('error');
-        res.render('admin/admin-reset-password', { error, URL: 'accounts' });
-    },
-
-    adminResetPasswordPost: async (req, res) => {
-        const adminId = req.session.adminId;
-        const { oldPassword, password } = req.body;
-        const admin = await Users.findOne({ _id: adminId });
-
-        const correctPassword = admin.isCorrectPassword(oldPassword);
-        if (!correctPassword) {
-            req.flash('error', 'previous password do not match');
-            return res.redirect('/admin/accounts/reset-password');
-        }
-        try {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const updatedAdmin = await Users.findByIdAndUpdate(
-                adminId,
-                {
-                    $set: {
-                        password: hashedPassword,
-                    },
-                },
-                { new: true }
-            );
-            req.flash('message', 'Password updated Successfully');
-            res.redirect('/admin/accounts');
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ Error: 'Connot reset Password right now' });
-        }
-    },
-
-    // Function to add category
-    adminAddCategory: async (req, res) => {
-        const { name, description, sub_category } = req.body;
-        console.log(req.body);
-        const isCategoryExist = await Categories.findOne({ name });
-        if (!isCategoryExist) {
-            const category = new Categories({
-                name,
-                sub_category,
-                description,
-            });
-            await category.save();
-        } else {
-            await Categories.findOneAndUpdate(
-                { name },
-                { $addToSet: { sub_category } },
-                { new: true, upsert: true }
-            );
-        }
-        req.flash('message', 'Category added successfully');
-        res.redirect('/admin/products');
-    },
-
-    adminEditCategoryGet: async (req, res) => {
-        const categoryId = new ObjectId(req.params.categoryId);
-        const category = await Categories.findOne({ _id: categoryId });
-        res.render('admin/edit-category', { category, URL: 'products' });
-    },
-
-    adminEditCategoryPost: async (req, res) => {
-        const categoryId = new ObjectId(req.params.categoryId);
-        const { name, sub_category, description } = req.body;
-        console.log(req.body);
-        const category = await Categories.findOneAndUpdate(categoryId, {
-            name,
-            sub_category,
-            description,
-        });
-        req.flash('message', 'Category Updated Successfully');
-        res.redirect('/admin/products');
-    },
-
+    //function for deleting a product
     deletProduct: async (req, res) => {
         const productId = new ObjectId(req.params.productId);
 
         await Products.findByIdAndDelete(productId);
         req.flash('message', 'Product deleted successfully');
-        res.redirect('/admin/products');
-    },
-
-    deleteCategory: async (req, res) => {
-        const categoryId = new ObjectId(req.params.categoryId);
-
-        await Categories.findByIdAndDelete(categoryId);
-        req.flash('message', 'Category deleted successfully');
         res.redirect('/admin/products');
     },
 
@@ -533,6 +400,154 @@ module.exports = {
         res.redirect('/admin/products');
     },
 
+    //Admin profile page rendering
+    adminAccount: async (req, res) => {
+        let message = req.query.message;
+        message1 = req.flash('message');
+        console.log(message1);
+        const admin = await Users.findOne({ _id: req.session.adminId });
+        res.render('admin/account', {
+            URL: 'accounts',
+            adminData: admin,
+            message,
+            message1,
+        });
+    },
+
+    //Admin profile update
+    adminAccountUpdate: async (req, res) => {
+        try {
+            const userId = new ObjectId(req.params.userId);
+            const { firstName, lastName, email, number } = req.body;
+            const avatar = req.file.filename;
+            const user = await Users.findByIdAndUpdate(
+                userId,
+                {
+                    $set: {
+                        firstName,
+                        lastName,
+                        email,
+                        number,
+                        profile: avatar,
+                    },
+                },
+                { new: true }
+            );
+            console.log(user);
+            if (!user) {
+                return res
+                    .status(404)
+                    .json({ success: false, message: 'User not found' });
+            }
+            res.json({
+                success: true,
+                message: 'User profile updated successfully',
+                user,
+            });
+        } catch (error) {
+            console.error('Error updating user profile:', error);
+            res
+                .status(500)
+                .json({ success: false, message: 'Internal server error' });
+        }
+    },
+
+    //Admin profile delete
+    adminDeleteAccount: async (req, res) => {
+        const userId = new ObjectId(req.params.userId);
+        const deleteAcc = await Users.findOneAndDelete(userId);
+    },
+
+    //Admin password reset page render
+    adminResetPasswordGet: (req, res) => {
+        const error = req.flash('error');
+        res.render('admin/admin-reset-password', { error, URL: 'accounts' });
+    },
+
+    //password reset and save to database
+    adminResetPasswordPost: async (req, res) => {
+        const adminId = req.session.adminId;
+        const { oldPassword, password } = req.body;
+        const admin = await Users.findOne({ _id: adminId });
+
+        const correctPassword = admin.isCorrectPassword(oldPassword);
+        if (!correctPassword) {
+            req.flash('error', 'previous password do not match');
+            return res.redirect('/admin/accounts/reset-password');
+        }
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const updatedAdmin = await Users.findByIdAndUpdate(
+                adminId,
+                {
+                    $set: {
+                        password: hashedPassword,
+                    },
+                },
+                { new: true }
+            );
+            req.flash('message', 'Password updated Successfully');
+            res.redirect('/admin/accounts');
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ Error: 'Connot reset Password right now' });
+        }
+    },
+
+    // Function to add category
+    adminAddCategory: async (req, res) => {
+        const { name, description, sub_category } = req.body;
+        console.log(req.body);
+        const isCategoryExist = await Categories.findOne({ name });
+        if (!isCategoryExist) {
+            const category = new Categories({
+                name,
+                sub_category,
+                description,
+            });
+            await category.save();
+        } else {
+            await Categories.findOneAndUpdate(
+                { name },
+                { $addToSet: { sub_category } },
+                { new: true, upsert: true }
+            );
+        }
+        req.flash('message', 'Category added successfully');
+        res.redirect('/admin/products');
+    },
+
+    //Function for render Category edit page
+    adminEditCategoryGet: async (req, res) => {
+        const categoryId = new ObjectId(req.params.categoryId);
+        const category = await Categories.findOne({ _id: categoryId });
+        res.render('admin/edit-category', { category, URL: 'products' });
+    },
+
+    //Function for deleting a category
+    deleteCategory: async (req, res) => {
+        const categoryId = new ObjectId(req.params.categoryId);
+
+        await Categories.findByIdAndDelete(categoryId);
+        req.flash('message', 'Category deleted successfully');
+        res.redirect('/admin/products');
+    },
+
+    //Function for  updating the Category and save it to database
+    adminEditCategoryPost: async (req, res) => {
+        const categoryId = new ObjectId(req.params.categoryId);
+        const { name, sub_category, description } = req.body;
+        console.log(req.body);
+        const category = await Categories.findOneAndUpdate(categoryId, {
+            name,
+            sub_category,
+            description,
+        });
+        req.flash('message', 'Category Updated Successfully');
+        res.redirect('/admin/products');
+    },
+
+
     //banner page rendering with all the banners from  database
     adminBannerGet: async (req, res) => {
         const banner = await Banners.find({});//fetching all banners from the database
@@ -626,11 +641,23 @@ module.exports = {
 
     //list orders
     adminOrders: async (req, res) => {
+        const { search } = req.body
 
-        //Fetching  Order details
-        const totalOrders = await Orders.find({})
+        if (search) {
+            var totalOrders = await Orders.find(
+                {
+                    "orders.orderId": search
+                },
+                { "orders.$": 1 })// Project only the matched order);
+            console.log(totalOrders[0].orders)
 
-        res.render('admin/order-page', { URL: 'orders', totalOrders });
+        } else {
+
+            //Fetching  Order details
+            var totalOrders = await Orders.find({})
+        }
+
+        res.render('admin/order-page', { URL: 'orders', totalOrders, search });
     },
 
     //render the details page of clicked order
@@ -649,7 +676,7 @@ module.exports = {
                 { "addresses.$": 1 }
             )
 
-            res.render('admin/order-details', { address: addressDetails, orderPro: orderDetails.orders[0] })
+            res.render('admin/order-details', { URL: 'orders', address: addressDetails, orderPro: orderDetails.orders[0] })
         } catch (error) {
             console.log(error)
         }
@@ -658,23 +685,36 @@ module.exports = {
 
     orderEditStatus: async (req, res) => {
         const status = req.query.status //extract status from req.query
-        console.log(status)
         const orderId = new ObjectId(req.params.orderId)
 
+
+        const currentDate = new Date()
+
+        const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+        const date = dateConvert(estimatedDate)//End date
+
         try {
+
+            let updateFields = {
+                "orders.$.status": status // Set the new status for the matched document
+            };
+
+            if (status === "shipped") {
+                updateFields["orders.$.shippedDate"] = date;
+            } else if (status === "on the way") {
+                updateFields["orders.$.onTheWayDate"] = date;
+            } else if (status === "delivered") {
+                updateFields["orders.$.deliveredDate"] = date;
+            }
             //change the status from database
             await Orders.findOneAndUpdate(
                 { "orders._id": orderId },
-                {
-                    $set: {
-                        "orders.$.status": status,// Set the new status for the matched document
-                        "orders.$.shippedDate": date.now()
-                    }
-                },
+                { $set: updateFields },
                 { new: true }
-            )
+            );
 
-            res.redirect('/admin/order/edit-order/' + orderId)
+            res.redirect('/admin/orders')
         } catch (error) {
             console.log(error)
         }
@@ -682,135 +722,27 @@ module.exports = {
 
     },
 
-    //Function for coupon page rendering
-    adminCouponPage: async (req, res) => {
+    orderCancel: async (req, res) => {
 
-        const couponCode = couponGenerator()//coupon code generated by couponGenerator function
+        const orderId = new ObjectId(req.params.orderId) //orderId
 
-        //pagination
-        const page = req.query.page || 1
-        const limit = 5
-        const skip = (page - 1) * limit
+        const currentDate = new Date()
 
-        const message = req.flash('message');
-        const coupons = await Coupons.find({})
-            .skip(skip) // Skip the specified number of documents
-            .limit(limit); // Limit the number of documents returned
+        const estimatedDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-        res.render('admin/coupon-page', { URL: 'coupons', message, coupons, couponCode });
+        const cancellDate = dateConvert(estimatedDate)//End date
+
+        // Find the orders that match the specified userId and orderId
+        const orders = await Orders.findOneAndUpdate(
+            { "orders._id": orderId },
+            {
+                "orders.$.status": 'Cancelled',
+                "orders.$.cancelledDate": cancellDate
+            }
+        );
+
+        res.redirect('/order/order-details/edit/' + req.params.orderId);
     },
 
-    //function to add coupon by admin
-    addCoupon: async (req, res) => {
-        //extracting datas from req.body
-        let { coupon_code, minOrderAmount, discount, start_date, expire_date } = req.body
-
-        try {
-            //creating an instance of coupon
-            const coupon = new Coupons({
-                coupon_code,
-                minOrderAmount,
-                discount,
-                start_date,
-                expire_date
-            })
-            await coupon.save()
-
-            req.flash('message', 'Coupon Added succesfully')//sending message in flash
-            res.redirect('/admin/coupons')
-        } catch (error) {
-            //catch any error
-            console.log(error)
-        }
-
-    },
-
-    //function to edit coupon
-    adminCouponEdit: async (req, res) => {
-        const couponId = new ObjectId(req.params.couponId)//couponid from req.params
-
-        try {
-
-            //fetch the coupon from db using the couponid
-            const coupon = await Coupons.findById(couponId)
-
-            //render the page with the coupon details
-            res.render('admin/coupon-edit', { coupon })
-        } catch (error) {
-            console.log(error)
-        }
-
-    },
-
-    adminCouponEditPost: async (req, res) => {
-        const couponId = new ObjectId(req.params.couponId)
-
-        //extracting the values from req.body
-        let { minOrderAmount, discount, start_date, expire_date } = req.body
-
-        try {
-            //find one and update the edits in database
-            await Coupons.findOneAndUpdate(
-                { _id: couponId },
-                {
-                    $set: {
-                        minOrderAmount,
-                        discount,
-                        start_date,
-                        expire_date
-                    }
-                }
-            )
-            req.flash('message', 'Coupon Edited Successfully')
-            return res.redirect('/admin/coupons')
-        } catch (error) {
-            console.log(error)
-        }
-
-    },
-
-    //Function to delete coupon  from the database
-    adminCouponDelete: async (req, res) => {
-        const couponId = new ObjectId(req.params.couponId);
-        const couponDelete = await Coupons.findByIdAndDelete(couponId);
-        req.flash('message', 'Coupon Deleted');
-        res.redirect('/admin/coupons');
-    },
 };
 
-function formatDataForGraph(userData) {
-    //Count signups by month
-    let signupCountByMonth = {}
-
-    var labels = []
-    var data = []
-
-    userData.forEach(user => {
-
-        var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-
-        var singupMonth = months[user.dateCreated.getMonth()];
-
-        let key = `${singupMonth} `; // Format: 'YYYY-MM'
-
-        if (signupCountByMonth[key]) {
-            signupCountByMonth[key]++
-        } else {
-            signupCountByMonth[key] = 1
-        }
-
-
-    })
-
-    // Convert signupCountsByMonth object to arrays for Chart.js
-    Object.keys(signupCountByMonth).forEach(key => {
-        labels.push(key)
-        data.push(signupCountByMonth[key])
-    })
-    // console.log(labels)
-
-    return {
-        label: labels,
-        data: data
-    }
-}

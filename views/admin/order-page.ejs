@@ -1,6 +1,12 @@
 <%- include('partials/header.ejs') %>
   <div class="container mt-5">
-    <div class="row tm-content-row">
+    <form action="/admin/orders" method="post">
+    <div class="d-flex align-items-center" style="gap: 10px;">
+        <input type="search" name="search" placeholder="Search" value="<%= search %>" style="width: 95%;height: 40px;">
+        <button type="submit"> <i class="fa-solid fa-magnifying-glass" style="background-color: white;padding: 10px;"></i></button>       
+      </div>
+    </form>
+    <div class="row tm-content-row mt-3">
       <div class="col-12 tm-block-col">
         <div class="tm-bg-primary-dark p-3 tm-block-taller tm-block-scroll">
           <h2 class="tm-block-title text-center">Orders List</h2>
