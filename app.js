@@ -7,6 +7,7 @@ require('dotenv').config()
 const session = require('express-session');
 const mongoose = require('mongoose')
 const flash = require('connect-flash');
+const nocache = require('nocache')
 
 const app = express()
 
@@ -32,7 +33,8 @@ app.use(session({//session
     saveUninitialized: false,
     cookie: { secure: false },
 }));
-
+// Set cache-control headers for all routes
+app.use(nocache())
 
 //Port setting
 const PORT = process.env.PORT || 3001

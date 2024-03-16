@@ -6,6 +6,7 @@ const Wishlist = require('../model/wishlist')
 //ObjectID
 const { ObjectId } = require('mongodb');
 
+
 module.exports = {
   //Render Wishlist page along with favorite products
   getWishlistPage: async (req, res) => {

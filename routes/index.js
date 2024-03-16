@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+//imprting third party module
+const nocache = require('nocache')
+
 //Importing Controllers
 const {
         getLogin,
@@ -16,11 +19,12 @@ const {
         resetPasswordPost,
 } = require('../Controller/indexController');
 
+//Controllers Improting
 const userHomeController = require('../Controller/userhomeController');
 const adminHomeController = require('../Controller/adminhomeController');
 
 //Router for initial page of PORT which is login page
-router.route('/').get(getLogin).post(postLogin);
+router.route('/').get(nocache(), getLogin).post(postLogin);
 
 //Signup Page 
 router.route('/signup').get(getSignup);

@@ -1,14 +1,141 @@
-const Users = require('../model/users')
+//Third party modules
 require('dotenv').config()
 const bcrypt = require('bcrypt')
+
+//utilities
 const { sendOtp, checkOtp } = require('../utilities/otp');
 
+//Importing models
+const Users = require('../model/users')
+const Products = require('../model/product')
+const Banners = require('../model/banner')
+const Cart = require('../model/cart')
 
+
+//ObjectID
+const { ObjectId } = require('mongodb');
 
 
 module.exports = {
     //Render login page
-    getLogin: (req, res) => {
+    getLogin: async (req, res) => {
+        if (req.session.userId) {
+            try {
+                //Userid
+                const userId = new ObjectId(req.session.userId)
+
+                //fetching hoodies from database using lookup
+                const hoodies = await Products.aggregate([
+                    {
+                        $match: {
+                            sub_category: 'Hoodie'
+                        }
+                    },
+
+                    {
+                        $lookup: {
+                            from: 'categories',
+                            localField: 'categoryId',
+                            foreignField: '_id',
+                            as: 'category'
+                        }
+                    },
+
+                    {
+                        $match: {
+                            $or: [
+                                { 'category.name': 'Mens' },
+                                { 'category.name': 'Womens' }
+                            ]
+                        }
+                    },
+
+                ])
+
+                //Fetching 3 products to be desplayed on must have section 2 t-shirt and 1 hoodie
+                //Fetch 1 T-shirt
+                const tshirt = await Products.findOne({ sub_category: "T-Shirt" }).limit(1)
+
+                //Fetch 1 hoodie
+                const hoodie = await Products.findOne({ sub_category: 'Hoodie' }).limit(1)
+
+                //Fetch 1 more T-shirt
+                const secondTshirt = await Products.findOne({ sub_category: "T-Shirt" }).skip(1).limit(1)
+
+                // Combine the results In the order of t-shirt - hoodie - t-shirt
+                const mustHaveProducts = [tshirt, hoodie, secondTshirt];
+
+
+                //Fetching first set of T-shirt for T-shirt section
+                const firsttShirts = await Products.find({ sub_category: 'T-Shirt' }).skip(2).limit(4)
+
+                //Fetching Hoodies for second hoodie section after skipping 1
+                const firstHoodies = await Products.find({ sub_category: 'Hoodie' }).skip(1).limit(4)
+
+                //Fetching second set of T-shirt
+                const secondtShirts = await Products.find({ sub_category: 'T-Shirt' }).skip(6).limit(4)
+
+                //Fetching Trending products using lookup
+                const trendingProduct = await Products.aggregate([
+                    {
+                        $lookup: {
+                            from: 'categories',
+                            localField: 'categoryId',
+                            foreignField: '_id',
+                            as: 'category'
+                        }
+                    },
+
+                    {
+                        $match: {
+                            'category.name': 'Trending'
+                        }
+                    }
+                ])
+                //Bringing Banners 
+                const banners = await Banners.find({})
+
+
+
+                //Cart products Bringing
+                const carts = await Cart.findOne({ userId })
+
+                if (carts) {
+                    const productIds = carts.products.map(product => product.productId)//Extracting the product id in an array
+
+                    // Fetching products based on productIds
+                    const cartProducts = await Products.find({ _id: { $in: productIds } })
+
+                    // Creating a map to quickly look up products by their ID
+                    const productMap = new Map(cartProducts.map(product => [(product._id).toString(), product]))
+
+                    //Now populate the cart with product details
+                    var populatedCarts = [];
+                    carts.products.forEach(product => {
+                        populatedCarts.push({
+                            product: productMap.get((product.productId).toString()),
+                            quantity: product.quantity
+                        });
+
+                    });
+
+                    var totalPrice = 0;
+                    populatedCarts.forEach(cart => {
+
+                        totalPrice += Number(cart.product.price) * Number(cart.quantity);
+                    })
+                }
+
+
+
+                //rendering user's home page along with banners and products to display
+                res.render('user/html/index', { hoodies, banners, mustHaveProducts, firsttShirts, firstHoodies, secondtShirts, trendingProduct, carts: populatedCarts, totalPrice })
+            } catch (error) {
+                //If any error occurs on asyncronous operation collect it
+                console.log(error)
+                res.status(500).send({ message: 'Server Error', error })
+            }
+        }
         const errorMessage = req.flash('error')
         const message = req.flash('message')
         res.render('login', { errorMessage, message });
