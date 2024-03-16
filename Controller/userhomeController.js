@@ -366,6 +366,34 @@ module.exports = {
 
                 //Get hoodie products using lookup
                 var hoodies = await Products.aggregate(pipeline)
+
+            } else if (category === 'all products') {
+
+                const pipeline = [
+                    {
+                        $skip: skip
+                    },
+                    {
+                        $limit: limit // Limit the number of documents returned per page
+                    }
+
+                ];
+                //adding size vise filter
+                if (req.query.sf) {
+                    pipeline.splice(2, 0, { $match: { size: req.query.sf } })
+                }
+                if (req.query.cf) {
+                    pipeline.splice(2, 0, { $match: { color: req.query.cf } })
+                }
+                // Adjust the pipeline based on the value of the 'sort' variable
+                if (sort === 'LowHi') {
+                    pipeline.splice(2, 0, { $sort: { price: 1 } }); // Insert $sort stage at index 2 for ascending price
+                } else if (sort === 'HiLow') {
+                    pipeline.splice(2, 0, { $sort: { price: -1 } }); // Insert $sort stage at index 2 for descending price
+                }
+
+                //Get hoodie products using lookup
+                var hoodies = await Products.aggregate(pipeline)
             }
             //Banner 
             const banners = await Banners.find({ charecterist: 'Category' })
@@ -382,13 +410,9 @@ module.exports = {
     },
 
 
+
     //checkout Page Rendering
     checkoutPage: async (req, res) => {
-
-        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-        res.header("Pragma", "no-cache");
-        res.header("Expires", "0");
-
 
         const userId = new ObjectId(req.session.userId)
 
@@ -397,6 +421,7 @@ module.exports = {
         //Addrss find for user
         const addressExist = await Addresses.findOne({ userId })
 
+        //if there is no req.query of productId then it means checkout page should render along with cart details
         if (!req.query.productId) {
 
             //Cart products Bringing
@@ -429,7 +454,7 @@ module.exports = {
                 var coupon = await Coupons.findOne({ minOrderAmount: { $lte: totalPrice } })
                 console.log(coupon)
             }
-        } else {
+        } else {// if req.query of productId then it means user clicked on buy now option from product details so the page render along with a single product
             const productId = new ObjectId(req.query.productId)
 
             var product = await Products.find({ _id: productId })

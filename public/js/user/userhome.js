@@ -254,7 +254,8 @@ addtoCartButtons.forEach(button => {
     if (response.status === 200) {
       const data = response.data
       if (data.success) {
-        cartLength.innerHTML = Number(cartLengthValue) + Number(quantity)
+        cartLengthValue += Number(quantity)
+        cartLength.innerHTML = Number(cartLengthValue)
         const messageBox = this.closest('.card').querySelector('#message-box')
 
         if (messageBox) {

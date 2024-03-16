@@ -158,14 +158,13 @@ module.exports = {
         }
       )
 
-      //decreasing the stock as per the quantity
-      product.forEach(async (product) => {
-        await Product.findOneAndUpdate({
-          _id: new ObjectId(product.productId)
-        }, {
-          $inc: { stock: -product.quantity } //decrement the value of stock
-        })
-      })
+      // Using Promise.all() to wait for all updates to complete
+      await Promise.all(products.map(async (product) => {
+        await Products.findOneAndUpdate(
+          { _id: new ObjectId(product.productId) },
+          { $inc: { stock: -product.quantity } }
+        );
+      }));
 
       res.status(200).json({ success: true })
 
@@ -200,7 +199,7 @@ module.exports = {
 
   },
 
-  //function to show details of product
+  //function to show page of details of product 
   OrderDetailsPage: async (req, res) => {
     const userId = new ObjectId(req.session.userId)
     //Order id from params
@@ -212,9 +211,7 @@ module.exports = {
       { "orders.$": 1 }// Project only the matched order
     )
 
-    console.log(orders)
-
-    let orderPro = orders.orders[0];
+    let orderPro = orders.orders[0];//extracting the  order information from the projected document
 
     const address = await Addresses.findOne(
       {
@@ -225,10 +222,7 @@ module.exports = {
     );
 
     //fetching address
-    console.log(address)
-
     const productDetails = await Products.findOne({ _id: orderPro.product })
-
 
     res.render('user/html/order-details', {
       product: productDetails,
@@ -241,12 +235,11 @@ module.exports = {
   orderCancel: async (req, res) => {
     const userId = new ObjectId(req.session.userId)
 
-    const orderId = req.params.orderId //orderId
+    const orderId = new ObjectId(req.params.orderId) //orderId
     const productId = new ObjectId(req.query.product)//product id
-    console.log(productId)
 
     // Find the orders that match the specified userId and orderId
-    const orders = await Orders.findOne({ userId, "orders.orderId": orderId });
+    const orders = await Orders.findOne({ userId, "orders._id": orderId });
 
     const currentDate = new Date()
 

@@ -21,7 +21,7 @@
               </div>
               <% if(orderPro.status !== 'Cancelled' && orderPro.status !== 'delivered'){%>
               <div class="col mb-2">
-               <a href="/user/account/orders/cancel-order/<%= orderPro.orderId%>?product=<%=product._id%>">
+               <a href="/user/account/orders/cancel-order/<%= orderPro._id%>?product=<%=product._id%>">
                 <p class=" text-muted mb-1"><i class="ri-close-line"></i>Cancel Order</p>
                </a> 
               </div>

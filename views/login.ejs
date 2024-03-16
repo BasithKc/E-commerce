@@ -46,16 +46,18 @@
 							</div>
 							<% } %>
 								<h3 class="mb-4 text-center">Have an account?</h3>
-								<form action="/" method="post" class="signin-form">
+								<form  action="/" method="post" id="loginForm">
 									<div class="form-group">
-										<input type="tel" class="form-control" placeholder="Email" name="email"
-											required>
+										<input type="email" class="form-control" placeholder="Email" name="email">
 									</div>
+									<p class="text-center">OR</p>
+									<div class="form-group">
+										<input type="tel" class="form-control" placeholder="Number" name="number">
+									</div>
+
 									<div class="form-group">
 										<input id="password-field" type="password" class="form-control"
 											placeholder="Password" name="password" required>
-										<span toggle="#password-field"
-											class="fa fa-fw fa-eye field-icon toggle-password"></span>
 									</div>
 									<div class="form-group">
 										<button type="submit" class="form-control btn btn-primary submit px-3">Sign
@@ -94,6 +96,21 @@
 		setTimeout(() => {
 			notification.style.display = 'none'
 		}, 5000)
+
+		document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        var formData = new FormData(this); // Get form data
+
+        // Check if either email or number is provided
+        if (formData.get("email") === "" && formData.get("number") === "") {
+            alert("Please enter either email or number");
+            return;
+        } 
+
+        // Proceed with form submission
+        this.submit();
+    });
 	</script>
 
 

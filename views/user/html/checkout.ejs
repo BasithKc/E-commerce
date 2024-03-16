@@ -1418,8 +1418,6 @@ let post = document.getElementById('post')
                 type:'razorpay'
               })
               if(data.status === 200) {
-                window.history.replaceState(null, null, window.location.pathname);
-
                 window.location.href='/userhome'
               }
             },
@@ -1450,7 +1448,6 @@ let post = document.getElementById('post')
                   confirmButtonText: 'OK'
               });
             setTimeout(()=> {
-
               window.location.href='/userhome'
             },5000)
           }

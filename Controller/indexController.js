@@ -18,11 +18,14 @@ module.exports = {
     postLogin: async (req, res) => {
 
         //Collect datas from req.body
-        const { email, password } = req.body
+        const { email, password, number } = req.body
         try {
             //Fetch user Details
-            const user = await Users.findOne({ email })
-
+            const user = await Users.findOne({ $or: [{ email }, { number }] })
+            if (!user) {
+                req.flash('error', 'User does not exist')
+                return res.redirect('/')
+            }
             //Checking if the user is suspended or not
             if (user.isSuspend && user.suspensionEndTime > new Date()) {
                 return res.status(403).send('Your account is suspended.');//in case of suspend
@@ -88,7 +91,7 @@ module.exports = {
         console.log(req.body);
         const numberExist = await Users.findOne({ number: to })
         if (!numberExist) {
-            return res.json({ success: false, message: "Number is not registered " })
+            return res.json({ success: false, message: "Account is not registered " })
         }
         try {
             const verification = await sendOtp(to, channel) //send otp function
