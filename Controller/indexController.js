@@ -146,6 +146,7 @@ module.exports = {
 
         //Collect datas from req.body
         const { email, password, number } = req.body
+        console.log(req.body)
         try {
             //Fetch user Details
             const user = await Users.findOne({ $or: [{ email }, { number }] })
